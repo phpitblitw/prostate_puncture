@@ -69,6 +69,9 @@ AnalyseProcess::AnalyseProcess()
 	m_NextFrameDataPtr.reset(new FrameData);
 	m_CurrentFrameDataPtr = nullptr;
 	m_nAnalyseState = Init;
+	m_pProstateMask = nullptr;
+	m_pLesionMask = nullptr;
+	m_pRectumMask = nullptr;
 }//AnalyzeProcess
 
 
@@ -410,8 +413,9 @@ void AnalyseProcess::ProcessSingleFrameA(FrameDataPtr t_FrameDataPtr)
 	}
 	//未关联状态，无需进行MRI模拟采样，将MASK直接置为全0
 	//TODO，设置空的MRI原始数据截面
-	memset(t_FrameDataPtr->m_pLesionMask, 0, sizeof(BYTE)*m_nShowImageX*m_nShowImageY);
-	memset(t_FrameDataPtr->m_pProstateMask, 0, sizeof(BYTE)*m_nShowImageX*m_nShowImageY);
+	memset(t_FrameDataPtr->m_pFusionMask, 0, sizeof(BYTE)*m_nShowImageX*m_nShowImageY);
+	//memset(t_FrameDataPtr->m_pLesionMask, 0, sizeof(BYTE)*m_nShowImageX*m_nShowImageY);
+	//memset(t_FrameDataPtr->m_pProstateMask, 0, sizeof(BYTE)*m_nShowImageX*m_nShowImageY);
 	return;
 }
 
@@ -448,9 +452,56 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 	singlelock.Unlock();
 	
 
-	//裁剪几个截面
-	//TODO 原图截面
-	m_ImageSamplerPtr->GetSampleMaskPlan(t_FrameDataPtr->m_pProstateMask, 0, 0);
-	m_ImageSamplerPtr->GetSampleMaskPlan(t_FrameDataPtr->m_pLesionMask, 0, 1);
+	//裁剪3类mask截面
+	if (m_pProstateMask == nullptr)
+		m_pProstateMask = new BYTE[m_nShowImageX*m_nShowImageY];
+	if (m_pLesionMask == nullptr)
+		m_pLesionMask = new BYTE[m_nShowImageX*m_nShowImageY];
+	if (m_pRectumMask == nullptr)
+		m_pRectumMask = new BYTE[m_nShowImageX*m_nShowImageY];
+	m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 0, 1);
+	m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 0, 2);
+	m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 0, 3);
+	//mask转为轮廓
+	Mat prostateContour(m_nShowImageY, m_nShowImageX, CV_8UC1, m_pProstateMask);
+	Mat lesionContour(m_nShowImageY, m_nShowImageX, CV_8UC1, m_pLesionMask);
+	Mat rectumContour(m_nShowImageY, m_nShowImageX, CV_8UC1, m_pRectumMask);
+	//融合为FusionMask
+	Mat fusionContour;
+	addWeighted(prostateContour, 1, lesionContour, 2, 0, fusionContour);
+	addWeighted(fusionContour, 1, rectumContour, 3, 0, fusionContour);
+	//交付FrameData
+	memcpy(t_FrameDataPtr->m_pFusionMask, fusionContour.data, m_nShowImageX*m_nShowImageY * sizeof(BYTE));
+
+	////裁剪几个截面
+	////TODO 原图截面
+	//m_ImageSamplerPtr->GetSampleMaskPlan(t_FrameDataPtr->m_pProstateMask, 0, 0);
+	//m_ImageSamplerPtr->GetSampleMaskPlan(t_FrameDataPtr->m_pLesionMask, 0, 1);
 	return;
+}
+
+/*****************************************************************
+Name:			Mask2Edge
+Inputs:
+	Mat src - 待处理的mask图片 
+Return Value:
+	Mat - mask边缘
+Description:	使用sobel算子 求mask的轮廓(强度为1)
+*****************************************************************/
+Mat AnalyseProcess::Mask2Edge(Mat src)
+{
+	int ddepth = CV_16S;
+	int scale = 1, delta = 0;
+	Mat res, grad_x, grad_y, grad;
+	//求水平 竖直方向梯度
+	Sobel(src, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT);
+	Sobel(src, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT);
+	//梯度转为绝对值
+	convertScaleAbs(grad_x, grad_x);
+	convertScaleAbs(grad_y, grad_y);
+	//合并梯度
+	addWeighted(grad_x, 1, grad_y, 1, 0, grad);
+	//边缘强度置为1
+	threshold(grad, res, 1, 1, 0);
+	return res;
 }

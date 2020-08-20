@@ -636,7 +636,7 @@ void CPunctureDlg::OnTimer(UINT_PTR nIDEvent)
 		if (m_b2Dshow)
 		{
 			m_p2DShowWnd->UpdateSrcImage(m_FrameDataPtr->m_USBImage);
-			m_p2DShowWnd->UpdateMaskImage(m_FrameDataPtr->m_pProstateMask);
+			m_p2DShowWnd->UpdateMaskImage(m_FrameDataPtr->m_pFusionMask);
 			m_p2DShowWnd->RedrawWindow();
 		}
 

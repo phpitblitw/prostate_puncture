@@ -149,7 +149,7 @@ Name:			GetSampleMaskPlan
 Inputs:
 	MaskDataType* pImage - 结果mask数据指针
 	int nScanType - B超扫描类型，0-冠状面，1-矢状面
-	int nMaskType - MRI模拟采样mask类型，0-前列腺，1-病灶
+	int nMaskType - MRI模拟采样mask类型，1-前列腺，2-病灶,3-直肠
 Return Value:
 	int - error info
 Description:	设置MRI数据体素大小
@@ -171,7 +171,7 @@ int ANALYSEPROCESS::ImageSampler::GetSampleMaskPlan(MaskDataType *pImage, int nS
 	m_RightBottom = WLDToIJK(m_RightBottom);
 
 	//使用四个角点的IJK坐标，指导切割二维截面
-	if (nMaskType != 0 && nMaskType != 1)
+	if (nMaskType != 1 && nMaskType != 2&& nMaskType != 3)
 		return ER_SampleParameterError;
 	GetMaskPlanData(m_pDataPackage->GetMaskDataPtr(nMaskType), pImage);
 	//if (nMaskType == 0)

@@ -64,8 +64,9 @@ namespace ANALYSEPROCESS
 		//Attitude	m_USBPos;		//超声探头的空间位置
 		//Attitude	m_NeedlePos;	//探针空间位置（预留，待后期完善）
 
-		BYTE *m_pProstateMask;		//前列腺2D掩模图像
-		BYTE *m_pLesionMask;		//病灶2D掩模图像
+		//BYTE *m_pProstateMask;		//前列腺2D掩模图像
+		//BYTE *m_pLesionMask;		//病灶2D掩模图像
+		BYTE *m_pFusionMask;		//总的2Dmask轮廓图像，1-前列腺，2-病灶，3-直肠
 
 		//MRI模拟采样的位置参数 IJK
 		Coordinate m_ScanCenter;

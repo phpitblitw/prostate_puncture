@@ -85,14 +85,8 @@ namespace SURGICALPLAN
 		MaskDataPtr GetMaskDataPtr(int nMaskType);						//获取Mask信息
 		SurfaceDataPtr GetSurfaceDataPtr() { return m_pSurface; }		//获取表面信息
 		
-		//void GetParameters(double &t_centerX, double &t_centerY, double &t_centerZ,
-		//	double &t_MX, double &t_MY, double &t_MZ,
-		//	double &t_UX, double &t_UY, double &t_UZ);
 
 		void SetImageSize(int nImageX, int nImageY); //设置2d显示的超声尺寸(像素数)
-		//int LoadRectumCenter(CString strFileName); //添加直肠中心线坐标序列
-		//int FindLargestSection();	//找到超声探头截面最大处 对应的姿态
-		//Attitude m_BasePlanAttitude;			//存储将来用于配准的指定平面,直肠中轴最大平面 交由AnalyseProcess完成
 
 	protected:
 		void InitData();
@@ -102,10 +96,9 @@ namespace SURGICALPLAN
 		MRIDataPtr m_pMRIData;							//MRI裸数据
 		MaskDataPtr m_pProstateMaskData;				//前列腺Mask数据
 		MaskDataPtr m_pLesionMaskData;					//病灶Mask数据
+		MaskDataPtr m_pRectumMaskData;					//直肠Mask数据
 		SurfaceDataPtr m_pSurface;						//表面标签数据
-		//ImageSamplerPtr m_pMaskSampler;					//三维切割出平面数据 //TODO
 
-		//vector <Target> m_vTargetPointList;				//手术靶点队列
 		vector <Point3D> m_vRectumCenterPath;			//直肠中心点序列
 		int m_iCurCenterPtIndex;						//当前直肠点在序列中的位置
 		int m_iBaseCenterPtIndex;						//用于配准的平面对应的直肠中心点下标
@@ -127,6 +120,7 @@ namespace SURGICALPLAN
 		//CString m_strMaskFileName;
 		CString m_strProstateMaskFileName;
 		CString m_strLesionMaskFileName;
+		CString m_strRectumMaskFileName;
 		CString m_strSurfaceFileName;	
 		CString m_strRectumCenterName;
 

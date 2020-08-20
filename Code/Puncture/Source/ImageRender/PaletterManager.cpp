@@ -26,9 +26,13 @@ PaletterManager::PaletterManager(void)
 	{
 		Palette->Entries[i] =Color::MakeARGB(0,0,0,0);
 	}
-	for(int i=1; i<256; i++)
+	Palette->Entries[1] = Color::MakeARGB(64, 0, 255, 0);	//mask为1，前列腺，绿色
+	Palette->Entries[2] = Color::MakeARGB(64, 255, 0, 0);	//mask为2，病灶，红色
+	Palette->Entries[3] = Color::MakeARGB(64, 0, 0, 255);	//mask为3，直肠，蓝色
+	for(int i=4; i<256; i++)
 	{
-		Palette->Entries[i] =Color::MakeARGB(32,255,0,255);
+		//Palette->Entries[i] = Color::MakeARGB(32, 255, 0, 255);
+		Palette->Entries[i] = Color::MakeARGB(64, 255, 255, 255);	//mask大于4，即mask重合部分，设为白色
 	}
 	Palette->Count = 256;
 	Palette->Flags = PaletteFlagsHasAlpha;

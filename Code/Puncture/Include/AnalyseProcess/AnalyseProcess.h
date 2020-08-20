@@ -89,6 +89,7 @@ namespace ANALYSEPROCESS
 		void ProcessSingleFrame(FrameDataPtr t_FrameDataPtr);	//处理单帧数据
 		void ProcessSingleFrameA(FrameDataPtr t_FrameDataPtr);	//处理单帧数据（未关联状态）
 		void ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr);	//处理单帧数据（关联状态）
+		Mat Mask2Edge(Mat src);								//将mask取轮廓
 	private:
 		CMutex			m_ProcessDataMutex;		//显示互斥变量
 		FrameDataPtr	m_CurrentFrameDataPtr;	//用于存放当前处理中的帧
@@ -104,6 +105,10 @@ namespace ANALYSEPROCESS
 		SurgicalPlanPtr		m_SurgicalPlanPtr;			//手术计划及数据操作指针
 		PositionManagerPtr	m_PositionManagerPtr;		//位置管理指针
 		ImageSamplerPtr		m_ImageSamplerPtr;			//切割二维平面对象指针
+
+		BYTE			*m_pProstateMask;		//暂存prostate mask
+		BYTE			*m_pLesionMask;			//暂存lesion mask
+		BYTE			*m_pRectumMask;			//暂存rectum mask
 
 		int				m_nShowImageX;			//2D图像像素宽度
 		int				m_nShowImageY;			//2D图像像素高度

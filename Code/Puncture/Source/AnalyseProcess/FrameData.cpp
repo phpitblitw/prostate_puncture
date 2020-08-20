@@ -28,8 +28,9 @@ Description:	FrameData构造函数
 *****************************************************************/
 FrameData::FrameData()
 {
-	m_pProstateMask = nullptr;
-	m_pLesionMask = nullptr;
+	//m_pProstateMask = nullptr;
+	//m_pLesionMask = nullptr;
+	m_pFusionMask = nullptr;
 	m_dImageRes = 0;
 }//FrameData
 
@@ -44,13 +45,17 @@ Description:	FrameData析构函数
 *****************************************************************/
 FrameData::~FrameData()
 {
-	if (m_pProstateMask != nullptr)
+	//if (m_pProstateMask != nullptr)
+	//{
+	//	delete[] m_pProstateMask;
+	//}
+	//if (m_pLesionMask != nullptr)
+	//{
+	//	delete[] m_pLesionMask;
+	//}
+	if (m_pFusionMask != nullptr)
 	{
-		delete[] m_pProstateMask;
-	}
-	if (m_pLesionMask != nullptr)
-	{
-		delete[] m_pLesionMask;
+		delete[] m_pFusionMask;
 	}
 }//~FrameData
 
@@ -65,22 +70,25 @@ Description:	开辟2D掩模图像空间
 *****************************************************************/
 int	FrameData::CreatMaskData(int t_nShowWidth, int t_nShowHeight)
 {
-	if (m_pProstateMask != nullptr)
-	{
-		delete[] m_pProstateMask;
-	}
-	if (m_pLesionMask != nullptr)
-	{
-		delete[] m_pLesionMask;
-	}
+	//if (m_pProstateMask != nullptr)
+	//{
+	//	delete[] m_pProstateMask;
+	//}
+	//if (m_pLesionMask != nullptr)
+	//{
+	//	delete[] m_pLesionMask;
+	//}
+	if (m_pFusionMask != nullptr)
+		delete[] m_pFusionMask;
 	if (t_nShowWidth <= 100 || t_nShowWidth >= 4000
 		|| t_nShowHeight <= 100 || t_nShowHeight >= 4000)
 	{
 		return ER_2DImageSizeError;
 	}
 
-	m_pProstateMask = new BYTE[t_nShowWidth * t_nShowWidth];
-	m_pLesionMask = new BYTE[t_nShowWidth * t_nShowWidth];
+	//m_pProstateMask = new BYTE[t_nShowWidth * t_nShowWidth];
+	//m_pLesionMask = new BYTE[t_nShowWidth * t_nShowWidth];
+	m_pFusionMask = new BYTE[t_nShowWidth * t_nShowWidth];
 	return LIST_NO_ERROR;
 }//CreatMaskData
 

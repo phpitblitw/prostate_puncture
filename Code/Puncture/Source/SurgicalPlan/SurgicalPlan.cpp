@@ -69,6 +69,7 @@ void SurgicalPlan::InitData()
 
 	m_pProstateMaskData.reset(new MaskData());
 	m_pLesionMaskData.reset(new MaskData());
+	m_pRectumMaskData.reset(new MaskData());
 	m_pMRIData.reset(new MRIData());
 	m_pSurface.reset(new SurfaceData());
 	//m_pMaskSampler.reset(new ImageSampler());
@@ -200,6 +201,7 @@ int SurgicalPlan::InPortAsFileSet(CString t_strFilePathName)
 	t_ConfigFile.ReadKey(_T("MRIFileName"), m_strMRIFileName);
 	t_ConfigFile.ReadKey(_T("ProstateMaskFileName"), m_strProstateMaskFileName);
 	t_ConfigFile.ReadKey(_T("LesionMaskFileName"), m_strLesionMaskFileName);
+	t_ConfigFile.ReadKey(_T("RectumMaskFileName"), m_strRectumMaskFileName);
 	t_ConfigFile.ReadKey(_T("SurfaceFileName"), m_strSurfaceFileName);
 
 	t_ConfigFile.Move2Section(_T("MASKINFO"));
@@ -237,7 +239,10 @@ int SurgicalPlan::InPortAsFileSet(CString t_strFilePathName)
 		return ER_InportMaskDataError;
 	}
 	m_pLesionMaskData->SetMaskVolumeResolution(m_fResX, m_fResY, m_fResZ);
-
+	if (m_pRectumMaskData->LoadRawMask(m_strRectumMaskFileName, m_nCX, m_nCY, m_nCZ) != LIST_NO_ERROR)
+	{
+		return ER_InportMaskDataError;
+	}
 	//导入MRI数据
 	if (m_pMRIData->LoadRawMRI(m_strMRIFileName, m_nCX, m_nCY, m_nCZ) != LIST_NO_ERROR)
 	{
@@ -273,10 +278,12 @@ Description:	返回mask指针
 *****************************************************************/
 MaskDataPtr SurgicalPlan::GetMaskDataPtr(int nMaskType)
 {
-	if (nMaskType == 0)
+	if (nMaskType == 1)
 		return m_pProstateMaskData;
-	else
+	else if (nMaskType == 2)
 		return m_pLesionMaskData;
+	else
+		return m_pRectumMaskData;
 }//GetMaskDataPtr
 
 
