@@ -103,7 +103,7 @@
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>$(SolutionDir)lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Configuration)\;$(SolutionDir)lib\Commonlib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ErrorManagerD.lib;NDIOperatorD.lib;SurgicalPlanD.lib;SceneGraph.lib;opengl32.lib;ImageRenderD.lib;USBCapturerD.lib;ComUtilityD.lib;opencv_world300d.lib;AnalyseProcessD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ErrorManagerD.lib;NDIOperatorD.lib;SurgicalPlanD.lib;SceneGraph.lib;opengl32.lib;ImageRenderD.lib;USBCapturerD.lib;ComUtilityD.lib;opencv_world300d.lib;AnalyseProcessD.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

@@ -16,10 +16,12 @@
 #include "USBCapturer.h"
 #include "USBConfig.h"
 #include "ErrorManager//ErrorCodeDefine.h"
+#include "ComUtility/SysPathManager.h"
 //#include "opencv2/highgui.hpp"
 //#include "opencv2/imgproc/imgproc.hpp"
 
 using namespace USBCAPTURER;
+using namespace fsutility;
 ///////////////////////////////多线程独立函数///////////////////////////////////
 /*****************************************************************
 Name:			GrabThreadFun
@@ -220,6 +222,15 @@ int USBCapturer::StopGrab()
  *****************************************************************/
 BOOL USBCapturer::GrabOneFrame(Mat &t_Image)
 {
+#ifdef USE_LOCAL_US_IMAGE
+	//使用本地B超图片
+	CString t_strUSImagePath;
+	t_strUSImagePath = CSysPathManager::Instance().GetConfigPath() + _T("us_example.jpg");
+	USES_CONVERSION;
+	cv::String imgPath = W2A(t_strUSImagePath);
+	t_Image = imread(W2A(t_strUSImagePath),CV_LOAD_IMAGE_GRAYSCALE);
+	return TRUE;
+#endif
 	V2U_VideoMode iVideoMode;//视频特征，包括宽、高、帧率
 	V2U_BOOL bSuc;//视频特征获取成功标志
 	bSuc = FrmGrab_DetectVideoMode(m_pDevice, &iVideoMode);//获取视频特征
@@ -274,6 +285,22 @@ void USBCapturer::Grab()
 		//}
 		//m_CaptureMutex.unlock();
 
+#ifdef USE_LOCAL_US_IMAGE
+		//使用本地B超图片
+		CString t_strUSImagePath;
+		cv::Mat t_ImageA;
+		cv::Mat t_ImageB;
+		t_strUSImagePath = CSysPathManager::Instance().GetConfigPath() + _T("us_example.jpg");
+		USES_CONVERSION;
+		cv::String imgPath = W2A(t_strUSImagePath);
+		t_ImageA = imread(W2A(t_strUSImagePath), CV_LOAD_IMAGE_GRAYSCALE);
+		//检查回调函数
+		if (m_CapturePerFrameFun != nullptr)
+		{
+			m_CapturePerFrameFun(t_ImageA, t_ImageB, m_dImageRes);
+		}
+		continue;
+#endif
 		m_CaptureMutex.lock();
 		V2U_GrabFrame2* iFrame = FrmGrab_Frame(m_pDevice, V2U_GRABFRAME_FORMAT_YV12, NULL);//获取YV12格式的完整帧
 		if (!iFrame || iFrame->imagelen <= 0)

@@ -12,6 +12,8 @@
 
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // 某些 CString 构造函数将是显式的
 
+#define USE_LOCAL_US_IMAGE	//用于在B超探头不在时测试程序。使用硬盘上的一张B超图片作为超声模块输出
+
 #include <afxwin.h>         // MFC 核心组件和标准组件
 #include <afxext.h>         // MFC 扩展
 
