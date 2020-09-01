@@ -228,7 +228,7 @@ BOOL USBCapturer::GrabOneFrame(Mat &t_Image)
 	t_strUSImagePath = CSysPathManager::Instance().GetConfigPath() + _T("us_example.jpg");
 	USES_CONVERSION;
 	cv::String imgPath = W2A(t_strUSImagePath);
-	t_Image = imread(W2A(t_strUSImagePath),CV_LOAD_IMAGE_GRAYSCALE);
+	t_Image = imread(W2A(t_strUSImagePath),CV_LOAD_IMAGE_COLOR);
 	return TRUE;
 #endif
 	V2U_VideoMode iVideoMode;//视频特征，包括宽、高、帧率
@@ -288,12 +288,22 @@ void USBCapturer::Grab()
 #ifdef USE_LOCAL_US_IMAGE
 		//使用本地B超图片
 		CString t_strUSImagePath;
+		cv::Mat iDst;
 		cv::Mat t_ImageA;
 		cv::Mat t_ImageB;
 		t_strUSImagePath = CSysPathManager::Instance().GetConfigPath() + _T("us_example.jpg");
 		USES_CONVERSION;
 		cv::String imgPath = W2A(t_strUSImagePath);
-		t_ImageA = imread(W2A(t_strUSImagePath), CV_LOAD_IMAGE_GRAYSCALE);
+		iDst = imread(W2A(t_strUSImagePath), CV_LOAD_IMAGE_COLOR);
+		if (m_nScreenType == 1)	//根据布局拷贝对应图像区域图像，采用clone
+		{
+			t_ImageA = iDst(USBConfig::Instance().m_FullRect).clone();
+		}
+		else
+		{
+			t_ImageA = iDst(USBConfig::Instance().m_UpRect).clone();
+			t_ImageB = iDst(USBConfig::Instance().m_DownRect).clone();
+		}
 		//检查回调函数
 		if (m_CapturePerFrameFun != nullptr)
 		{

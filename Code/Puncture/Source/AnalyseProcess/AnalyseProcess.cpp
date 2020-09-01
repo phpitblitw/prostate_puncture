@@ -460,16 +460,25 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 	if (m_pRectumMask == nullptr)
 		m_pRectumMask = new BYTE[m_nShowImageX*m_nShowImageY];
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 0, 1);
+	//测试代码TODO
+	int frontSum = 0;
+	for (int i = 0; i < 800 * 700; i++)
+		frontSum += m_pProstateMask[i];
+	//测试代码TODO
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 0, 2);
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 0, 3);
 	//mask转为轮廓
 	Mat prostateContour(m_nShowImageY, m_nShowImageX, CV_8UC1, m_pProstateMask);
 	Mat lesionContour(m_nShowImageY, m_nShowImageX, CV_8UC1, m_pLesionMask);
 	Mat rectumContour(m_nShowImageY, m_nShowImageX, CV_8UC1, m_pRectumMask);
+	prostateContour = Mask2Edge(prostateContour);
+	lesionContour = Mask2Edge(lesionContour);
+	rectumContour = Mask2Edge(rectumContour);
 	//融合为FusionMask
 	Mat fusionContour;
 	addWeighted(prostateContour, 1, lesionContour, 2, 0, fusionContour);
 	addWeighted(fusionContour, 1, rectumContour, 3, 0, fusionContour);
+	imwrite("D:\\fusionMask.bmp", fusionContour);	//测试代码TODO
 	//交付FrameData
 	memcpy(t_FrameDataPtr->m_pFusionMask, fusionContour.data, m_nShowImageX*m_nShowImageY * sizeof(BYTE));
 
