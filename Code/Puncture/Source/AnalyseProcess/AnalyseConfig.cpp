@@ -73,7 +73,7 @@ int AnalyseConfig::LoadConfigFile(CString t_strFilePathName)
 	}
 
 	//MRI分辨率
-	t_ScanConfig.Move2Section(_T("Resolution"));
+	t_ScanConfig.Move2Section(_T("ImageSize"));
 	t_ScanConfig.ReadKey(_T("x"), m_ResX);
 	t_ScanConfig.ReadKey(_T("y"), m_ResY);
 	t_ScanConfig.ReadKey(_T("z"), m_ResZ);
@@ -96,18 +96,21 @@ int AnalyseConfig::LoadConfigFile(CString t_strFilePathName)
 	t_ScanConfig.ReadKey(_T("x"), m_RightDir.x);
 	t_ScanConfig.ReadKey(_T("y"), m_RightDir.y);
 	t_ScanConfig.ReadKey(_T("z"), m_RightDir.z);
+	m_RightDir.w = 0;
 	m_RightDir.Normalize();		//向量单位化
 	//UpDir向量
 	t_ScanConfig.Move2Section(_T("UpDir"));
 	t_ScanConfig.ReadKey(_T("x"), m_UpDir.x);
 	t_ScanConfig.ReadKey(_T("y"), m_UpDir.y);
 	t_ScanConfig.ReadKey(_T("z"), m_UpDir.z);
-	m_RightDir.Normalize();		//向量单位化
+	m_UpDir.w = 0;
+	m_UpDir.Normalize();		//向量单位化
 	//MoveDir向量
 	t_ScanConfig.Move2Section(_T("MoveDir"));
 	t_ScanConfig.ReadKey(_T("x"), m_MoveDir.x);
 	t_ScanConfig.ReadKey(_T("y"), m_MoveDir.y);
 	t_ScanConfig.ReadKey(_T("z"), m_MoveDir.z);
+	m_MoveDir.w = 0;
 	m_MoveDir.Normalize();		//向量单位化
 	//return LIST_NO_ERROR;
 	return 0;	//待删除

@@ -197,18 +197,22 @@ int SurgicalPlan::InPortAsFileSet(CString t_strFilePathName)
 		return ER_OpenSurgicalPlanConfigFileFailed;
 	}
 
+	//文件路径
 	t_ConfigFile.Move2Section(_T("PATH"));
-	t_ConfigFile.ReadKey(_T("MRIFileName"), m_strMRIFileName);
-	t_ConfigFile.ReadKey(_T("ProstateMaskFileName"), m_strProstateMaskFileName);
-	t_ConfigFile.ReadKey(_T("LesionMaskFileName"), m_strLesionMaskFileName);
-	t_ConfigFile.ReadKey(_T("RectumMaskFileName"), m_strRectumMaskFileName);
-	t_ConfigFile.ReadKey(_T("SurfaceFileName"), m_strSurfaceFileName);
+	t_ConfigFile.ReadKey(_T("mri_filename"), m_strMRIFileName);
+	t_ConfigFile.ReadKey(_T("prostate_mask_filename"), m_strProstateMaskFileName);
+	t_ConfigFile.ReadKey(_T("lesion_mask_filename"), m_strLesionMaskFileName);
+	t_ConfigFile.ReadKey(_T("rectum_mask_filename"), m_strRectumMaskFileName);
+	t_ConfigFile.ReadKey(_T("prostate_surface_filename"), m_strSurfaceFileName);	//TODO
 
-	t_ConfigFile.Move2Section(_T("MASKINFO"));
+	//mr数据尺寸(像素数)
+	t_ConfigFile.Move2Section(_T("ImageSize"));
 	t_ConfigFile.ReadKey(_T("CX"), m_nCX);
 	t_ConfigFile.ReadKey(_T("CY"), m_nCY);
 	t_ConfigFile.ReadKey(_T("CZ"), m_nCZ);
 
+	//mr体素大小
+	t_ConfigFile.Move2Section(_T("VoxelSize"));
 	t_ConfigFile.ReadKey(_T("ResX"), m_fResX);
 	t_ConfigFile.ReadKey(_T("ResY"), m_fResY);
 	t_ConfigFile.ReadKey(_T("ResZ"), m_fResZ);
