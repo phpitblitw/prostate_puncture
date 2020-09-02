@@ -10,3 +10,6 @@ main program of prostate puncture
 USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，使用硬盘图片替代B超图片。
 将Debug/Config添加入git库
 
+# v1.2
+与mevislab预处理软件mr_processor v2.1同步调试通过。可以实现对应读取ini配置文件以及raw数据文件。由于SurgicalPlan.ini记录的是数据的绝对路径，如果移动了数据文件夹，仍然需要手动进入ini文件设置绝对路径。
+
