@@ -29,12 +29,12 @@ Description:	AnalyseConfig构造函数
 *****************************************************************/
 AnalyseConfig::AnalyseConfig()
 {
-	m_ResX = 0;
-	m_ResY = 0;
-	m_ResZ = 0;
-	m_SizeX = 0;
-	m_SizeY = 0;
-	m_SizeZ = 0;
+	m_nSizeX = 0;
+	m_nSizeY = 0;
+	m_nSizeZ = 0;
+	m_fVoxelSizeX = 0;
+	m_fVoxelSizeY = 0;
+	m_fVoxelSizeZ = 0;
 }
 
 /*****************************************************************
@@ -74,14 +74,14 @@ int AnalyseConfig::LoadConfigFile(CString t_strFilePathName)
 
 	//MRI分辨率
 	t_ScanConfig.Move2Section(_T("ImageSize"));
-	t_ScanConfig.ReadKey(_T("x"), m_ResX);
-	t_ScanConfig.ReadKey(_T("y"), m_ResY);
-	t_ScanConfig.ReadKey(_T("z"), m_ResZ);
+	t_ScanConfig.ReadKey(_T("x"), m_nSizeX);
+	t_ScanConfig.ReadKey(_T("y"), m_nSizeY);
+	t_ScanConfig.ReadKey(_T("z"), m_nSizeZ);
 	//MRI体素大小
 	t_ScanConfig.Move2Section(_T("VoxelSize"));
-	t_ScanConfig.ReadKey(_T("x"), m_SizeX);
-	t_ScanConfig.ReadKey(_T("y"), m_SizeY);
-	t_ScanConfig.ReadKey(_T("z"), m_SizeZ);
+	t_ScanConfig.ReadKey(_T("x"), m_fVoxelSizeX);
+	t_ScanConfig.ReadKey(_T("y"), m_fVoxelSizeY);
+	t_ScanConfig.ReadKey(_T("z"), m_fVoxelSizeZ);
 
 	//切割前列腺最大截面
 	//ScanCenter点

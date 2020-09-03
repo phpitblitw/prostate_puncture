@@ -11,5 +11,11 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 将Debug/Config添加入git库
 
 # v1.2
-与mevislab预处理软件mr_processor v2.1同步调试通过。可以实现对应读取ini配置文件以及raw数据文件。由于SurgicalPlan.ini记录的是数据的绝对路径，如果移动了数据文件夹，仍然需要手动进入ini文件设置绝对路径。
+与mevislab预处理软件mr_processor v2.1联调通过。可以实现对应读取ini配置文件以及raw数据文件。由于SurgicalPlan.ini记录的是数据的绝对路径，如果移动了数据文件夹，仍然需要手动进入ini文件设置绝对路径。
+
+# v1.2.1
+修改了AnalyseConfig和SurgicalPlan，MR数据的像素数变量名如m_nSizeX,MR数据的体素大小如m_fVoxelSizeX。
+为Puncture\Output\x64\Debug目录添加了若干dll文件，从而可以从git库clone后直接编译生成运行。
+出现了mat stackoverflower问题，待解决
+帧率目测只有约2fps,需要处理吗？
 

@@ -109,7 +109,7 @@ int AnalyseProcess::InitAnalyseProcess(CString t_strFilePathName)
 	{
 		return ER_NoSurgicalPlan;
 	}
-	m_ImageSamplerPtr->SetMRIPixelSize(AnalyseConfig::Instance().m_SizeX, AnalyseConfig::Instance().m_SizeY, AnalyseConfig::Instance().m_SizeZ);
+	m_ImageSamplerPtr->SetMRIPixelSize(AnalyseConfig::Instance().m_fVoxelSizeX, AnalyseConfig::Instance().m_fVoxelSizeY, AnalyseConfig::Instance().m_fVoxelSizeZ);
 	return LIST_NO_ERROR;
 }//InitAnalyseProcess
 

@@ -103,17 +103,19 @@ namespace SURGICALPLAN
 		int m_iCurCenterPtIndex;						//当前直肠点在序列中的位置
 		int m_iBaseCenterPtIndex;						//用于配准的平面对应的直肠中心点下标
 
-		int m_nCX;
-		int m_nCY;
-		int m_nCZ;
+		//mr数据尺寸(像素数)
+		int m_nSizeX;
+		int m_nSizeY;
+		int m_nSizeZ;
 
 		//2d显示的超声尺寸(像素数)
 		int m_nShowImageX;
 		int m_nShowImageY;
 
-		float m_fResX;
-		float m_fResY;
-		float m_fResZ;
+		//mr体素大小
+		float m_fVoxelSizeX;
+		float m_fVoxelSizeY;
+		float m_fVoxelSizeZ;
 
 		CString m_strRootPath;
 		CString m_strMRIFileName;

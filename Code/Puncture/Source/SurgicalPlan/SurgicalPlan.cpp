@@ -59,13 +59,13 @@ void SurgicalPlan::InitData()
 	m_vRectumCenterPath.clear();
 	m_iCurCenterPtIndex = 0;
 
-	m_nCX = 0;
-	m_nCY = 0;
-	m_nCZ = 0;
+	m_nSizeX = 0;
+	m_nSizeY = 0;
+	m_nSizeZ = 0;
 
-	m_fResX = 0;
-	m_fResY = 0;
-	m_fResZ = 0;
+	m_fVoxelSizeX = 0;
+	m_fVoxelSizeY = 0;
+	m_fVoxelSizeZ = 0;
 
 	m_pProstateMaskData.reset(new MaskData());
 	m_pLesionMaskData.reset(new MaskData());
@@ -207,15 +207,15 @@ int SurgicalPlan::InPortAsFileSet(CString t_strFilePathName)
 
 	//mr数据尺寸(像素数)
 	t_ConfigFile.Move2Section(_T("ImageSize"));
-	t_ConfigFile.ReadKey(_T("CX"), m_nCX);
-	t_ConfigFile.ReadKey(_T("CY"), m_nCY);
-	t_ConfigFile.ReadKey(_T("CZ"), m_nCZ);
+	t_ConfigFile.ReadKey(_T("CX"), m_nSizeX);
+	t_ConfigFile.ReadKey(_T("CY"), m_nSizeY);
+	t_ConfigFile.ReadKey(_T("CZ"), m_nSizeZ);
 
 	//mr体素大小
 	t_ConfigFile.Move2Section(_T("VoxelSize"));
-	t_ConfigFile.ReadKey(_T("ResX"), m_fResX);
-	t_ConfigFile.ReadKey(_T("ResY"), m_fResY);
-	t_ConfigFile.ReadKey(_T("ResZ"), m_fResZ);
+	t_ConfigFile.ReadKey(_T("ResX"), m_fVoxelSizeX);
+	t_ConfigFile.ReadKey(_T("ResY"), m_fVoxelSizeY);
+	t_ConfigFile.ReadKey(_T("ResZ"), m_fVoxelSizeZ);
 
 	////base位置交由AnalyseProcess分析，SurgicalPlan不再负责
 	//t_ConfigFile.Move2Section(_T("BASEPLAN"));
@@ -233,26 +233,26 @@ int SurgicalPlan::InPortAsFileSet(CString t_strFilePathName)
 	m_strRootPath = t_strFilePathName.Left(t_strFilePathName.GetLength() - t_strFilePathName.ReverseFind('\\'));
 
 	//导入MASK数据
-	if (m_pProstateMaskData->LoadRawMask(m_strProstateMaskFileName, m_nCX, m_nCY, m_nCZ) != LIST_NO_ERROR)
+	if (m_pProstateMaskData->LoadRawMask(m_strProstateMaskFileName, m_nSizeX, m_nSizeY, m_nSizeZ) != LIST_NO_ERROR)
 	{
 		return ER_InportMaskDataError;
 	}
-	m_pProstateMaskData->SetMaskVolumeResolution(m_fResX, m_fResY, m_fResZ);
-	if (m_pLesionMaskData->LoadRawMask(m_strLesionMaskFileName, m_nCX, m_nCY, m_nCZ) != LIST_NO_ERROR)
+	m_pProstateMaskData->SetMaskVolumeResolution(m_fVoxelSizeX, m_fVoxelSizeY, m_fVoxelSizeZ);
+	if (m_pLesionMaskData->LoadRawMask(m_strLesionMaskFileName, m_nSizeX, m_nSizeY, m_nSizeZ) != LIST_NO_ERROR)
 	{
 		return ER_InportMaskDataError;
 	}
-	m_pLesionMaskData->SetMaskVolumeResolution(m_fResX, m_fResY, m_fResZ);
-	if (m_pRectumMaskData->LoadRawMask(m_strRectumMaskFileName, m_nCX, m_nCY, m_nCZ) != LIST_NO_ERROR)
+	m_pLesionMaskData->SetMaskVolumeResolution(m_fVoxelSizeX, m_fVoxelSizeY, m_fVoxelSizeZ);
+	if (m_pRectumMaskData->LoadRawMask(m_strRectumMaskFileName, m_nSizeX, m_nSizeY, m_nSizeZ) != LIST_NO_ERROR)
 	{
 		return ER_InportMaskDataError;
 	}
 	//导入MRI数据
-	if (m_pMRIData->LoadRawMRI(m_strMRIFileName, m_nCX, m_nCY, m_nCZ) != LIST_NO_ERROR)
+	if (m_pMRIData->LoadRawMRI(m_strMRIFileName, m_nSizeX, m_nSizeY, m_nSizeZ) != LIST_NO_ERROR)
 	{
 		return ER_InportMaskDataError;
 	}
-	m_pMRIData->SetMRIVolumeResolution(m_fResX, m_fResY, m_fResZ);
+	m_pMRIData->SetMRIVolumeResolution(m_fVoxelSizeX, m_fVoxelSizeY, m_fVoxelSizeZ);
 
 	return LIST_NO_ERROR;
 }//InPortAsFileSet

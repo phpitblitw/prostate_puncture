@@ -44,11 +44,11 @@ namespace ANALYSEPROCESS
 		Coordinate m_RightDir;		//最大截面位置，2维B超图像的x轴正方向对应的三维空间向量
 		Coordinate m_UpDir;			//最大截面位置，2维B超图像的y轴负方向对应的三维空间向量
 		Coordinate m_MoveDir;		//B超探头前进的方向，即从直肠入口到最大截面位置的向量
-		int m_ResX;		//x方向像素数
-		int m_ResY;		//y方向像素数
-		int m_ResZ;		//z方向像素数
-		float m_SizeX;	//x方向体素大小
-		float m_SizeY;	//y方向体素大小
-		float m_SizeZ;	//z方向体素大小
+		int m_nSizeX;		//x方向像素数
+		int m_nSizeY;		//y方向像素数
+		int m_nSizeZ;		//z方向像素数
+		float m_fVoxelSizeX;	//x方向体素大小
+		float m_fVoxelSizeY;	//y方向体素大小
+		float m_fVoxelSizeZ;	//z方向体素大小
 	};
 }
