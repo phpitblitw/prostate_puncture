@@ -203,7 +203,10 @@ int SurgicalPlan::InPortAsFileSet(CString t_strFilePathName)
 	t_ConfigFile.ReadKey(_T("prostate_mask_filename"), m_strProstateMaskFileName);
 	t_ConfigFile.ReadKey(_T("lesion_mask_filename"), m_strLesionMaskFileName);
 	t_ConfigFile.ReadKey(_T("rectum_mask_filename"), m_strRectumMaskFileName);
-	t_ConfigFile.ReadKey(_T("prostate_surface_filename"), m_strSurfaceFileName);	//TODO
+	t_ConfigFile.ReadKey(_T("prostate_surface_filename"), m_strSurfaceFileName);	//obj格式的模型数据
+	t_ConfigFile.ReadKey(_T("prostate_surface_filename"), m_strProstateSurfaceFileName);
+	t_ConfigFile.ReadKey(_T("lesion_surface_filename"), m_strLesionSurfaceFileName);
+	t_ConfigFile.ReadKey(_T("rectum_surface_filename"), m_strRectumSurfaceFileName);
 
 	//mr数据尺寸(像素数)
 	t_ConfigFile.Move2Section(_T("ImageSize"));

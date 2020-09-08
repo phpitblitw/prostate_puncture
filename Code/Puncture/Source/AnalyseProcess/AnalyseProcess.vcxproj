@@ -105,7 +105,7 @@
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>.\AnalyseProcess.def</ModuleDefinitionFile>
       <ImportLibrary>$(SolutionDir)lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
-      <AdditionalDependencies>ComUtilityD.lib;ErrorManagerD.lib;NDIOperatorD.lib;USBCapturerD.lib;SurgicalPlanD.lib;opencv_world300d.lib</AdditionalDependencies>
+      <AdditionalDependencies>ComUtilityD.lib;ErrorManagerD.lib;NDIOperatorD.lib;USBCapturerD.lib;SurgicalPlanD.lib;opencv_world300d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Configuration)\;$(SolutionDir)lib\Commonlib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>

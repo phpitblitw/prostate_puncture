@@ -19,3 +19,7 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 出现了mat stackoverflower问题，待解决
 帧率目测只有约2fps,需要处理吗？
 
+# v1.2.2 (尚未merge入master)
+添加了3个SurfaceFile的路径。
+
+

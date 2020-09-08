@@ -97,7 +97,11 @@ namespace SURGICALPLAN
 		MaskDataPtr m_pProstateMaskData;				//前列腺Mask数据
 		MaskDataPtr m_pLesionMaskData;					//病灶Mask数据
 		MaskDataPtr m_pRectumMaskData;					//直肠Mask数据
-		SurfaceDataPtr m_pSurface;						//表面标签数据
+
+		SurfaceDataPtr m_pSurface;						//表面标签数据(目前为prostate标签)
+		SurfaceDataPtr m_pProstatSurface;
+		SurfaceDataPtr m_pLesionSurface;
+		SurfaceDataPtr m_pRectumSurface;
 
 		vector <Point3D> m_vRectumCenterPath;			//直肠中心点序列
 		int m_iCurCenterPtIndex;						//当前直肠点在序列中的位置
@@ -125,6 +129,9 @@ namespace SURGICALPLAN
 		CString m_strRectumMaskFileName;
 		CString m_strSurfaceFileName;	
 		CString m_strRectumCenterName;
+		CString m_strProstateSurfaceFileName;
+		CString m_strLesionSurfaceFileName;
+		CString m_strRectumSurfaceFileName;
 
 		void AddRectumCenterPt(double x, double y, double z); //添加一个直肠中心点坐标，序列数据通过该函数一个个添加
 		Point3D GetCurRectumPt(); //得到当前的直肠中心点
