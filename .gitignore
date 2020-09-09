@@ -4,6 +4,7 @@
 *.dll
 *.ilk
 *.pdb
+*.pch
 /Code/Puncture/.vs/
 /Code/Puncture/Int/
 
