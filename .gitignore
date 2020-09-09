@@ -1,14 +1,15 @@
 #无需添加的vs中间过程文件
-Code/Puncture/.vs/
-Code/Puncture/Int/
-Code/Puncture/Lib/
-Code/Puncture/Output/
+*.lib
+*.exp
+*.dll
+*.ilk
+*.pdb
+/Code/Puncture/.vs/
+/Code/Puncture/Int/
 
-#test
-#!/Code/Puncture/.vs/Puncture/v15/Solution.VC.db
 
 #需要跟踪的lib文件
-!Code/Puncture/Lib/Commonlib
+!Code/Puncture/Lib/Commonlib/frmgrab.lib
 !Code/Puncture/Lib/debug/log4cplusUD.lib
 !Code/Puncture/Lib/debug/opencv_world300d.lib
 !Code/Puncture/Lib/release/log4cplusU.lib
