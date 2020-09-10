@@ -5,6 +5,8 @@
 *.ilk
 *.pdb
 *.pch
+*.obj
+*.exe
 /Code/Puncture/.vs/
 /Code/Puncture/Int/
 
@@ -13,8 +15,10 @@
 !Code/Puncture/Lib/Commonlib/frmgrab.lib
 !Code/Puncture/Lib/debug/log4cplusUD.lib
 !Code/Puncture/Lib/debug/opencv_world300d.lib
+!Code/Puncture/Lib/debug/SceneGraph.lib
 !Code/Puncture/Lib/release/log4cplusU.lib
 !Code/Puncture/Lib/release/opencv_world300.lib
+!Code/Puncture/Lib/release/SceneGraph.lib
 
 #需要跟踪的config文件
 !Code/Puncture/Output/x64/Debug/Config
