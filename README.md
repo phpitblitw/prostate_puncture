@@ -23,6 +23,10 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 添加了3个objFile的路径
 修正了Calibrate项目的中间目录
 添加了.gitignore，不再跟踪不需要的文件
+可编译生成，不可运行(缺少SceneGraph.dll)
+
+# v1.3.1
+添加了SceneGraph.dll，可git后直接编译生成运行
 
 
 
