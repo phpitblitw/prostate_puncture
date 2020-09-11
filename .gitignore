@@ -32,9 +32,11 @@
 !Code/Puncture/Output/x64/Debug/msvcr110d.dll
 !Code/Puncture/Output/x64/Debug/msvcr120d.dll
 !Code/Puncture/Output/x64/Debug/opencv_world300d.dll
+!Code/Puncture/Output/x64/Debug/SceneGraph.dll
 
 !Code/Puncture/Output/x64/Release/frmgrab.dll
 !Code/Puncture/Output/x64/Release/log4cplusU.dll
 !Code/Puncture/Output/x64/Release/msvcp110.dll
 !Code/Puncture/Output/x64/Release/msvcr110.dll
 !Code/Puncture/Output/x64/Release/opencv_world300.dll
+!Code/Puncture/Output/x64/Release/SceneGraph.dll
