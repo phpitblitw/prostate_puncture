@@ -28,5 +28,9 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 # v1.3.1
 添加了SceneGraph.dll，可git后直接编译生成运行
 
+# v1.4
+修复了CUsImageWnd.cpp onPaint()双缓冲引起的内存泄露问题。 AnalyseProcess.cpp引起的stack overflow待修复
+
+
 
 
