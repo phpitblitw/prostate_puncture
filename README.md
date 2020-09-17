@@ -31,6 +31,10 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 # v1.4
 修复了CUsImageWnd.cpp onPaint()双缓冲引起的内存泄露问题。 AnalyseProcess.cpp引起的stack overflow待修复
 
+# v1.4.1
+通过修改Puncture项目的堆栈保留大小，解决了stack overflow问题。现在可以稳定运行(测试了三小时)
+
+
 
 
 

@@ -406,7 +406,10 @@ Description:	处理单帧数据(Init或Registration，未关联状态)
 *****************************************************************/
 void AnalyseProcess::ProcessSingleFrameA(FrameDataPtr t_FrameDataPtr)
 {
+	CSingleLock singlelock(&m_ProcessDataMutex);
+
 	//开辟mask空间
+	singlelock.Lock();
 	if (t_FrameDataPtr->CreatMaskData(m_nShowImageX, m_nShowImageY) != LIST_NO_ERROR)
 	{
 		return;
@@ -416,6 +419,7 @@ void AnalyseProcess::ProcessSingleFrameA(FrameDataPtr t_FrameDataPtr)
 	memset(t_FrameDataPtr->m_pFusionMask, 0, sizeof(BYTE)*m_nShowImageX*m_nShowImageY);
 	//memset(t_FrameDataPtr->m_pLesionMask, 0, sizeof(BYTE)*m_nShowImageX*m_nShowImageY);
 	//memset(t_FrameDataPtr->m_pProstateMask, 0, sizeof(BYTE)*m_nShowImageX*m_nShowImageY);
+	singlelock.Unlock();
 	return;
 }
 
@@ -434,13 +438,13 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 	CSingleLock singlelock(&m_ProcessDataMutex);
 
 	//开辟mask空间
+	singlelock.Lock();
 	if (t_FrameDataPtr->CreatMaskData(m_nShowImageX, m_nShowImageY) != LIST_NO_ERROR)
 	{
 		return;
 	}
 
 	//计算当前截面位置
-	singlelock.Lock();
 	m_PositionManagerPtr->UpDate();	//根据已经获取的超声探头位置参数，更新MRI模拟采样位置参数
 	m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIScanCenter, m_PositionManagerPtr->m_CurMRIRightDir, m_PositionManagerPtr->m_CurMRIUpDir, m_PositionManagerPtr->m_CurMRIMoveDir);	//为ImageSampler设置位置参数
 
@@ -449,7 +453,6 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 		m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIRightDir),
 		m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIUpDir),
 		m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIMoveDir));
-	singlelock.Unlock();
 	
 
 	//裁剪3类mask截面
@@ -460,11 +463,11 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 	if (m_pRectumMask == nullptr)
 		m_pRectumMask = new BYTE[m_nShowImageX*m_nShowImageY];
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 0, 1);
-	//测试代码TODO
-	int frontSum = 0;
-	for (int i = 0; i < 800 * 700; i++)
-		frontSum += m_pProstateMask[i];
-	//测试代码TODO
+	////测试代码TODO
+	//int frontSum = 0;
+	//for (int i = 0; i < 800 * 700; i++)
+	//	frontSum += m_pProstateMask[i];
+	////测试代码TODO
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 0, 2);
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 0, 3);
 	//mask转为轮廓
@@ -478,9 +481,10 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 	Mat fusionContour;
 	addWeighted(prostateContour, 1, lesionContour, 2, 0, fusionContour);
 	addWeighted(fusionContour, 1, rectumContour, 3, 0, fusionContour);
-	imwrite("D:\\fusionMask.bmp", fusionContour);	//测试代码TODO
+	//imwrite("D:\\fusionMask.bmp", fusionContour);	//测试代码TODO
 	//交付FrameData
 	memcpy(t_FrameDataPtr->m_pFusionMask, fusionContour.data, m_nShowImageX*m_nShowImageY * sizeof(BYTE));
+	singlelock.Unlock();
 
 	////裁剪几个截面
 	////TODO 原图截面

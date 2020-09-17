@@ -131,6 +131,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ErrorManagerD.lib;NDIOperatorD.lib;SurgicalPlanD.lib;SceneGraph.lib;opengl32.lib;ImageRenderD.lib;USBCapturerD.lib;ComUtilityD.lib;opencv_world300d.lib;AnalyseProcessD.lib</AdditionalDependencies>
       <DelayLoadDLLs>opencv_world300d.dll;USBCapturerD.lib</DelayLoadDLLs>
+      <StackReserveSize>0x10000000</StackReserveSize>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -186,6 +187,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ErrorManager.lib;NDIOperator.lib;SurgicalPlan.lib;USBCapture.lib;log4cplusU.lib;ComUtility.lib;opencv_world410.lib;AnalyseProcess.lib</AdditionalDependencies>
+      <StackReserveSize>0x10000000</StackReserveSize>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
