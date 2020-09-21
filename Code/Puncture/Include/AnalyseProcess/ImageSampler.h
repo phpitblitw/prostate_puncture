@@ -61,7 +61,7 @@ namespace ANALYSEPROCESS
 	private:
 		void CalculateCoronalMaskPlan();	//计算B超冠状面图像四个角点的WLD坐标
 		void CalculateSagittalMaskPlan();	//计算B超矢状面图像四个角点的WLD坐标
-		void GetMRIPlanData(MRIDataType tMRIDataPtr, MaskDataType *pImage);			//计算原始MRI切片数据
+		void GetMRIPlaneData(MRIDataType tMRIDataPtr, MaskDataType *pImage);			//计算原始MRI切片数据
 		void GetMaskPlanData(MaskDataPtr tMaskDataPtr, MaskDataType *pImage);		//计算MASK切片数据
 
 	private:

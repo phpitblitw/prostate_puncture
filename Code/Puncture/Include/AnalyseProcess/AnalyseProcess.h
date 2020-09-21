@@ -55,7 +55,7 @@ namespace ANALYSEPROCESS
 	enum AnalyzeState
 	{
 		Init,					//初始化(尚未配准完成)
-		Registration,			//配准	(尚未配准完成)
+		Registration,			//配准中(尚未配准完成)
 		Puncture,				//穿刺	(已经配准完成)
 	};
 	class ANALYSEPROCESS_API AnalyseProcess
