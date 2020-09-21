@@ -463,11 +463,11 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 	if (m_pRectumMask == nullptr)
 		m_pRectumMask = new BYTE[m_nShowImageX*m_nShowImageY];
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 0, 1);
-	//²âÊÔ´úÂëTODO
-	int frontSum = 0;
-	for (int i = 0; i < 800 * 700; i++)
-		frontSum += m_pProstateMask[i];
-	//²âÊÔ´úÂëTODO
+	////²âÊÔ´úÂëTODO
+	//int frontSum = 0;
+	//for (int i = 0; i < 800 * 700; i++)
+	//	frontSum += m_pProstateMask[i];
+	////²âÊÔ´úÂëTODO
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 0, 2);
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 0, 3);
 	//mask×ªÎªÂÖÀª

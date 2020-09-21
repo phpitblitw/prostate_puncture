@@ -34,7 +34,8 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 # v1.4.1
 通过修改Puncture项目的堆栈保留大小，解决了stack overflow问题。现在可以稳定运行(测试了三小时)
 
-
+# v1.4.2(尚未打tag)
+在PositionManager::SetCurUSPosition()中 设置了长条形NDI探头的初始姿态
 
 
 
