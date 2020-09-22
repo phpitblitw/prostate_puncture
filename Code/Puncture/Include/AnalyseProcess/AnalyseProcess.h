@@ -110,7 +110,7 @@ namespace ANALYSEPROCESS
 		BYTE			*m_pLesionMask;			//暂存lesion mask
 		BYTE			*m_pRectumMask;			//暂存rectum mask
 
-		int				m_nShowImageX;			//2D图像像素宽度
+		int				m_nShowImageX;			//2D图像像素宽度	在PunctureDlg.cpp中，根据超声图像大小而设定
 		int				m_nShowImageY;			//2D图像像素高度
 		float			m_fMaxX;				//3D空间大小
 		float			m_fMaxY;

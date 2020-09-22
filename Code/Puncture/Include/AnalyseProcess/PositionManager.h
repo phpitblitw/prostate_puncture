@@ -60,12 +60,12 @@ namespace ANALYSEPROCESS
 		Coordinate m_BaseMRIRightDir;
 		Coordinate m_BaseMRIUpDir;
 		Coordinate m_BaseMRIMoveDir;
-		//实时超声位置参数(WLD坐标)
+		//实时超声位置参数(wld坐标)
 		Coordinate m_CurUSScanCenter;
 		Coordinate m_CurUSRightDir;
 		Coordinate m_CurUSUpDir;
 		Coordinate m_CurUSMoveDir;
-		//实时MRI模拟采样位置参数(WLD坐标)
+		//实时MRI模拟采样位置参数(wld坐标)
 		Coordinate m_CurMRIScanCenter;
 		Coordinate m_CurMRIRightDir;
 		Coordinate m_CurMRIUpDir;

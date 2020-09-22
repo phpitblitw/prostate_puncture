@@ -54,8 +54,8 @@ Description:	根据NDI设备传来的attitude，设置base处，超声探头位置参数
 BOOL PositionManager::SetBaseUSPosition(NDIOPERATOR::Attitude aBaseUS)
 {
 	Coordinate cInitialPosition(0, 0, 0, 1); //初始处位置，目前假定是(0,0,0) (以NDI设备的实际情况为准)
-	Coordinate cInitialMoveDir(1, 0, 0, 0);	//初始处moveDir向量，目前假定是(1,0,0) (以NDI设备的实际情况为准)
-	Coordinate cInitialUpDir(0, 0, 1, 0); //初始处up方向向量，目前假定是(0,0,1) (以NDI设备的实际情况为准)
+	Coordinate cInitialMoveDir(0, 0, 1, 0);	//初始处moveDir向量，目前假定是(1,0,0) (以NDI设备的实际情况为准)
+	Coordinate cInitialUpDir(1, 0, 0, 0); //初始处up方向向量，目前假定是(0,0,1) (以NDI设备的实际情况为准)
 	Matrix matrixBaseUSTransform = ConstructAttitude2Matrix(aBaseUS);
 	m_BaseUSScanCenter = matrixBaseUSTransform.GetMultiply(cInitialPosition);
 	m_BaseUSMoveDir = matrixBaseUSTransform.GetMultiply(cInitialMoveDir);
@@ -113,7 +113,7 @@ Inputs:
 	Attitude aBaseUS - 存储超声base处位置
 Return Value:
 	 int - Error Info
-Description:	根据NDI设备传来的attitude，设置base处，超声探头位置参数
+Description:	根据NDI设备传来的attitude，设置当前 超声探头姿态参数
 *****************************************************************/
 BOOL PositionManager::SetCurUSPosition(NDIOPERATOR::Attitude aCurUS)
 {

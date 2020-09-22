@@ -362,7 +362,7 @@ void AnalyseProcess::UpdateUSBData(cv::Mat t_USBImgA, cv::Mat t_USBImgB, double 
 	m_NextFrameDataPtr->m_USBImage = t_USBImgA;
 	m_NextFrameDataPtr->m_dImageRes = m_dImageRes;
 	
-	m_ImageSamplerPtr->SetUSPixelSize(m_dImageRes);	//设置B超图像像素大小
+	m_ImageSamplerPtr->SetUSPixelSize(m_dImageRes);	//设置B超图像像素大小(一个像素的物理尺寸)
 	m_ImageSamplerPtr->SetImageSize(t_USBImgA.cols, t_USBImgA.rows);	//设置B超图像大小(像素数)
 	singlelock.Unlock();
 }//UpdateUSBData
