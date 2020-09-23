@@ -37,10 +37,9 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 # v1.4.2
 在PositionManager::SetCurUSPosition()中 设置了长条形NDI探头的初始姿态。以NDI探头作为B超探头姿态(即忽略标定过程)的前提下，测试通过，探头的移动与MASK的变换一致
 
-# v1.4.3(尚未打tag)
+# v1.4.3
 将Coordinate和Matrix类 由AnalyseProcess项目 移动至 ComUtility项目
-//修正 解决方案生成过程中，AnalyseProcess重定义的warning (TODO)
-为3d显示窗口 添加截取平面示意 (TODO)
+为3d显示窗口 添加截取平面示意
 
 
 

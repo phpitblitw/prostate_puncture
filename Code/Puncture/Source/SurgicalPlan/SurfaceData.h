@@ -1,5 +1,7 @@
 #pragma once
 #include "StructDef.h"
+#include "ComUtility/Coordinate.h"
+using namespace fsutility;
 
 /*****************************************************************
 Defines
@@ -22,6 +24,7 @@ namespace SURGICALPLAN
 		void SetBoundBox(float x1, float x2, float y1, float y2, float z1, float z2);
 
 		void SetSamplePlan(Point3D lefttop, Point3D righttop, Point3D leftbottom, Point3D rightbottom);
+		void SetSamplePlan(Coordinate lefttop, Coordinate righttop, Coordinate leftbottom, Coordinate rightbottom);
 		Point3D * GetSamplePlan();
 
 	protected:

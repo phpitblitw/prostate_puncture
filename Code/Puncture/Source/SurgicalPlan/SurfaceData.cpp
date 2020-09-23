@@ -70,6 +70,25 @@ void SurfaceData::SetSamplePlan(Point3D lefttop, Point3D righttop, Point3D leftb
 	m_pPlanPts[3].z = leftbottom.z;
 }
 
+void SurfaceData::SetSamplePlan(Coordinate lefttop, Coordinate righttop, Coordinate leftbottom, Coordinate rightbottom)
+{
+	m_pPlanPts[0].x = rightbottom.x;
+	m_pPlanPts[0].y = rightbottom.y;
+	m_pPlanPts[0].z = rightbottom.z;
+
+	m_pPlanPts[1].x = righttop.x;
+	m_pPlanPts[1].y = righttop.y;
+	m_pPlanPts[1].z = righttop.z;
+
+	m_pPlanPts[2].x = lefttop.x;
+	m_pPlanPts[2].y = lefttop.y;
+	m_pPlanPts[2].z = lefttop.z;
+
+	m_pPlanPts[3].x = leftbottom.x;
+	m_pPlanPts[3].y = leftbottom.y;
+	m_pPlanPts[3].z = leftbottom.z;
+}
+
 Point3D * SurfaceData::GetSamplePlan()
 {
 	return m_pPlanPts;
