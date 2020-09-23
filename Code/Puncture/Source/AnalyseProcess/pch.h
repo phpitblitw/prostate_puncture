@@ -10,4 +10,10 @@
 // 添加要在此处预编译的标头
 #include "framework.h"
 
+//#ifdef ANALYSEPROCESS_EXPORT
+//#define ANALYSEPROCESS_API __declspec(dllexport)
+//#else
+//#define ANALYSEPROCESS_API __declspec(dllimport)
+//#endif
+
 #endif //PCH_H

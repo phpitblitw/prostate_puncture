@@ -13,7 +13,7 @@
 ////////////////////////include////////////////////////
 ///////////////////////////////////////////////////////
 #include "pch.h"
-#include "AnalyseProcess/ImageSampler.h"
+#include "ImageSampler.h"
 #include "ErrorManager/ErrorCodeDefine.h"
 #include "SurgicalPlan/CPubFunc.h"
 //#include "ImageSampler.h"

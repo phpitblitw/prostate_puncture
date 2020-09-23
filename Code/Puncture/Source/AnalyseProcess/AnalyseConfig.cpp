@@ -13,7 +13,7 @@
 ////////////////////////include////////////////////////
 ///////////////////////////////////////////////////////
 #include "pch.h"
-#include "AnalyseProcess/AnalyseConfig.h"
+#include "AnalyseConfig.h"
 #include "ComUtility/IniFile.h"
 #include "ErrorManager/ErrorCodeDefine.h"
 

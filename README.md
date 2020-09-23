@@ -39,7 +39,7 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 
 # v1.4.3(尚未打tag)
 将Coordinate和Matrix类 由AnalyseProcess项目 移动至 ComUtility项目
-修正 解决方案生成过程中，AnalyseProcess重定义的warning (TODO)
+//修正 解决方案生成过程中，AnalyseProcess重定义的warning (TODO)
 为3d显示窗口 添加截取平面示意 (TODO)
 
 

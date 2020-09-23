@@ -13,7 +13,7 @@
 ////////////////////////include////////////////////////
 ///////////////////////////////////////////////////////
 #include "pch.h"
-#include "AnalyseProcess/PositionManager.h"
+#include "PositionManager.h"
 #include "ErrorManager/ErrorCodeDefine.h"
 
 using namespace ANALYSEPROCESS;
