@@ -203,10 +203,8 @@
     <ClCompile Include="AnalyseConfig.cpp" />
     <ClCompile Include="AnalyseProcess.cpp" />
     <ClCompile Include="AnalyseProcess_old.cpp" />
-    <ClCompile Include="Coordinate.cpp" />
     <ClCompile Include="FrameData.cpp" />
     <ClCompile Include="ImageSampler.cpp" />
-    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -223,15 +221,13 @@
     <ResourceCompile Include="AnalyseProcess.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Include\AnalyseProcess\AnalyseConfig.h" />
-    <ClInclude Include="..\..\Include\AnalyseProcess\AnalyseProcess.h" />
-    <ClInclude Include="..\..\Include\AnalyseProcess\Coordinate.h" />
-    <ClInclude Include="..\..\Include\AnalyseProcess\FrameData.h" />
-    <ClInclude Include="..\..\Include\AnalyseProcess\ImageSampler.h" />
-    <ClInclude Include="..\..\Include\AnalyseProcess\Matrix.h" />
-    <ClInclude Include="..\..\Include\AnalyseProcess\PositionManager.h" />
+    <ClInclude Include="AnalyseConfig.h" />
+    <ClInclude Include="AnalyseProcess.h" />
+    <ClInclude Include="FrameData.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="ImageSampler.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PositionManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>

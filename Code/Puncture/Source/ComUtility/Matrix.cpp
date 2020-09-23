@@ -1,8 +1,8 @@
 //matrix.cpp
-#include "pch.h"
-#include "AnalyseProcess/Matrix.h"
+#include "stdafx.h"
+#include "Matrix.h"
 
-using namespace ANALYSEPROCESS;
+using namespace fsutility;
 
 Matrix::Matrix()
 {

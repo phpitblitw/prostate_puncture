@@ -9,15 +9,11 @@
 /*****************************************************************
 Defines
 *****************************************************************/
-#ifdef ANALYSEPROCESS_EXPORT
-#define ANALYSEPROCESS_API _declspec(dllexport)
-#else
-#define ANALYSEPROCESS_API _declspec(dllimport)
-#endif
 
-namespace ANALYSEPROCESS
+
+namespace fsutility
 {
-	class Coordinate
+	class AFX_EXT_CLASS Coordinate
 	{
 	public:
 		double x;

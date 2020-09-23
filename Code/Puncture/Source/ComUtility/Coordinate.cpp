@@ -1,8 +1,8 @@
 //Coordinate.cpp
-#include "pch.h"
-#include "AnalyseProcess/Coordinate.h"
+#include "stdafx.h"
+#include "Coordinate.h"
 
-using namespace ANALYSEPROCESS;
+using namespace fsutility;
 
 Coordinate::Coordinate()
 {

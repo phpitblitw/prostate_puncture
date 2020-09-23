@@ -227,6 +227,7 @@
     <ClCompile Include="Base64.cpp" />
     <ClCompile Include="CmdProxy.cpp" />
     <ClCompile Include="ComUtility.cpp" />
+    <ClCompile Include="Coordinate.cpp" />
     <ClCompile Include="DiskManager.cpp" />
     <ClCompile Include="dllmain.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -251,6 +252,7 @@
     <ClCompile Include="GlobalWndFunction.cpp" />
     <ClCompile Include="GraphicsCardEnum.cpp" />
     <ClCompile Include="IniFile.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="MySqlService.cpp" />
     <ClCompile Include="PathStringFuntion.cpp" />
     <ClCompile Include="PathUtility.cpp" />
@@ -273,6 +275,7 @@
   <ItemGroup>
     <ClInclude Include="Base64.h" />
     <ClInclude Include="CmdProxy.h" />
+    <ClInclude Include="Coordinate.h" />
     <ClInclude Include="DiskManager.h" />
     <ClInclude Include="FSEnableProcessPriority.h" />
     <ClInclude Include="FSFileSysHelper.h" />
@@ -283,6 +286,7 @@
     <ClInclude Include="GlobalWndFunction.h" />
     <ClInclude Include="GraphicsCardEnum.h" />
     <ClInclude Include="IniFile.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="MySqlService.h" />
     <ClInclude Include="PathStringFuntion.h" />
     <ClInclude Include="PathUtility.h" />

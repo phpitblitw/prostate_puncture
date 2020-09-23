@@ -10,15 +10,15 @@
 /*****************************************************************
 Defines
 *****************************************************************/
-#ifdef ANALYSEPROCESS_EXPORT
-#define ANALYSEPROCESS_API _declspec(dllexport)
-#else
-#define ANALYSEPROCESS_API _declspec(dllimport)
-#endif
+//#ifdef ANALYSEPROCESS_EXPORT
+//#define ANALYSEPROCESS_API _declspec(dllexport)
+//#else
+//#define ANALYSEPROCESS_API _declspec(dllimport)
+//#endif
 
-namespace ANALYSEPROCESS
+namespace fsutility
 {
-	class Matrix
+	class AFX_EXT_CLASS Matrix
 	{
 	public:
 		Matrix();
