@@ -95,10 +95,10 @@ int	FrameData::CreatMaskData(int t_nShowWidth, int t_nShowHeight)
 /*****************************************************************
 Name:			SetPosition
 Inputs:
-	Coordinate ScanCenter etc.	-	姿态参数(IJK)
+	Coordinate ScanCenter etc.	-	姿态参数(wld)
 Return Value:
 	none
-Description:	设置当前切片MRI模拟采样姿态参数(IJK)
+Description:	设置当前切片MRI模拟采样姿态参数(wld)
 *****************************************************************/
 void FrameData::SetPosition(Coordinate ScanCenter, Coordinate RightDir, Coordinate UpDir, Coordinate MoveDir)
 {

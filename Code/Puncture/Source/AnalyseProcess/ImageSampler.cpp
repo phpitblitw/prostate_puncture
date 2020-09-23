@@ -165,10 +165,10 @@ int ANALYSEPROCESS::ImageSampler::GetSampleMaskPlan(MaskDataType *pImage, int nS
 		return ER_SampleParameterError;
 
 	//将四个角点的WLD坐标转为IJK坐标
-	m_LeftTop = WLDToIJK(m_LeftTop);
-	m_RightTop = WLDToIJK(m_RightTop);
-	m_LeftBottom = WLDToIJK(m_LeftBottom);
-	m_RightBottom = WLDToIJK(m_RightBottom);
+	m_LeftTopIJK = WLDToIJK(m_LeftTop);
+	m_RightTopIJK = WLDToIJK(m_RightTop);
+	m_LeftBottomIJK = WLDToIJK(m_LeftBottom);
+	m_RightBottomIJK = WLDToIJK(m_RightBottom);
 
 	//使用四个角点的IJK坐标，指导切割二维截面
 	if (nMaskType != 1 && nMaskType != 2&& nMaskType != 3)
@@ -283,13 +283,13 @@ void ANALYSEPROCESS::ImageSampler::GetMaskPlanData(MaskDataPtr tMaskDataPtr, Mas
 	int nMaskResX, nMaskResY, nMaskResZ;	//3维B超MASK，x,y,z方向上的分辨率(像素数)
 
 	tMaskDataPtr->GetMaskVolumeSize(nMaskResX, nMaskResY, nMaskResZ);
-	dxUS = (m_RightBottom - m_LeftBottom)*(1.0/(m_nResolution.cx - 1));
-	dyUS = (m_LeftBottom - m_LeftTop)*(1.0/(m_nResolution.cy - 1));
+	dxUS = (m_RightBottomIJK - m_LeftBottomIJK)*(1.0/(m_nResolution.cx - 1));
+	dyUS = (m_LeftBottomIJK - m_LeftTopIJK)*(1.0/(m_nResolution.cy - 1));
 	dxUS.w = 0;	//向量
 	dyUS.w = 0;	//向量
 	for (y = 0; y < m_nResolution.cy; y++)
 	{
-		pCur = m_LeftTop + dyUS * y;	//设定每一行的起始点(二维图像，其坐标点(0,0)处对应左上角))
+		pCur = m_LeftTopIJK + dyUS * y;	//设定每一行的起始点(二维图像，其坐标点(0,0)处对应左上角))
 		for (x = 0; x < m_nResolution.cx; x++)
 		{
 			tx = CPubFunc::Round(pCur.x);
@@ -305,4 +305,20 @@ void ANALYSEPROCESS::ImageSampler::GetMaskPlanData(MaskDataPtr tMaskDataPtr, Mas
 		pImage += m_nResolution.cx;
 	}
 	return;
+}
+
+/*****************************************************************
+Name:			GetPlaneCorners
+Inputs:
+	none
+Return Value:
+	none
+Description:	获取本切片四个角点 在MRI模拟采样3D空间的坐标 (wld)
+*****************************************************************/
+void ANALYSEPROCESS::ImageSampler::GetPlaneCorners(Coordinate& leftTop, Coordinate& rightTop, Coordinate& leftBottom, Coordinate& rightBottom)
+{
+	leftTop = m_LeftTop;
+	rightTop = m_RightTop;
+	leftBottom = m_LeftBottom;
+	rightBottom = m_RightBottom;
 }

@@ -645,8 +645,10 @@ void CPunctureDlg::OnTimer(UINT_PTR nIDEvent)
 		{
 			if (m_bLock)//关联之后的位姿
 			{
+				//更新探头顶点位置
 				m_p3DShowWnd->UpdateScanCenter(m_FrameDataPtr->m_ScanCenter.x, m_FrameDataPtr->m_ScanCenter.y, m_FrameDataPtr->m_ScanCenter.z);
 				//更新截面姿态参数 TODO
+				//m_SurgicalPlanPtr->GetSurfaceDataPtr()->SetSamplePlan();
 			}
 			else//关联之前的位姿
 			{

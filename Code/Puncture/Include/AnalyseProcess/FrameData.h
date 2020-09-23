@@ -53,7 +53,7 @@ namespace ANALYSEPROCESS
 		virtual ~FrameData();
 
 		int	CreatMaskData(int t_nShowWidth, int t_nShowHeight);		//开辟2D掩模图像空间
-		void SetPosition(Coordinate ScanCenter, Coordinate RightDir, Coordinate UpDir, Coordinate MoveDir);	//设置当前切片MRI模拟采样姿态参数(IJK)
+		void SetPosition(Coordinate ScanCenter, Coordinate RightDir, Coordinate UpDir, Coordinate MoveDir);	//设置当前切片MRI模拟采样姿态参数(wld)
 
 	public:
 		cv::Mat		m_USBImage;		//截取所得的超声图像
@@ -68,11 +68,17 @@ namespace ANALYSEPROCESS
 		//BYTE *m_pLesionMask;		//病灶2D掩模图像
 		BYTE *m_pFusionMask;		//总的2Dmask轮廓图像，1-前列腺，2-病灶，3-直肠
 
-		//MRI模拟采样的位置参数 IJK
+		//MRI模拟采样 截面的姿态参数 (wld)
 		Coordinate m_ScanCenter;
 		Coordinate m_RightDir;
 		Coordinate m_UpDir;
 		Coordinate m_MoveDir;
+
+		//MRI模拟采样 截面的四个角点(wld)
+		Coordinate m_LeftTop;
+		Coordinate m_RightTop;
+		Coordinate m_LeftBottom;
+		Coordinate m_RightBottom;
 	};
 }
 

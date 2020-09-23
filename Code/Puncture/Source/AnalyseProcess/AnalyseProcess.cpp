@@ -448,12 +448,18 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 	m_PositionManagerPtr->UpDate();	//根据已经获取的超声探头位置参数，更新MRI模拟采样位置参数
 	m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIScanCenter, m_PositionManagerPtr->m_CurMRIRightDir, m_PositionManagerPtr->m_CurMRIUpDir, m_PositionManagerPtr->m_CurMRIMoveDir);	//为ImageSampler设置位置参数
 
-	//更新当前截面位置(借用ImageSampler的函数) TODO
-	t_FrameDataPtr->SetPosition(m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIScanCenter),
-		m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIRightDir),
-		m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIUpDir),
-		m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIMoveDir));
-	
+	//更新当前截面姿态(借用ImageSampler的函数) TODO
+	//t_FrameDataPtr->SetPosition(m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIScanCenter),
+	//	m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIRightDir),
+	//	m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIUpDir),
+	//	m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIMoveDir));
+	t_FrameDataPtr->SetPosition(m_PositionManagerPtr->m_CurMRIScanCenter,
+		m_PositionManagerPtr->m_CurMRIRightDir,
+		m_PositionManagerPtr->m_CurMRIUpDir,
+		m_PositionManagerPtr->m_CurMRIMoveDir);
+
+	//更新当前截面4个角点的位置(wld)
+	m_ImageSamplerPtr->GetPlaneCorners(t_FrameDataPtr->m_LeftTop, t_FrameDataPtr->m_RightTop, t_FrameDataPtr->m_LeftBottom, t_FrameDataPtr->m_RightBottom);
 
 	//裁剪3类mask截面
 	if (m_pProstateMask == nullptr)
