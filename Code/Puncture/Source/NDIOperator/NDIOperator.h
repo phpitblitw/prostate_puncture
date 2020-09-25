@@ -3,9 +3,9 @@
 // 版本	 :						1.0
 // 目的及主要功能 :				NID设备控制
 // 创建日期 :					2019.11.1
-// 修改日期 :					
+// 修改日期 :					2020.9.25
 // 作者 :						Fiki
-// 修改者 :						
+// 修改者 :						孙易辙
 // 联系方式 :					fiki@seu.edu.cn
 //*****************************************************************/
 #pragma once
@@ -16,6 +16,8 @@ Project Files Included
 *****************************************************************/
 #include <memory>
 #include <functional>
+#include <thread>
+#include <atomic>
 
 #include "Attitude.h"
 #include "afxmt.h"
@@ -24,6 +26,7 @@ Project Files Included
 #include "CAPIcommon/PortHandleInfo.h"
 #include "CAPIcommon/ToolData.h"
 
+using namespace std;
 /*****************************************************************
 Defines
 *****************************************************************/
@@ -54,7 +57,7 @@ namespace NDIOPERATOR
 	//定义智能指针类
 	class NDIOperator;
 	typedef std::shared_ptr<NDIOperator> NDIOperatorPtr;
-	UINT TrackingThreadFun(LPVOID lpParam);		//线程函数（不是类的成员函数，供CreateThread调用)
+	//UINT TrackingThreadFun(LPVOID lpParam);		//线程函数（不是类的成员函数，供CreateThread调用)
 
 	//定义基本采集图像结构类
 	class NDIOPERATOR_API NDIOperator
@@ -86,9 +89,11 @@ namespace NDIOPERATOR
 		CombinedApi m_capi;			//自带的操作类
 		double m_pMatRtoT[16];		//存放4*4转换矩阵（Receiver to Transmitter）
 
-		volatile bool m_bTracking;	//是否在工作状态
+		//volatile bool m_bTracking;	//是否在工作状态
+		atomic<bool> m_bTracking;		//是否在工作状态
+		std::thread m_tNDIThread;		//NDI采集线程
 		CCriticalSection m_critical_section;
-		HANDLE m_hNDIThread; //NDI采集线程句柄
-		DWORD m_nNDIThreadID; //NDI采集线程id
+		//HANDLE m_hNDIThread; //NDI采集线程句柄
+		//DWORD m_nNDIThreadID; //NDI采集线程id
 	};
 }

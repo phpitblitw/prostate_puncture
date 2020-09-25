@@ -3,9 +3,9 @@
 // 版本	 :						1.0
 // 目的及主要功能 :				NID设备控制
 // 创建日期 :					2019.11.1
-// 修改日期 :					
+// 修改日期 :					2020.9.25
 // 作者 :						Fiki
-// 修改者 :						
+// 修改者 :						孙易辙
 // 联系方式 :					fiki@seu.edu.cn
 //*****************************************************************/
 
@@ -146,7 +146,9 @@ int NDIOperator::StartTracking()
 	m_bTracking = true;
 
 	//开始线程
-	m_hNDIThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)TrackingThreadFun, this, 0, &m_nNDIThreadID);
+	//m_hNDIThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)TrackingThreadFun, this, 0, &m_nNDIThreadID);
+	m_tNDIThread = thread(bind(&NDIOperator::Tracking, this));
+	m_tNDIThread.detach();
 	
 	return LIST_NO_ERROR;
 }//StartTracking
@@ -161,14 +163,14 @@ int NDIOperator::StartTracking()
 	int - Error Info
  Description:	采集线程函数
  *****************************************************************/
-UINT TrackingThreadFun(LPVOID lpParam)
-{
-	NDIOperator* pNDIOperator = (NDIOperator*)lpParam;
-
-	pNDIOperator->Tracking();
-
-	return 0;
-}//TrackingThreadFun
+//UINT TrackingThreadFun(LPVOID lpParam)
+//{
+//	NDIOperator* pNDIOperator = (NDIOperator*)lpParam;
+//
+//	pNDIOperator->Tracking();
+//
+//	return 0;
+//}//TrackingThreadFun
 
 
 /*****************************************************************
@@ -259,12 +261,12 @@ Return Value:
 	none
 Description:	采集线程函数
 *****************************************************************/
-UINT NDIOPERATOR::TrackingThreadFun(LPVOID lpParam)
-{
-	NDIOperator* pNDIOperator = (NDIOperator*)lpParam;
-	pNDIOperator->Tracking();
-	return 0;
-}//TrackingThreadFun
+//UINT NDIOPERATOR::TrackingThreadFun(LPVOID lpParam)
+//{
+//	NDIOperator* pNDIOperator = (NDIOperator*)lpParam;
+//	pNDIOperator->Tracking();
+//	return 0;
+//}//TrackingThreadFun
 
 
 /*****************************************************************
