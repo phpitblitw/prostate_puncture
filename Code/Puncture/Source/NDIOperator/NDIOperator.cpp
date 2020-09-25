@@ -154,25 +154,6 @@ int NDIOperator::StartTracking()
 }//StartTracking
 
 
-//采集线程函数
- /*****************************************************************
- Name:			TrackingThreadFun
- Inputs:
-	none
- Return Value:
-	int - Error Info
- Description:	采集线程函数
- *****************************************************************/
-//UINT TrackingThreadFun(LPVOID lpParam)
-//{
-//	NDIOperator* pNDIOperator = (NDIOperator*)lpParam;
-//
-//	pNDIOperator->Tracking();
-//
-//	return 0;
-//}//TrackingThreadFun
-
-
 /*****************************************************************
 Name:			StopTracking
 Inputs:
@@ -251,23 +232,6 @@ void NDIOperator::Tracking()
 	}
 
 }//采集函数
-
-
-/*****************************************************************
-Name:			TrackingThreadFun
-Inputs:
-	none
-Return Value:
-	none
-Description:	采集线程函数
-*****************************************************************/
-//UINT NDIOPERATOR::TrackingThreadFun(LPVOID lpParam)
-//{
-//	NDIOperator* pNDIOperator = (NDIOperator*)lpParam;
-//	pNDIOperator->Tracking();
-//	return 0;
-//}//TrackingThreadFun
-
 
 /*****************************************************************
 Name:			Calibrate

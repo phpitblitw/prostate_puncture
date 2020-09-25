@@ -37,15 +37,15 @@ Return Value:
 	none
 Description:	分析多线程
 *****************************************************************/
-DWORD WINAPI AnalyseThread(LPVOID lpParam)			//分析线程
-{
-	AnalyseProcess *t_pPoint;
-	t_pPoint = (AnalyseProcess *)lpParam;
-
-	t_pPoint->Analyse();		//启动分析
-
-	return 1;
-}//AnalyzeThread
+//DWORD WINAPI AnalyseThread(LPVOID lpParam)			//分析线程
+//{
+//	AnalyseProcess *t_pPoint;
+//	t_pPoint = (AnalyseProcess *)lpParam;
+//
+//	t_pPoint->Analyse();		//启动分析
+//
+//	return 1;
+//}//AnalyzeThread
 
 
 /*****************************************************************
@@ -68,6 +68,7 @@ AnalyseProcess::AnalyseProcess()
 	m_fMaxZ = 0;
 	m_NextFrameDataPtr.reset(new FrameData);
 	m_CurrentFrameDataPtr = nullptr;
+	m_bAnalysing = false;
 	m_nAnalyseState = Init;
 	m_pProstateMask = nullptr;
 	m_pLesionMask = nullptr;
@@ -85,6 +86,7 @@ Description:	AnalyzeProcess析构函数
 *****************************************************************/
 AnalyseProcess::~AnalyseProcess()
 {
+	this->StopAnalyse();
 }//~AnalyzeProcess
 
 
@@ -214,10 +216,17 @@ Return Value:
 	none
 Description:	启动分析函数，创建分析线程
 *****************************************************************/
-void AnalyseProcess::StartAnalyse()
+int AnalyseProcess::StartAnalyse()
 {
-	m_hAnalyzeThread = CreateThread(nullptr, 0, AnalyseThread, this, 0, nullptr);
-	return;
+	//m_hAnalyzeThread = CreateThread(nullptr, 0, AnalyseThread, this, 0, nullptr);
+	if (m_bAnalysing)
+		return ER_InitAnalyseProcessFailed;
+
+	//开辟分析线程
+	m_bAnalysing = true;
+	m_tAnalyseThread = thread(bind(&AnalyseProcess::Analyse, this));
+	m_tAnalyseThread.detach();
+	return LIST_NO_ERROR;
 }//StartAnalyze
 
 
@@ -229,13 +238,18 @@ Return Value:
 	none
 Description:	结束分析函数，修改标志
 *****************************************************************/
-void AnalyseProcess::StopAnalyse()
+int AnalyseProcess::StopAnalyse()
 {
-	m_USBCapturerPtr->StopGrab();
-	m_NDIOperatorPtr->StopTracking();
-	CloseHandle(m_hAnalyzeThread);
+	if (m_USBCapturerPtr->StopGrab() != LIST_NO_ERROR)
+		return ER_CloseAnalyseProcessFailed;
+	if (m_NDIOperatorPtr->StopTracking() != LIST_NO_ERROR)
+		return ER_CloseAnalyseProcessFailed;
+	if (m_bAnalysing == false)
+		return ER_CloseAnalyseProcessFailed;
+
+	m_bAnalysing = false;
 	m_nAnalyseState = Init;
-	return;
+	return LIST_NO_ERROR;
 }//StopAnalyze
 
 
@@ -263,7 +277,7 @@ Description:	实际分析函数
 *****************************************************************/
 void AnalyseProcess::Analyse()
 {
-	while (1)
+	while (m_bAnalysing)
 	{
 		CSingleLock singlelock(&m_ProcessDataMutex);
 		singlelock.Lock();

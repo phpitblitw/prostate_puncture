@@ -14,6 +14,8 @@
 Library Files Included
 *****************************************************************/
 #include <vector>
+#include <thread>
+#include <atomic>
 #include "AnalyseProcess/AnalyseConfig.h"
 #include "AnalyseProcess/PositionManager.h"
 #include "AnalyseProcess/ImageSampler.h"
@@ -26,6 +28,7 @@ using namespace NDIOPERATOR;
 using namespace USBCAPTURER;
 using namespace SURGICALPLAN;
 using namespace fsutility;
+using namespace std;
 
 /*****************************************************************
 Defines
@@ -74,8 +77,8 @@ namespace ANALYSEPROCESS
 		void Set2DImageSize(int t_nWidth, int t_nHeight);				//设置2D图像大小
 		void Set3DSize(float t_fMaxX, float t_fMaxY, float t_fMaxZ);	//设置3D空间尺寸
 
-		void StartAnalyse();			//启动分析函数
-		void StopAnalyse();				//结束分析函数
+		int	 StartAnalyse();			//启动分析函数
+		int	 StopAnalyse();				//结束分析函数
 
 		typedef std::function <void(FrameDataPtr m_FrameDataPtr) > Fun_UpdateFrameEvent;	//结束一帧分析后，将数据传至dlg
 		void BindUpdateFrameEvent(Fun_UpdateFrameEvent eventFun);	//注册回调函数
@@ -96,7 +99,10 @@ namespace ANALYSEPROCESS
 		FrameDataPtr	m_CurrentFrameDataPtr;	//用于存放当前处理中的帧
 		FrameDataPtr	m_NextFrameDataPtr;		//用于存放下一帧待处理的帧
 
-		HANDLE			m_hAnalyzeThread;		//实际处理线程
+		//HANDLE			m_hAnalyzeThread;		//实际处理线程
+		std::thread			m_tAnalyseThread;		//分析线程
+		atomic<bool>	m_bAnalysing;			//正在分析标志位
+
 		AnalyzeState	m_nAnalyseState;		//当前分析阶段
 
 		Fun_UpdateFrameEvent m_UpdateFrameFun;	//更新dlg数据回调函数指针

@@ -89,11 +89,8 @@ namespace NDIOPERATOR
 		CombinedApi m_capi;			//自带的操作类
 		double m_pMatRtoT[16];		//存放4*4转换矩阵（Receiver to Transmitter）
 
-		//volatile bool m_bTracking;	//是否在工作状态
 		atomic<bool> m_bTracking;		//是否在工作状态
 		std::thread m_tNDIThread;		//NDI采集线程
 		CCriticalSection m_critical_section;
-		//HANDLE m_hNDIThread; //NDI采集线程句柄
-		//DWORD m_nNDIThreadID; //NDI采集线程id
 	};
 }

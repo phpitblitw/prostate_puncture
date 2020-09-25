@@ -39,6 +39,7 @@ enum ErrorCodeType {
 	ER_NoSurgicalPlan					= 0x00300007,	//ImageSampler设置DataPackage失败
 	ER_SampleParameterError				= 0x00300008,	//ImageSampler切割截面参数有误
 	ER_InitAnalyseProcessFailed			= 0x00300009,	//启动分析模块失败
+	ER_CloseAnalyseProcessFailed		= 0x00300010,	//关闭分析模块失败
 
 	//USBCapturer模块
 	ER_WrongUSBConfigFilePathName		= 0x00400001,	//错误的NDI模块ini文件路径及文件名

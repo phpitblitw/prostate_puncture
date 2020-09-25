@@ -41,6 +41,10 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 将Coordinate和Matrix类 由AnalyseProcess项目 移动至 ComUtility项目
 为3d显示窗口 添加截取平面示意
 
+# v1.4.4 (尚未打tag)
+全部用std::thread替代了c语言的CreateThread()
+
+
 
 
 
