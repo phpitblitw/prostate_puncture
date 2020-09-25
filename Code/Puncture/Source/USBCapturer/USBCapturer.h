@@ -20,6 +20,7 @@ Project Files Included
 #include "frmgrab.h"
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include "Opencv2/opencv.hpp"
 
 using namespace std;
@@ -52,7 +53,6 @@ namespace USBCAPTURER
 	//定义智能指针类
 	class USBCapturer;
 	typedef std::shared_ptr<USBCapturer> USBCapturerPtr;
-	UINT GrabThreadFun(LPVOID lpParam);//持续采集B超数据（不是类的成员函数，供CreateThread调用)
 
 	//定义基本采集图像结构类
 	class USBCAPTURER_API USBCapturer
@@ -87,11 +87,9 @@ namespace USBCAPTURER
 
 		FrmGrabber * m_pDevice;						//采集卡设备对象指针
 
-		volatile bool m_bRunning;					//正在采集状态标志位
+		atomic<bool> m_bRunning;					//正在采集状态标志位
+		std::thread m_tGrabThread;						//B超采集线程
 		std::mutex m_CaptureMutex;					//采集标志位操作互斥量
-
-		HANDLE m_hGrabThread; //B超采集线程句柄
-		DWORD m_nGrabThreadID; //B超采集线程id
 
 		double m_dImageRes;		//缩放比例，即1个像素对应的物理尺寸(mm)
 		int m_nScreenType;		//屏显种类 1-单平面 2-双平面

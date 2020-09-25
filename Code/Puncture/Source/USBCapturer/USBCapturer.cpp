@@ -22,22 +22,6 @@
 
 using namespace USBCAPTURER;
 using namespace fsutility;
-///////////////////////////////多线程独立函数///////////////////////////////////
-/*****************************************************************
-Name:			GrabThreadFun
-Inputs:
-none
-Return Value:
-int - Error Info
-Description:	持续采集B超数据（不是类的成员函数，供CreateThread调用)
-*****************************************************************/
-UINT USBCAPTURER::GrabThreadFun(LPVOID lpParam)
-{
-	USBCapturer* iCapturer = (USBCapturer*)lpParam;
-	iCapturer->Grab();
-	return 0;
-}//GrabThreadFun
-
 
 ///////////////////////////////USBCapturer成员函数///////////////////////////////////
 /*****************************************************************
@@ -178,14 +162,9 @@ int USBCapturer::StartGrab()
 	m_CaptureMutex.unlock();
 	FrmGrab_Start(m_pDevice);//设置为以尽可能大的帧率采集图像
 	
-	//开始采集(新线程) //TODO
-	//m_hGrabThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)this->Grab, NULL, 0, &m_nGrabThreadID);
-	//m_hGrabThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)GrabVideo, this, 0, &m_nGrabThreadID);//TODO
-	//std::thread thread1(this->Grab);
-	//std::thread thread1(testFun);
 	//用线程的形式开始采集数据
-	m_hGrabThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)GrabThreadFun, this, 0, &m_nGrabThreadID);
-	//thread1.join();
+	m_tGrabThread = thread(bind(&USBCapturer::Grab, this));
+	m_tGrabThread.detach();		//和线程对象分离，这样线程可以独立地执行
 	return LIST_NO_ERROR;
 }//StartGrab
 
@@ -277,14 +256,6 @@ void USBCapturer::Grab()
 	
 	while (m_bRunning)
 	{
-		//m_CaptureMutex.lock();
-		//if (!m_bRunning)
-		//{
-		//	m_CaptureMutex.unlock();
-		//	break;
-		//}
-		//m_CaptureMutex.unlock();
-
 #ifdef USE_LOCAL_US_IMAGE
 		//使用本地B超图片
 		CString t_strUSImagePath;
@@ -329,11 +300,6 @@ void USBCapturer::Grab()
 
 			cv::Mat t_ImageA;
 			cv::Mat t_ImageB;
-			//if (!m_bGetParameters) //若未采集参数，则采集图像进行分析，得到参数
-			//{
-			//	GetParameters(iDst);
-			//	m_bGetParameters = true;
-			//}
 			if (m_nScreenType == 1)	//根据布局拷贝对应图像区域图像，采用clone
 			{
 				t_ImageA = iDst(USBConfig::Instance().m_FullRect).clone();
