@@ -165,6 +165,26 @@ Matrix Matrix::GetTranspose()
 	return result;
 }
 
+void Matrix::ConstructQuaternionTransform(double x, double y, double z, double roll, double pitch, double yaw)
+{
+	m_dItem[0][0] = cos(yaw) * cos(pitch);
+	m_dItem[0][1] = cos(yaw) * sin(pitch) * sin(roll) - sin(yaw) * cos(roll);
+	m_dItem[0][2] = cos(yaw) * sin(pitch) * cos(roll) + sin(yaw) * sin(roll);
+	m_dItem[0][3] = x;
+	m_dItem[1][0] = sin(yaw) * cos(pitch);
+	m_dItem[1][1] = sin(yaw) * sin(pitch)*sin(roll) + cos(yaw) * cos(roll);
+	m_dItem[1][2] = sin(yaw) * sin(pitch)*cos(roll) - cos(yaw) * sin(roll);
+	m_dItem[1][3] = y;
+	m_dItem[2][0] = -sin(pitch);
+	m_dItem[2][1] = cos(pitch) * sin(roll);
+	m_dItem[2][2] = cos(pitch) * cos(roll);
+	m_dItem[2][3] = z;
+	m_dItem[3][0] = 0;
+	m_dItem[3][1] = 0;
+	m_dItem[3][2] = 0;
+	m_dItem[3][3] = 1;
+}
+
 double Matrix::GetMinor(int y, int x)
 {
 	int i, n, col[3], row[3];	//col[3]记录行列式对应哪几列，row[3]记录行列式对应的哪几行

@@ -81,14 +81,16 @@ int NDIConfig::LoadConfigFile(CString t_strFilePathName)
 	t_ScanConfig.ReadKey(_T("x"), m_MoveDir.x);
 	t_ScanConfig.ReadKey(_T("y"), m_MoveDir.y);
 	t_ScanConfig.ReadKey(_T("z"), m_MoveDir.z);
-	m_MoveDir.w = 0;	//MoveDir为向量
+	m_MoveDir.w = 0;		//MoveDir为向量
+	m_MoveDir.Normalize();	//向量单位化
 
 	//B超探头初始UpDir
 	t_ScanConfig.Move2Section(_T("Initial UpDir"));
 	t_ScanConfig.ReadKey(_T("x"), m_UpDir.x);
 	t_ScanConfig.ReadKey(_T("y"), m_UpDir.y);
 	t_ScanConfig.ReadKey(_T("z"), m_UpDir.z);
-	m_UpDir.w = 0;		//UpDir为向量
+	m_UpDir.w = 0;			//UpDir为向量
+	m_UpDir.Normalize();	//向量单位化
 
 	//标定矩阵
 	t_ScanConfig.Move2Section(_T("Calibration Matrix"));

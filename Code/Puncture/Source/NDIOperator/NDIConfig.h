@@ -48,7 +48,7 @@ namespace NDIOPERATOR
 	public:
 		int LoadConfigFile(CString t_strFilePathName);
 
-	private:
+	public:
 		double						m_CalibrationMatrixElem[16];
 		std::string					m_strHostname;
 		fsutility::Coordinate		m_MoveDir;

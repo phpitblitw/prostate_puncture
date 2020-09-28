@@ -26,7 +26,7 @@ Project Files Included
 #include "CAPIcommon/PortHandleInfo.h"
 #include "CAPIcommon/ToolData.h"
 
-using namespace std;
+//using namespace std;
 /*****************************************************************
 Defines
 *****************************************************************/
@@ -89,7 +89,7 @@ namespace NDIOPERATOR
 		CombinedApi m_capi;			//自带的操作类
 		double m_pMatRtoT[16];		//存放4*4转换矩阵（Receiver to Transmitter）
 
-		atomic<bool> m_bTracking;		//是否在工作状态
+		std::atomic<bool> m_bTracking;		//是否在工作状态
 		std::thread m_tNDIThread;		//NDI采集线程
 		CCriticalSection m_critical_section;
 	};

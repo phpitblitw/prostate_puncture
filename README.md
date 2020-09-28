@@ -43,6 +43,9 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 
 # v1.4.4 (尚未打tag)
 全部用std::thread替代了c语言的CreateThread()
+完成了NDIConfig，从ini文件读取 NDI探头端口号、探头初始姿态、标定变换矩阵
+重写了Attitude类(TODO)
+将NDIConfig的参数用于姿态输出
 
 
 

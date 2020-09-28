@@ -90,6 +90,9 @@
     <ClCompile Include="Matrix.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Attitude.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ComUtility.def">
@@ -176,6 +179,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Matrix.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Attitude.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

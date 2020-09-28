@@ -224,6 +224,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Attitude.cpp" />
     <ClCompile Include="Base64.cpp" />
     <ClCompile Include="CmdProxy.cpp" />
     <ClCompile Include="ComUtility.cpp" />
@@ -273,6 +274,7 @@
     <None Include="res\ComUtility.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Attitude.h" />
     <ClInclude Include="Base64.h" />
     <ClInclude Include="CmdProxy.h" />
     <ClInclude Include="Coordinate.h" />

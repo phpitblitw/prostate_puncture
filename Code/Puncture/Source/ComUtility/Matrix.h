@@ -29,9 +29,10 @@ namespace fsutility
 		~Matrix();
 		Coordinate GetMultiply(Coordinate c);	//this矩阵×齐次坐标
 		Matrix GetMultiply(Matrix m);	//this矩阵×矩阵
-		Matrix GetInverse();	//求逆矩阵
-		double GetDeterminant();	//求this矩阵行列式
-		Matrix GetTranspose();		//求this矩阵的转置矩阵
+		Matrix GetInverse();			//求逆矩阵
+		double GetDeterminant();		//求this矩阵行列式
+		Matrix GetTranspose();			//求this矩阵的转置矩阵
+		void ConstructQuaternionTransform(double x, double y, double z, double roll, double pitch, double yaw);		//根据四元数参数，求变换矩阵
 	private:
 		double m_dItem[4][4];
 		double GetMinor(int y, int x);	//求this矩阵在y,x处的余子式

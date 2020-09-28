@@ -66,35 +66,38 @@ Description:	初始化NDI设备
 *****************************************************************/
 int NDIOperator::InitNDIDevice(CString t_strFilePathName)
 {	
+	int i;
 	//导入参数设置
 	if (NDIConfig::Instance().LoadConfigFile(t_strFilePathName) != LIST_NO_ERROR)
 	{
-
 		return ER_OpenNDIConfigFileFailed;
 	}
 
 	//连接设备
-	int i;
-	bool t_bConnected = false;		//标志位，是否正确链接
-	for (i = 1; i < 10; ++i)
-	{
-		char t_cHostName[5];
-		//sprintf_s(t_cHostName,"COM%d", i);//暂时先设置COM3口，之后会再另行解决
-		sprintf_s(t_cHostName,"COM3", i);//暂时先设置COM3口，之后会再另行解决
-		string hostname(t_cHostName);
+	//bool t_bConnected = false;		//标志位，是否正确链接
+	//for (i = 1; i < 10; ++i)
+	//{
+	//	char t_cHostName[5];
+	//	//sprintf_s(t_cHostName,"COM%d", i);//暂时先设置COM3口，之后会再另行解决
+	//	sprintf_s(t_cHostName,"COM3", i);//暂时先设置COM3口，之后会再另行解决
+	//	string hostname(t_cHostName);
+	//	if (m_capi.connect(hostname) == 0)
+	//	{
+	//		t_bConnected = true;
+	//		break;
+	//	}
+	//}
+	//
+	//if (!t_bConnected)
+	//{
+	//	return ER_InitNDIDeviceFailed;
+	//}
 
-		if (m_capi.connect(hostname) == 0)
-		{
-			t_bConnected = true;
-			break;
-		}
-	}
-	
-	if (!t_bConnected)
+	//连接设备
+	if (m_capi.connect(NDIConfig::Instance().m_strHostname) != 0)
 	{
 		return ER_InitNDIDeviceFailed;
 	}
-
 
 	//初始化
 	if (m_capi.initialize() != 0)
