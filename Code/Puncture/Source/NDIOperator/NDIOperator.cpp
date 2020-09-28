@@ -14,6 +14,7 @@
 ///////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "NDIOperator.h"
+#include "NDIConfig.h"
 #include "ErrorManager//ErrorCodeDefine.h"
 #define M_PI 3.141592653589793
 
@@ -65,6 +66,13 @@ Description:	初始化NDI设备
 *****************************************************************/
 int NDIOperator::InitNDIDevice(CString t_strFilePathName)
 {	
+	//导入参数设置
+	if (NDIConfig::Instance().LoadConfigFile(t_strFilePathName) != LIST_NO_ERROR)
+	{
+
+		return ER_OpenNDIConfigFileFailed;
+	}
+
 	//连接设备
 	int i;
 	bool t_bConnected = false;		//标志位，是否正确链接

@@ -1,5 +1,5 @@
 #pragma once
-
+#include <string>
 
 namespace fsutility
 {
@@ -32,6 +32,8 @@ namespace fsutility
          * @param strValInOut may represents the default value, also the value out.
          */
         void ReadKey(const CString& strKeyName, CString& strValInOut) const;
+
+		void ReadKey(const CString& strKeyName, std::string& strValInOut) const;
 
         void ReadKey(const CString& strKeyName, int& nValInOut) const;
 

@@ -15,7 +15,10 @@
 Project Files Included
 *****************************************************************/
 #include <memory>
+#include <string>
 #include "ComUtility/singleton.h"
+#include "ComUtility/Coordinate.h"
+#include "ComUtility/Matrix.h"
 
 
 /*****************************************************************
@@ -44,5 +47,13 @@ namespace NDIOPERATOR
 
 	public:
 		int LoadConfigFile(CString t_strFilePathName);
+
+	private:
+		double						m_CalibrationMatrixElem[16];
+		std::string					m_strHostname;
+		fsutility::Coordinate		m_MoveDir;
+		fsutility::Coordinate		m_UpDir;
+		fsutility::Matrix			m_CalibrationMatrix;
+
 	};
 }

@@ -80,6 +80,17 @@ namespace fsutility
 		strVal = TempStr;
 	}
 
+	void CIniFile::ReadKey(const CString& strKeyName,
+		std::string& strVal) const
+	{
+		CString strC;
+		TCHAR TempStr[1000] = { 0 };
+		const CString strDefault = strC;
+		::GetPrivateProfileStringW(m_pStrSecName, strKeyName, strDefault, TempStr, 1000, m_pStrFileName);
+		strC = TempStr;
+		strVal = CW2A(strC.GetString());
+	}
+
 	void CIniFile::ReadKey(const CString& strKeyName, 
 		int& nValInOut) const
 	{
