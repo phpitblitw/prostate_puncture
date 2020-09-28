@@ -13,6 +13,7 @@
 ////////////////////////include////////////////////////
 ///////////////////////////////////////////////////////
 
+#include <functional>
 #include "stdafx.h"
 #include "Puncture.h"
 #include "PunctureDlg.h"
@@ -46,16 +47,16 @@ Return Value:
 	DWORD 1
 Description:	初始化线程
 *****************************************************************/
-DWORD WINAPI InitThread(LPVOID lpParam)			//
-{
-	//设置按钮状态
-	CPunctureDlg *t_pPoint;
-	t_pPoint = (CPunctureDlg *)lpParam;
-
-	t_pPoint->Init();		//初始化设备
-
-	return 1;
-}//InitThread
+//DWORD WINAPI InitThread(LPVOID lpParam)			//
+//{
+//	//设置按钮状态
+//	CPunctureDlg *t_pPoint;
+//	t_pPoint = (CPunctureDlg *)lpParam;
+//
+//	t_pPoint->Init();		//初始化设备
+//
+//	return 1;
+//}//InitThread
 
 
 
@@ -213,7 +214,9 @@ BOOL CPunctureDlg::OnInitDialog()
 	
 	pPuncturedlg = this;
 
-	m_hInitThread = CreateThread(nullptr, 0, InitThread, (void *)this, 0, nullptr);	//启动刷新显示线程
+	//m_hInitThread = CreateThread(nullptr, 0, InitThread, (void *)this, 0, nullptr);	//启动刷新显示线程
+	m_tInitThread = std::thread(std::bind(&CPunctureDlg::Init, this));					//启动刷新显示线程
+	m_tInitThread.detach();
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }//OnInitDialog

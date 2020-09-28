@@ -13,6 +13,7 @@
 /*****************************************************************
 Library Files Included
 *****************************************************************/
+#include <thread>
 #include "NDIOperator/NDIOperator.h"
 #include "SurgicalPlan/SurgicalPlan.h"
 //#include "SurgicalPlan/ImageSampler.h"
@@ -110,5 +111,6 @@ private:
 	FrameDataPtr		m_FrameDataPtr;			//单帧数据
 	
 	//多线程
-	HANDLE				m_hInitThread;			//初始化线程
+	//HANDLE				m_hInitThread;			//初始化线程
+	std::thread				m_tInitThread;			//初始化线程
 };
