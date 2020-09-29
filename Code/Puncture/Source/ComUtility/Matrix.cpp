@@ -1,8 +1,11 @@
 //matrix.cpp
 #include "stdafx.h"
 #include "Matrix.h"
+#include <cmath>
 
 using namespace fsutility;
+
+#define M_PI 3.141592653589793
 
 Matrix::Matrix()
 {
@@ -165,7 +168,8 @@ Matrix Matrix::GetTranspose()
 	return result;
 }
 
-void Matrix::ConstructQuaternionTransform(double x, double y, double z, double roll, double pitch, double yaw)
+//根据欧拉角形式的旋转参数，求变换矩阵
+void Matrix::ConstructEulerTransform(double x, double y, double z, double roll, double pitch, double yaw)
 {
 	m_dItem[0][0] = cos(yaw) * cos(pitch);
 	m_dItem[0][1] = cos(yaw) * sin(pitch) * sin(roll) - sin(yaw) * cos(roll);
@@ -183,6 +187,29 @@ void Matrix::ConstructQuaternionTransform(double x, double y, double z, double r
 	m_dItem[3][1] = 0;
 	m_dItem[3][2] = 0;
 	m_dItem[3][3] = 1;
+}
+
+//根据欧拉角形式的旋转参数，求变换矩阵
+void Matrix::ConstructQuaternionTransform(double q0, double qx, double qy, double qz, double tx, double ty, double tz)
+{
+	// roll (x-axis rotation)
+	double sinr_cosp = 2 * (q0 * qx + qy * qz);
+	double cosr_cosp = 1 - 2 * (qx * qx + qy * qy);
+	double roll = std::atan2(sinr_cosp, cosr_cosp);
+	// pitch (y-axis rotation)
+	double sinp = 2 * (q0 * qy - qz * qx);
+	double pitch;
+	if (std::abs(sinp) >= 1)
+		pitch = std::copysign(M_PI / 2, sinp); // use 90 degrees if out of range
+	else
+		pitch = std::asin(sinp);
+	// yaw (z-axis rotation)
+	double siny_cosp = 2 * (q0 * qz + qx * qy);
+	double cosy_cosp = 1 - 2 * (qy * qy + qz * qz);
+	double yaw = std::atan2(siny_cosp, cosy_cosp);
+
+	ConstructEulerTransform(tx, ty, tz, roll, pitch, yaw);
+	return;
 }
 
 double Matrix::GetMinor(int y, int x)

@@ -49,11 +49,12 @@ namespace NDIOPERATOR
 		int LoadConfigFile(CString t_strFilePathName);
 
 	public:
-		double						m_CalibrationMatrixElem[16];
-		std::string					m_strHostname;
+		double						m_CalibrationMatrixElem[16];	//NDI sensor-超声探头 标定矩阵元素
+		std::string					m_strHostname;					//电脑与NDI设备连接的端口号
+		int							m_nSensorNumber;				//当插了多个NDI sensor时，使用的NDI sensor序号
 		fsutility::Coordinate		m_MoveDir;
 		fsutility::Coordinate		m_UpDir;
-		fsutility::Matrix			m_CalibrationMatrix;
+		fsutility::Matrix			m_CalibrationMatrix;			//NDI sensor-超声探头 标定矩阵
 
 	};
 }

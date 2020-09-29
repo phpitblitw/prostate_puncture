@@ -348,7 +348,7 @@ Return Value:
 	none
 Description:	由NDI数据更新超声位置参数，回调函数，由NDI模块调用。
 *****************************************************************/
-void AnalyseProcess::UpdateNDIData(std::vector<Attitude> t_Attitude)
+void AnalyseProcess::UpdateNDIData(std::vector<NDIOPERATOR::Attitude> t_Attitude)
 {
 	//现在默认处理第一个NDI位置
 	CSingleLock singlelock(&m_ProcessDataMutex);

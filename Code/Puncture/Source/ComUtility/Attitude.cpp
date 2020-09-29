@@ -17,6 +17,7 @@ void Attitude::SetValue(Coordinate ScanCenter, Coordinate RightDir, Coordinate U
 	m_MoveDir = MoveDir;
 }
 
+//表换矩阵mtx作用于本姿态，即TransformMatrix×[SrcScanCenter,SrcRightDir,SrcUpDir,SrcMoveDir]=[ResScanCenter,ResRightDir,ResUpDir,ResMoveDir]
 Attitude Attitude::Transform(Matrix mtx)
 {
 	Attitude result;

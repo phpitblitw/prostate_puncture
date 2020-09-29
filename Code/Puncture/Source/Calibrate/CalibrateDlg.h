@@ -62,7 +62,7 @@ public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnBnClickedBtnCapture();
 
-	void UpdateNDIData(std::vector<Attitude> t_Attitude);							//更新NDI数据，回调函数，由NDI模块调用
+	void UpdateNDIData(std::vector<NDIOPERATOR::Attitude> t_Attitude);							//更新NDI数据，回调函数，由NDI模块调用
 	void UpdateUSData(cv::Mat t_USBImgA, cv::Mat t_USBImgB, double t_dImageRes);	//更新B超数据，回调函数，由B超模块调用
 	void SaveOneFrame(int counter);													//存储单帧B超&NDI数据
 

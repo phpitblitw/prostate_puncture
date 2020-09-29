@@ -25,6 +25,8 @@ Project Files Included
 #include "CAPIcommon/CombinedApi.h"
 #include "CAPIcommon/PortHandleInfo.h"
 #include "CAPIcommon/ToolData.h"
+#include "ComUtility/Matrix.h"
+#include "ComUtility/Attitude.h"
 
 //using namespace std;
 /*****************************************************************
@@ -90,7 +92,12 @@ namespace NDIOPERATOR
 		double m_pMatRtoT[16];		//存放4*4转换矩阵（Receiver to Transmitter）
 
 		std::atomic<bool> m_bTracking;		//是否在工作状态
-		std::thread m_tNDIThread;		//NDI采集线程
+		std::thread m_tNDIThread;			//NDI采集线程
 		CCriticalSection m_critical_section;
+
+		fsutility::Attitude m_InitialAttitude;			//初始超声探头姿态
+		fsutility::Attitude	m_CurAttitude;				//当前超声探头姿态
+		fsutility::Matrix m_CalibrationMatrix;			//ndi-超声探头 标定矩阵
+		fsutility::Matrix m_NDIMatrix;					//ndi设备传回的四元数 对应的转换矩阵
 	};
 }

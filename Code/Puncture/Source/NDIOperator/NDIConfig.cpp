@@ -72,9 +72,10 @@ int NDIConfig::LoadConfigFile(CString t_strFilePathName)
 	//t_ScanConfig.Move2Section(_T("DataBase"));
 	//t_ScanConfig.ReadKey(_T("DataBaseServer"), m_strDataBaseServer);
 
-	//ndi探头连接NDI设备的端口号
-	t_ScanConfig.Move2Section(_T("Hostname"));
-	t_ScanConfig.ReadKey(_T("hostname"), m_strHostname);
+	//硬件参数
+	t_ScanConfig.Move2Section(_T("Hardware Info"));				
+	t_ScanConfig.ReadKey(_T("hostname"), m_strHostname);		//ndi探头连接NDI设备的端口号
+	t_ScanConfig.ReadKey(_T("sensorNumber"), m_nSensorNumber);	//当插了多个NDI sensor时，使用的NDI sensor序号
 
 	//B超探头初始UpDir
 	t_ScanConfig.Move2Section(_T("Initial MoveDir"));

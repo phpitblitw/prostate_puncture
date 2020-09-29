@@ -16,9 +16,11 @@
 #include "NDIOperator.h"
 #include "NDIConfig.h"
 #include "ErrorManager//ErrorCodeDefine.h"
+#include "ComUtility/Coordinate.h"
 #define M_PI 3.141592653589793
 
 using namespace NDIOPERATOR;
+using namespace fsutility;
 using namespace std;
 
 /*****************************************************************
@@ -112,6 +114,15 @@ int NDIOperator::InitNDIDevice(CString t_strFilePathName)
 		m_capi.portHandleInitialize(portHandles[i].getPortHandle());
 		m_capi.portHandleEnable(portHandles[i].getPortHandle());
 	}
+
+	//初始化标定矩阵
+	m_CalibrationMatrix = NDIConfig::Instance().m_CalibrationMatrix;
+
+	//初始化姿态参数
+	Coordinate RightDir;
+	RightDir = NDIConfig::Instance().m_MoveDir.GetCrossProduct(NDIConfig::Instance().m_UpDir);
+	RightDir.Normalize();
+	m_InitialAttitude.SetValue(Coordinate(0, 0, 0, 1), RightDir, NDIConfig::Instance().m_UpDir, NDIConfig::Instance().m_MoveDir);
 
 	return LIST_NO_ERROR;
 }//InitNDIDevice
@@ -223,12 +234,18 @@ void NDIOperator::Tracking()
 			}
 			else
 			{
+				m_NDIMatrix.ConstructQuaternionTransform(toolData[i].transform.q0, toolData[i].transform.qx, toolData[i].transform.qy,
+					toolData[i].transform.qz, toolData[i].transform.tx, toolData[i].transform.ty, toolData[i].transform.tz);	//用四元数构造变换矩阵
+				m_CurAttitude = m_InitialAttitude.Transform(m_CalibrationMatrix);
+				m_CurAttitude = m_CurAttitude.Transform(m_NDIMatrix);
+
+
 				//用四元数构造Attitude
 				attitude[i] = QuaternionToAttitude(toolData[i].transform.q0, toolData[i].transform.qx, toolData[i].transform.qy,
 					toolData[i].transform.qz, toolData[i].transform.tx, toolData[i].transform.ty, toolData[i].transform.tz);
 			}
 		}
-		//这一句是一个例子，表示可以在Tracking函数中用四元数得到转换矩阵；
+		//hsh:这一句是一个例子，表示可以在Tracking函数中用四元数得到转换矩阵；
 		//当然也可以在外面的回调函数里用得到的Attitude数据调用ConstructMatRtoTusingAttitude()这个函数来解决
 		/*ConstructMatRtoTusingQuaternion(toolData[0].transform.q0, toolData[0].transform.qx, toolData[0].transform.qy,
 		toolData[0].transform.qz, toolData[0].transform.tx, toolData[0].transform.ty, toolData[0].transform.tz);*/
@@ -267,7 +284,7 @@ int NDIOperator::Calibrate(void)
  none
  Description:	用Attitude形式的位置数据得到转换矩阵
  *****************************************************************/
-void NDIOperator::ConstructMatRtoTusingAttitude(Attitude attitude, double pMatRtoT[16])
+void NDIOperator::ConstructMatRtoTusingAttitude(NDIOPERATOR::Attitude attitude, double pMatRtoT[16])
 {
 	// TODO: 在此处添加实现代码.
 	float x, y, z, roll, pitch, yaw;
@@ -338,7 +355,7 @@ Return Value:
 Attitude - 姿态数据类
 Description:	将四元数形式的位置数据转换为Attitude（欧拉角）形式
 *****************************************************************/
-Attitude NDIOperator::QuaternionToAttitude(double q0, double qx, double qy, double qz, double tx, double ty, double tz)
+NDIOPERATOR::Attitude NDIOperator::QuaternionToAttitude(double q0, double qx, double qy, double qz, double tx, double ty, double tz)
 {
 	// TODO: 在此处添加实现代码.
 	Attitude attitude;

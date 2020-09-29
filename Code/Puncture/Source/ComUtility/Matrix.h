@@ -32,7 +32,8 @@ namespace fsutility
 		Matrix GetInverse();			//求逆矩阵
 		double GetDeterminant();		//求this矩阵行列式
 		Matrix GetTranspose();			//求this矩阵的转置矩阵
-		void ConstructQuaternionTransform(double x, double y, double z, double roll, double pitch, double yaw);		//根据四元数参数，求变换矩阵
+		void ConstructEulerTransform(double x, double y, double z, double roll, double pitch, double yaw);		//根据欧拉角形式的旋转参数，求变换矩阵
+		void ConstructQuaternionTransform(double q0, double qx, double qy, double qz, double tx, double ty, double tz);	//根据四元数 构造变换矩阵
 	private:
 		double m_dItem[4][4];
 		double GetMinor(int y, int x);	//求this矩阵在y,x处的余子式

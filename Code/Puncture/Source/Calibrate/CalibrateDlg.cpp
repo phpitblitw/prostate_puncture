@@ -299,7 +299,7 @@ void CCalibrateDlg::OnTimer(UINT_PTR nIDEvent)
 	return;
 }
 
-void CCalibrateDlg::UpdateNDIData(std::vector<Attitude> t_Attitude)
+void CCalibrateDlg::UpdateNDIData(std::vector<NDIOPERATOR::Attitude> t_Attitude)
 {
 	CSingleLock singlelock(&m_PosMutex);
 	singlelock.Lock();
