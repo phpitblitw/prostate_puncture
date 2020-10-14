@@ -17,6 +17,7 @@
 #include "ErrorManager/ErrorCodeDefine.h"
 
 using namespace ANALYSEPROCESS;
+using namespace fsutility;
 
 /*****************************************************************
 Name:			PositionManager
@@ -46,21 +47,14 @@ PositionManager::~PositionManager()
 /*****************************************************************
 Name:			SetBaseUSPosition
 Inputs:
-	Attitude aBaseUS - 存储超声base处位置
+	fsutility Attitude BaseUSAttitude - 存储超声base处位置
 Return Value:
 	 int - Error Info
 Description:	根据NDI设备传来的attitude，设置base处，超声探头位置参数
 *****************************************************************/
-BOOL PositionManager::SetBaseUSPosition(NDIOPERATOR::Attitude aBaseUS)
+BOOL PositionManager::SetBaseUSPosition(fsutility::Attitude BaseUSAttitude)
 {
-	Coordinate cInitialPosition(0, 0, 0, 1); //初始处位置，目前假定是(0,0,0) (以NDI设备的实际情况为准)
-	Coordinate cInitialMoveDir(0, 0, 1, 0);	//初始处moveDir向量，目前假定是(1,0,0) (以NDI设备的实际情况为准)
-	Coordinate cInitialUpDir(1, 0, 0, 0); //初始处up方向向量，目前假定是(0,0,1) (以NDI设备的实际情况为准)
-	Matrix matrixBaseUSTransform = ConstructAttitude2Matrix(aBaseUS);
-	m_BaseUSScanCenter = matrixBaseUSTransform.GetMultiply(cInitialPosition);
-	m_BaseUSMoveDir = matrixBaseUSTransform.GetMultiply(cInitialMoveDir);
-	m_BaseUSUpDir = matrixBaseUSTransform.GetMultiply(cInitialUpDir);
-	m_BaseUSRightDir = m_BaseUSMoveDir.GetCrossProduct(m_BaseMRIUpDir);
+	m_BaseUSAttitude = BaseUSAttitude;
 	return LIST_NO_ERROR;
 }
 
@@ -73,12 +67,9 @@ Return Value:
 	int - Error Info
 Description:	根据config文件，设置base处，MRI模拟采样位置参数
 *****************************************************************/
-BOOL PositionManager::SetBaseMRIPosition(AnalyseConfig *config)
+BOOL PositionManager::SetBaseMRIPosition(fsutility::Attitude BaseMRIAttitude)
 {
-	m_BaseMRIScanCenter = config->m_ScanCenter;
-	m_BaseMRIRightDir = config->m_RightDir;
-	m_BaseMRIUpDir = config->m_RightDir;
-	m_BaseMRIMoveDir = config->m_MoveDir;
+	m_BaseMRIAttitude = BaseMRIAttitude;
 	return LIST_NO_ERROR;
 }
 
@@ -96,13 +87,17 @@ Description:
 *****************************************************************/
 BOOL PositionManager::CalculateTransformMatrix()
 {
-	Matrix matrixMRIBasePosition(m_BaseMRIScanCenter, m_BaseMRIRightDir, m_BaseMRIUpDir, m_BaseMRIMoveDir);
-	Matrix matrixUSBasePosition(m_BaseUSScanCenter, m_BaseUSRightDir, m_BaseUSUpDir, m_BaseUSMoveDir);
-	//首先判断
+	//Matrix matrixMRIBasePosition(m_BaseMRIScanCenter, m_BaseMRIRightDir, m_BaseMRIUpDir, m_BaseMRIMoveDir);
+	//Matrix matrixUSBasePosition(m_BaseUSScanCenter, m_BaseUSRightDir, m_BaseUSUpDir, m_BaseUSMoveDir);
+
+	Matrix matrixMRIBasePosition(m_BaseMRIAttitude.m_ScanCenter, m_BaseMRIAttitude.m_RightDir, m_BaseMRIAttitude.m_UpDir, m_BaseMRIAttitude.m_MoveDir);
+	Matrix matrixUSBasePosition(m_BaseUSAttitude.m_ScanCenter, m_BaseUSAttitude.m_RightDir, m_BaseUSAttitude.m_UpDir, m_BaseUSAttitude.m_MoveDir);
+	//首先判断转换矩阵是否可逆
 	if (matrixUSBasePosition.GetDeterminant() == 0)
 	{
 		return ER_CalculateTransformMatrix;
 	}
+
 	m_TransformMatrix = matrixMRIBasePosition.GetMultiply(matrixUSBasePosition.GetInverse());
 	return LIST_NO_ERROR;
 }
@@ -115,16 +110,9 @@ Return Value:
 	 int - Error Info
 Description:	根据NDI设备传来的attitude，设置当前 超声探头姿态参数
 *****************************************************************/
-BOOL PositionManager::SetCurUSPosition(NDIOPERATOR::Attitude aCurUS)
+BOOL PositionManager::SetCurUSPosition(fsutility::Attitude CurUSAttitude)
 {
-	Coordinate cInitialPosition(0, 0, 0, 1); //初始处位置，目前假定是(0,0,0) (以NDI设备的实际情况为准)
-	Coordinate cInitialMoveDir(0, 0, 1, 0);	//初始处moveDir向量，长条形探头是(0,0,1) (以NDI设备的实际情况为准)
-	Coordinate cInitialUpDir(1, 0, 0, 0); //初始处up方向向量，长条形探头白色区域是(1,0,0) (以NDI设备的实际情况为准)
-	Matrix matrixCurUSTransform = ConstructAttitude2Matrix(aCurUS);
-	m_CurUSScanCenter = matrixCurUSTransform.GetMultiply(cInitialPosition);
-	m_CurUSMoveDir = matrixCurUSTransform.GetMultiply(cInitialMoveDir);
-	m_CurUSUpDir = matrixCurUSTransform.GetMultiply(cInitialUpDir);
-	m_CurUSRightDir = m_CurUSMoveDir.GetCrossProduct(m_CurUSUpDir);
+	m_CurUSAttitude = CurUSAttitude;
 	return LIST_NO_ERROR;
 }
 
@@ -138,10 +126,11 @@ Description:	根据当前的US未知参数，以及变换矩阵，求取当前MRI模拟采样位置参数
 *****************************************************************/
 BOOL PositionManager::UpDate()
 {
-	m_CurMRIScanCenter = m_TransformMatrix.GetMultiply(m_CurUSScanCenter);
-	m_CurMRIRightDir = m_TransformMatrix.GetMultiply(m_CurUSRightDir);
-	m_CurMRIUpDir = m_TransformMatrix.GetMultiply(m_CurUSUpDir);
-	m_CurMRIMoveDir = m_TransformMatrix.GetMultiply(m_CurUSMoveDir);
+	//m_CurMRIScanCenter = m_TransformMatrix.GetMultiply(m_CurUSScanCenter);
+	//m_CurMRIRightDir = m_TransformMatrix.GetMultiply(m_CurUSRightDir);
+	//m_CurMRIUpDir = m_TransformMatrix.GetMultiply(m_CurUSUpDir);
+	//m_CurMRIMoveDir = m_TransformMatrix.GetMultiply(m_CurUSMoveDir);
+	m_CurMRIAttitude=m_CurUSAttitude.Transform(m_TransformMatrix);
 	return LIST_NO_ERROR;
 }
 
@@ -153,26 +142,26 @@ Return Value:
 	 Matrix - 变换矩阵
 Description:	由Attitude构造变换矩阵
 *****************************************************************/
-Matrix PositionManager::ConstructAttitude2Matrix(NDIOPERATOR::Attitude attitude)
-{
-	double m[16];
-	float x, y, z, roll, pitch, yaw;
-	attitude.GetPosition(x, y, z, roll, pitch, yaw);
-	m[0] = cos(yaw) * cos(pitch);
-	m[1] = cos(yaw) * sin(pitch) * sin(roll) - sin(yaw) * cos(roll);
-	m[2] = cos(yaw) * sin(pitch) * cos(roll) + sin(yaw) * sin(roll);
-	m[3] = x;
-	m[4] = sin(yaw) * cos(pitch);
-	m[5] = sin(yaw) * sin(pitch)*sin(roll) + cos(yaw) * cos(roll);
-	m[6] = sin(yaw) * sin(pitch)*cos(roll) - cos(yaw) * sin(roll);
-	m[7] = y;
-	m[8] = -sin(pitch);
-	m[9] = cos(pitch) * sin(roll);
-	m[10] = cos(pitch) * cos(roll);
-	m[11] = z;
-	m[12] = 0;
-	m[13] = 0;
-	m[14] = 0;
-	m[15] = 1;
-	return Matrix(m);
-}
+//Matrix PositionManager::ConstructAttitude2Matrix(NDIOPERATOR::Attitude attitude)
+//{
+//	double m[16];
+//	float x, y, z, roll, pitch, yaw;
+//	attitude.GetPosition(x, y, z, roll, pitch, yaw);
+//	m[0] = cos(yaw) * cos(pitch);
+//	m[1] = cos(yaw) * sin(pitch) * sin(roll) - sin(yaw) * cos(roll);
+//	m[2] = cos(yaw) * sin(pitch) * cos(roll) + sin(yaw) * sin(roll);
+//	m[3] = x;
+//	m[4] = sin(yaw) * cos(pitch);
+//	m[5] = sin(yaw) * sin(pitch)*sin(roll) + cos(yaw) * cos(roll);
+//	m[6] = sin(yaw) * sin(pitch)*cos(roll) - cos(yaw) * sin(roll);
+//	m[7] = y;
+//	m[8] = -sin(pitch);
+//	m[9] = cos(pitch) * sin(roll);
+//	m[10] = cos(pitch) * cos(roll);
+//	m[11] = z;
+//	m[12] = 0;
+//	m[13] = 0;
+//	m[14] = 0;
+//	m[15] = 1;
+//	return Matrix(m);
+//}

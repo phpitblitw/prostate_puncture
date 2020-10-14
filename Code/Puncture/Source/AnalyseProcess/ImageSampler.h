@@ -16,6 +16,7 @@ Library Files Included
 //#include "SurgicalPlan.h"
 #include "ComUtility/Coordinate.h"
 #include "SurgicalPlan/SurgicalPlan.h"
+#include "ComUtility/Attitude.h"
 
 using namespace SURGICALPLAN;
 using namespace fsutility;
@@ -49,7 +50,8 @@ namespace ANALYSEPROCESS
 		virtual ~ImageSampler();
 
 		int SetDataPackage(SurgicalPlanPtr pPackage);
-		void SetPosition(Coordinate ScanCenter, Coordinate RightDir, Coordinate UpDir, Coordinate MoveDir);		//设置当前切片位置参数 WLD坐标
+		void SetPosition(fsutility::Attitude Attitude);	//设置当前切片位置参数 WLD坐标
+		//void SetPosition(Coordinate ScanCenter, Coordinate RightDir, Coordinate UpDir, Coordinate MoveDir);		//设置当前切片位置参数 WLD坐标
 		void SetUSPixelSize(double dPixelSize);		//设置B超图像像素大小(像素对应的物理尺寸)
 		void SetImageSize(int cx, int cy);			//设置B超图像分辨率(像素数)
 		void SetMRIPixelSize(double dPixelSizeX, double dPixelSizeY, double dPixelSizeZ);	//设置MRI数据体素大小

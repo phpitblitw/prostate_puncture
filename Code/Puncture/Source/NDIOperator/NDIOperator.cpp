@@ -228,6 +228,10 @@ void NDIOperator::Tracking()
 															//构造姿态数据
 		for (int i = 0; i < toolData.size(); i++)
 		{
+			if (i != NDIConfig::Instance().m_nSensorNumber)	//筛选目前使用的sensor
+			{
+				continue;
+			}
 			if (toolData[i].transform.isMissing())	//如果超出范围，则姿态数据全为0
 			{
 				attitude[i] = Attitude();
@@ -241,8 +245,8 @@ void NDIOperator::Tracking()
 
 
 				//用四元数构造Attitude
-				attitude[i] = QuaternionToAttitude(toolData[i].transform.q0, toolData[i].transform.qx, toolData[i].transform.qy,
-					toolData[i].transform.qz, toolData[i].transform.tx, toolData[i].transform.ty, toolData[i].transform.tz);
+				//attitude[i] = QuaternionToAttitude(toolData[i].transform.q0, toolData[i].transform.qx, toolData[i].transform.qy,
+				//	toolData[i].transform.qz, toolData[i].transform.tx, toolData[i].transform.ty, toolData[i].transform.tz);
 			}
 		}
 		//hsh:这一句是一个例子，表示可以在Tracking函数中用四元数得到转换矩阵；
@@ -253,7 +257,8 @@ void NDIOperator::Tracking()
 		//传送姿态数据
 		if (m_UpdateAttitudeFun != NULL)
 		{
-			m_UpdateAttitudeFun(attitude);
+			//m_UpdateAttitudeFun(attitude);
+			m_UpdateAttitudeFun(m_CurAttitude);
 		}
 
 		m_critical_section.Unlock();

@@ -112,6 +112,8 @@ int AnalyseConfig::LoadConfigFile(CString t_strFilePathName)
 	t_ScanConfig.ReadKey(_T("z"), m_MoveDir.z);
 	m_MoveDir.w = 0;
 	m_MoveDir.Normalize();		//向量单位化
+
+	m_Attitude.SetValue(m_ScanCenter, m_RightDir, m_UpDir, m_MoveDir);
 	//return LIST_NO_ERROR;
 	return 0;	//待删除
 }

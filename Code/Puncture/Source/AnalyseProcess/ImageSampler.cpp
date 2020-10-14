@@ -74,6 +74,22 @@ int ANALYSEPROCESS::ImageSampler::SetDataPackage(SurgicalPlanPtr pPackage)
 		return ER_NoSurgicalPlan;
 }
 
+/*****************************************************************
+Name:			SetPosition
+Inputs:
+	Coordinate xxx - 指示当前切片在三维空间姿态参数的一组齐次坐标(WLD)
+Return Value:
+	none
+Description:	设置当前切片在三维空间的姿态参数
+*****************************************************************/
+void ANALYSEPROCESS::ImageSampler::SetPosition(fsutility::Attitude Attitude)
+{
+	m_ScanCenter = Attitude.m_ScanCenter;
+	m_RightDir = Attitude.m_RightDir;
+	m_UpDir = Attitude.m_UpDir;
+	m_MoveDir = Attitude.m_MoveDir;
+}
+
 
 /*****************************************************************
 Name:			SetPosition
@@ -83,14 +99,14 @@ Return Value:
 	none
 Description:	设置当前切片在三维空间的姿态参数
 *****************************************************************/
-void ANALYSEPROCESS::ImageSampler::SetPosition(Coordinate ScanCenter, Coordinate RightDir, Coordinate UpDir, Coordinate MoveDir)
-{
-	m_ScanCenter = ScanCenter;
-	m_RightDir = RightDir;
-	m_UpDir = UpDir;
-	m_MoveDir = MoveDir;
-	return;
-}
+//void ANALYSEPROCESS::ImageSampler::SetPosition(Coordinate ScanCenter, Coordinate RightDir, Coordinate UpDir, Coordinate MoveDir)
+//{
+//	m_ScanCenter = ScanCenter;
+//	m_RightDir = RightDir;
+//	m_UpDir = UpDir;
+//	m_MoveDir = MoveDir;
+//	return;
+//}
 
 
 /*****************************************************************

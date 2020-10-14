@@ -81,8 +81,8 @@ private:
 private:
 	HANDLE	m_hInitThread;		//初始化线程
 	//CMutex	m_UpdateDataMutex;	//更新参数互斥变量
-	Attitude m_attitude;		//NDI位置
-	vector<Attitude> m_attitudes;	//NDI位置(多探头)
+	NDIOPERATOR::Attitude m_attitude;		//NDI位置
+	vector<NDIOPERATOR::Attitude> m_attitudes;	//NDI位置(多探头)
 	cv::Mat m_imgUS;			//超声图像
 	double m_dImageRes;			//超声图像 像素物理尺寸(mm)
 

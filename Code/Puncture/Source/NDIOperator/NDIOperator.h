@@ -72,7 +72,8 @@ namespace NDIOPERATOR
 		int InitNDIDevice(CString t_strFilePathName);		//初始化NDI设备
 
 		//传递数据至外部回调函数
-		typedef std::function < void(std::vector<Attitude>) > Fun_UpdateAttitudeEvent;//因为可能有多个感应线，所以使用vector进行返回
+		//typedef std::function < void(std::vector<NDIOPERATOR::Attitude>) > Fun_UpdateAttitudeEvent;//因为可能有多个感应线，所以使用vector进行返回
+		typedef std::function<void(fsutility::Attitude)> Fun_UpdateAttitudeEvent;	//回调函数 返回当前NDI探头姿态(以4个齐次坐标的形式)
 		void BindUpdateAttitudeEvent(Fun_UpdateAttitudeEvent eventFun);  //绑定刷新坐标回调函数
 
 		int Calibrate(void);				//NDI坐标系与B超探头坐标系间标定功能
@@ -81,16 +82,16 @@ namespace NDIOPERATOR
 		void Tracking();					//采集函数
 		int StopTracking();					//停止采集
 		
-		Attitude QuaternionToAttitude(double, double, double, double, double, double, double);	//从四元数得到Attitude类
+		NDIOPERATOR::Attitude QuaternionToAttitude(double, double, double, double, double, double, double);	//从四元数得到Attitude类
 		void ConstructMatRtoTusingQuaternion(double, double, double, double, double, double, double, double pMatRtoT[16]);		//从四元数得到转换矩阵
-		static void ConstructMatRtoTusingAttitude(Attitude attitude, double pMatRtoT[16]);		//从Attitude类得到转换矩阵
+		static void ConstructMatRtoTusingAttitude(NDIOPERATOR::Attitude attitude, double pMatRtoT[16]);		//从Attitude类得到转换矩阵
 	
 	private:
 		Fun_UpdateAttitudeEvent m_UpdateAttitudeFun;		//更新预览图
 
-		CombinedApi m_capi;			//自带的操作类
 		double m_pMatRtoT[16];		//存放4*4转换矩阵（Receiver to Transmitter）
 
+		CombinedApi m_capi;			//自带的操作类
 		std::atomic<bool> m_bTracking;		//是否在工作状态
 		std::thread m_tNDIThread;			//NDI采集线程
 		CCriticalSection m_critical_section;

@@ -41,11 +41,10 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 将Coordinate和Matrix类 由AnalyseProcess项目 移动至 ComUtility项目
 为3d显示窗口 添加截取平面示意
 
-# v1.4.4 (尚未打tag)
+# v1.5
 全部用std::thread替代了c语言的CreateThread()
-完成了NDIConfig，从ini文件读取 NDI探头端口号、探头初始姿态、标定变换矩阵
-重写了Attitude类(TODO)
-将NDIConfig的参数用于姿态输出
+完成了NDIConfig，从ini文件读取 NDI探头端口号、探头初始姿态、标定变换矩阵。使用了标定矩阵，定性测试通过
+添加了fsutility::Attitude类，用四个其次坐标表示姿态，全面替换了NDIOperator::Attitude中欧拉角形式的姿态
 
 
 

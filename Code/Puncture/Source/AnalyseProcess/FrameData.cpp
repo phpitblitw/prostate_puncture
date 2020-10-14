@@ -90,7 +90,7 @@ int	FrameData::CreatMaskData(int t_nShowWidth, int t_nShowHeight)
 	//m_pLesionMask = new BYTE[t_nShowWidth * t_nShowWidth];
 	m_pFusionMask = new BYTE[t_nShowWidth * t_nShowWidth];
 	return LIST_NO_ERROR;
-}//CreatMaskData
+}
 
 /*****************************************************************
 Name:			SetPosition
@@ -100,10 +100,24 @@ Return Value:
 	none
 Description:	设置当前切片MRI模拟采样姿态参数(wld)
 *****************************************************************/
-void FrameData::SetPosition(Coordinate ScanCenter, Coordinate RightDir, Coordinate UpDir, Coordinate MoveDir)
+void ANALYSEPROCESS::FrameData::SetPosition(fsutility::Attitude Attitude)
 {
-	m_ScanCenter = ScanCenter;
-	m_RightDir = RightDir;
-	m_UpDir = UpDir;
-	m_MoveDir = MoveDir;
+	m_Attitude = Attitude;
 }//SetPosition
+
+
+/*****************************************************************
+Name:			SetPosition
+Inputs:
+	Coordinate ScanCenter etc.	-	姿态参数(wld)
+Return Value:
+	none
+Description:	设置当前切片MRI模拟采样姿态参数(wld)
+*****************************************************************/
+//void FrameData::SetPosition(Coordinate ScanCenter, Coordinate RightDir, Coordinate UpDir, Coordinate MoveDir)
+//{
+//	m_ScanCenter = ScanCenter;
+//	m_RightDir = RightDir;
+//	m_UpDir = UpDir;
+//	m_MoveDir = MoveDir;
+//}//SetPosition

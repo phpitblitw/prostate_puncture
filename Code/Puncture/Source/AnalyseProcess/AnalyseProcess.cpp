@@ -316,16 +316,18 @@ int AnalyseProcess::Register()
 	m_nAnalyseState = Registration;
 	//在配准前，默认NDI设备已经采集到当前超声探头的位置
 	//将MRI模拟采样的base位置传递给PositionManager
-	m_PositionManagerPtr->m_BaseMRIScanCenter = AnalyseConfig::Instance().m_ScanCenter;
-	m_PositionManagerPtr->m_BaseMRIRightDir = AnalyseConfig::Instance().m_RightDir;
-	m_PositionManagerPtr->m_BaseMRIUpDir = AnalyseConfig::Instance().m_UpDir;
-	m_PositionManagerPtr->m_BaseMRIMoveDir = AnalyseConfig::Instance().m_MoveDir;
+	m_PositionManagerPtr->m_BaseMRIAttitude = AnalyseConfig::Instance().m_Attitude;
+	//m_PositionManagerPtr->m_BaseMRIScanCenter = AnalyseConfig::Instance().m_ScanCenter;
+	//m_PositionManagerPtr->m_BaseMRIRightDir = AnalyseConfig::Instance().m_RightDir;
+	//m_PositionManagerPtr->m_BaseMRIUpDir = AnalyseConfig::Instance().m_UpDir;
+	//m_PositionManagerPtr->m_BaseMRIMoveDir = AnalyseConfig::Instance().m_MoveDir;
 	//将当前超声位置作为超声base位置，记录在PositionManager中
 	singlelock.Lock();
-	m_PositionManagerPtr->m_BaseUSScanCenter = m_PositionManagerPtr->m_CurUSScanCenter;
-	m_PositionManagerPtr->m_BaseUSRightDir = m_PositionManagerPtr->m_CurUSRightDir;
-	m_PositionManagerPtr->m_BaseUSUpDir = m_PositionManagerPtr->m_CurUSUpDir;
-	m_PositionManagerPtr->m_BaseUSMoveDir = m_PositionManagerPtr->m_CurUSMoveDir;
+	m_PositionManagerPtr->m_BaseUSAttitude = m_PositionManagerPtr->m_CurUSAttitude;
+	//m_PositionManagerPtr->m_BaseUSScanCenter = m_PositionManagerPtr->m_CurUSScanCenter;
+	//m_PositionManagerPtr->m_BaseUSRightDir = m_PositionManagerPtr->m_CurUSRightDir;
+	//m_PositionManagerPtr->m_BaseUSUpDir = m_PositionManagerPtr->m_CurUSUpDir;
+	//m_PositionManagerPtr->m_BaseUSMoveDir = m_PositionManagerPtr->m_CurUSMoveDir;
 	singlelock.Unlock();
 	//由 US的base位置、MRI模拟采样的base位置，计算变换矩阵
 	if (m_PositionManagerPtr->CalculateTransformMatrix() != LIST_NO_ERROR)
@@ -339,7 +341,6 @@ int AnalyseProcess::Register()
 	}
 }
 
-
 /*****************************************************************
 Name:			UpdateNDIData
 Inputs:
@@ -348,16 +349,14 @@ Return Value:
 	none
 Description:	由NDI数据更新超声位置参数，回调函数，由NDI模块调用。
 *****************************************************************/
-void AnalyseProcess::UpdateNDIData(std::vector<NDIOPERATOR::Attitude> t_Attitude)
+void AnalyseProcess::UpdateNDIData(fsutility::Attitude attitude)
 {
-	//现在默认处理第一个NDI位置
 	CSingleLock singlelock(&m_ProcessDataMutex);
 	singlelock.Lock();
-	m_PositionManagerPtr->SetCurUSPosition(t_Attitude[0]);
+	m_PositionManagerPtr->m_CurUSAttitude = attitude;
 	singlelock.Unlock();
 	return;
 }//UpdateNDIData
-
 
 /*****************************************************************
 Name:			UpdateUSBData
@@ -460,17 +459,20 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 
 	//计算当前截面位置
 	m_PositionManagerPtr->UpDate();	//根据已经获取的超声探头位置参数，更新MRI模拟采样位置参数
-	m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIScanCenter, m_PositionManagerPtr->m_CurMRIRightDir, m_PositionManagerPtr->m_CurMRIUpDir, m_PositionManagerPtr->m_CurMRIMoveDir);	//为ImageSampler设置位置参数
+	//m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIScanCenter, m_PositionManagerPtr->m_CurMRIRightDir, m_PositionManagerPtr->m_CurMRIUpDir, m_PositionManagerPtr->m_CurMRIMoveDir);	//为ImageSampler设置位置参数
+	//m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude.m_ScanCenter, 
+	//	m_PositionManagerPtr->m_CurMRIAttitude.m_RightDir, 
+	//	m_PositionManagerPtr->m_CurMRIAttitude.m_UpDir, 
+	//	m_PositionManagerPtr->m_CurMRIAttitude.m_MoveDir);	//为ImageSampler设置位置参数
+	m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);	//为ImageSampler设置位置参数
+
 
 	//更新当前截面姿态(借用ImageSampler的函数) TODO
-	//t_FrameDataPtr->SetPosition(m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIScanCenter),
-	//	m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIRightDir),
-	//	m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIUpDir),
-	//	m_ImageSamplerPtr->WLDToIJK(m_PositionManagerPtr->m_CurMRIMoveDir));
-	t_FrameDataPtr->SetPosition(m_PositionManagerPtr->m_CurMRIScanCenter,
-		m_PositionManagerPtr->m_CurMRIRightDir,
-		m_PositionManagerPtr->m_CurMRIUpDir,
-		m_PositionManagerPtr->m_CurMRIMoveDir);
+	//t_FrameDataPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude.m_ScanCenter,
+	//	m_PositionManagerPtr->m_CurMRIAttitude.m_RightDir,
+	//	m_PositionManagerPtr->m_CurMRIAttitude.m_UpDir,
+	//	m_PositionManagerPtr->m_CurMRIAttitude.m_MoveDir);
+	t_FrameDataPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);
 
 	//更新当前截面4个角点的位置(wld)
 	m_ImageSamplerPtr->GetPlaneCorners(t_FrameDataPtr->m_LeftTop, t_FrameDataPtr->m_RightTop, t_FrameDataPtr->m_LeftBottom, t_FrameDataPtr->m_RightBottom);
@@ -484,9 +486,9 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 		m_pRectumMask = new BYTE[m_nShowImageX*m_nShowImageY];
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 0, 1);
 	////测试代码TODO
-	//int frontSum = 0;
-	//for (int i = 0; i < 800 * 700; i++)
-	//	frontSum += m_pProstateMask[i];
+	int frontSum = 0;
+	for (int i = 0; i < 800 * 700; i++)
+		frontSum += m_pProstateMask[i];
 	////测试代码TODO
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 0, 2);
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 0, 3);

@@ -87,7 +87,8 @@ namespace ANALYSEPROCESS
 
 		int Register();				//配准操作,由医生手动发起
 	private:
-		void UpdateNDIData(std::vector<NDIOPERATOR::Attitude> t_Attitude);						//更新NDI数据，回调函数，由NDI模块调用
+		//void UpdateNDIData(std::vector<NDIOPERATOR::Attitude> t_Attitude);			//更新NDI数据，回调函数，由NDI模块调用
+		void UpdateNDIData(fsutility::Attitude attitude);								//更新NDI数据，回调函数，由NDI模块调用 TODO
 		void UpdateUSBData(cv::Mat t_USBImgA, cv::Mat t_USBImgB, double m_dImageRes);	//更新B超数据，回调函数，由B超模块调用
 
 		void ProcessSingleFrame(FrameDataPtr t_FrameDataPtr);	//处理单帧数据
@@ -99,8 +100,8 @@ namespace ANALYSEPROCESS
 		FrameDataPtr	m_CurrentFrameDataPtr;	//用于存放当前处理中的帧
 		FrameDataPtr	m_NextFrameDataPtr;		//用于存放下一帧待处理的帧
 
-		//HANDLE			m_hAnalyzeThread;		//实际处理线程
-		std::thread			m_tAnalyseThread;		//分析线程
+		//HANDLE			m_hAnalyzeThread;	//实际处理线程
+		std::thread			m_tAnalyseThread;	//分析线程
 		atomic<bool>	m_bAnalysing;			//正在分析标志位
 
 		AnalyzeState	m_nAnalyseState;		//当前分析阶段
