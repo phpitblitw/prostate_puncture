@@ -107,6 +107,7 @@
       <ImportLibrary>$(SolutionDir)lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <AdditionalDependencies>ComUtilityD.lib;ErrorManagerD.lib;NDIOperatorD.lib;USBCapturerD.lib;SurgicalPlanD.lib;opencv_world300d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Configuration)\;$(SolutionDir)lib\Commonlib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>opencv_world300d.dll</DelayLoadDLLs>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -186,8 +187,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>.\AnalyseProcess.def</ModuleDefinitionFile>
       <ImportLibrary>$(SolutionDir)lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
-      <AdditionalDependencies>ComUtility.lib;ErrorManager.lib;NDIOperator.lib;USBCapturer.lib;SurgicalPlan.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ComUtility.lib;ErrorManager.lib;NDIOperator.lib;USBCapturer.lib;SurgicalPlan.lib;opencv_world300.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Configuration)\;$(SolutionDir)lib\Commonlib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>opencv_world300.dll</DelayLoadDLLs>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

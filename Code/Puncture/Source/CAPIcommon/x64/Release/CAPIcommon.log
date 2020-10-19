@@ -1,0 +1,22 @@
+﻿  BufferedReader.cpp
+  CombinedApi.cpp
+  ComConnection.cpp
+  GbfButton1D.cpp
+  GbfComponent.cpp
+  GbfContainer.cpp
+  GbfData3D.cpp
+  GbfData6D.cpp
+  GbfFrame.cpp
+  GbfSystemAlert.cpp
+  MarkerData.cpp
+  PortHandleInfo.cpp
+  SystemAlert.cpp
+  SystemCRC.cpp
+  TcpConnection.cpp
+  ToolData.cpp
+  Transform.cpp
+    正在创建库 D:\prostate\prostate_puncture\Code\Puncture\x64\Release\CAPIcommon.lib 和对象 D:\prostate\prostate_puncture\Code\Puncture\x64\Release\CAPIcommon.exp
+  正在生成代码
+  All 1184 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  已完成代码的生成
+  CAPIcommon.vcxproj -> D:\prostate\prostate_puncture\Code\Puncture\x64\Release\CAPIcommon.dll

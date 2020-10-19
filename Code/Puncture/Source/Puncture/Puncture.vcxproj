@@ -130,7 +130,7 @@
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ErrorManagerD.lib;NDIOperatorD.lib;SurgicalPlanD.lib;SceneGraph.lib;opengl32.lib;ImageRenderD.lib;USBCapturerD.lib;ComUtilityD.lib;opencv_world300d.lib;AnalyseProcessD.lib</AdditionalDependencies>
-      <DelayLoadDLLs>opencv_world300d.dll;USBCapturerD.lib</DelayLoadDLLs>
+      <DelayLoadDLLs>opencv_world300d.dll</DelayLoadDLLs>
       <StackReserveSize>0x10000000</StackReserveSize>
     </Link>
     <Midl>
@@ -174,20 +174,21 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\include;$(SolutionDir)\include\epiphan</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ErrorManager.lib;NDIOperator.lib;SurgicalPlan.lib;USBCapture.lib;log4cplusU.lib;ComUtility.lib;opencv_world410.lib;AnalyseProcess.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Configuration);$(SolutionDir)lib\Commonlib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ErrorManager.lib;NDIOperator.lib;SurgicalPlan.lib;SceneGraph.lib;opengl32.lib;ImageRender.lib;USBCapturer.lib;log4cplusU.lib;ComUtility.lib;opencv_world300.lib;AnalyseProcess.lib</AdditionalDependencies>
       <StackReserveSize>0x10000000</StackReserveSize>
+      <DelayLoadDLLs>opencv_world300.dll</DelayLoadDLLs>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

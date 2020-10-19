@@ -185,7 +185,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>.\NDIOperator.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ComUtility.lib;ErrorManager.lib;</AdditionalDependencies>
+      <AdditionalDependencies>ComUtility.lib;ErrorManager.lib;CAPIcommon.lib</AdditionalDependencies>
       <ImportLibrary>$(SolutionDir)\lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
     <Midl>

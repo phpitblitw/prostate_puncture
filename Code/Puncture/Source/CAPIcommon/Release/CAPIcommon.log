@@ -1,0 +1,42 @@
+﻿  BufferedReader.cpp
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\bufferedreader.cpp(52): warning C4018: “<”: 有符号/无符号不匹配
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\bufferedreader.cpp(85): warning C4018: “>=”: 有符号/无符号不匹配
+  CombinedApi.cpp
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\combinedapi.cpp(480): warning C4018: “<”: 有符号/无符号不匹配
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\combinedapi.cpp(550): warning C4018: “<”: 有符号/无符号不匹配
+  ComConnection.cpp
+  GbfButton1D.cpp
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfbutton1d.cpp(64): warning C4018: “<”: 有符号/无符号不匹配
+  GbfComponent.cpp
+  GbfContainer.cpp
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfcontainer.cpp(58): warning C4018: “<”: 有符号/无符号不匹配
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfcontainer.cpp(71): warning C4018: “<”: 有符号/无符号不匹配
+  GbfData3D.cpp
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfdata3d.cpp(89): warning C4018: “<”: 有符号/无符号不匹配
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfdata3d.cpp(94): warning C4018: “<”: 有符号/无符号不匹配
+  GbfData6D.cpp
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfdata6d.cpp(82): warning C4018: “<”: 有符号/无符号不匹配
+  GbfFrame.cpp
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfframe.cpp(65): warning C4018: “<”: 有符号/无符号不匹配
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfframe.cpp(68): warning C4018: “<”: 有符号/无符号不匹配
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfframe.cpp(75): warning C4018: “<”: 有符号/无符号不匹配
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfframe.cpp(79): warning C4018: “<”: 有符号/无符号不匹配
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfframe.cpp(108): warning C4018: “<”: 有符号/无符号不匹配
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfframe.cpp(112): warning C4018: “<”: 有符号/无符号不匹配
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfframe.cpp(145): warning C4018: “<”: 有符号/无符号不匹配
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfframe.cpp(179): warning C4018: “<”: 有符号/无符号不匹配
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfframe.cpp(198): warning C4018: “<”: 有符号/无符号不匹配
+  GbfSystemAlert.cpp
+d:\prostate\prostate_puncture\code\puncture\source\capicommon\gbfsystemalert.cpp(59): warning C4018: “<”: 有符号/无符号不匹配
+  MarkerData.cpp
+  PortHandleInfo.cpp
+  SystemAlert.cpp
+  SystemCRC.cpp
+  TcpConnection.cpp
+  ToolData.cpp
+  Transform.cpp
+    正在创建库 D:\prostate\prostate_puncture\Code\Puncture\Release\CAPIcommon.lib 和对象 D:\prostate\prostate_puncture\Code\Puncture\Release\CAPIcommon.exp
+  正在生成代码
+  All 1183 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  已完成代码的生成
+  CAPIcommon.vcxproj -> D:\prostate\prostate_puncture\Code\Puncture\Release\CAPIcommon.dll

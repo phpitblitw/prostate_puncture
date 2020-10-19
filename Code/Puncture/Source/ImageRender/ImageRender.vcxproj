@@ -127,6 +127,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ComUtilityD.lib;opencv_world300d.lib</AdditionalDependencies>
       <ImportLibrary>$(SolutionDir)\lib\debug\$(TargetName).lib</ImportLibrary>
+      <DelayLoadDLLs>opencv_world300d.dll</DelayLoadDLLs>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -177,7 +178,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)\RefLibs\log4cplus\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -186,7 +187,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>.\ImageRender.def</ModuleDefinitionFile>
       <ImportLibrary>$(SolutionDir)\lib\Release\$(TargetName).lib</ImportLibrary>
-      <AdditionalLibraryDirectories>$(SolutionDir)\RefLibs\log4cplus\lib;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>opencv_world300.dll</DelayLoadDLLs>
+      <AdditionalDependencies>ComUtility.lib;opencv_world300.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

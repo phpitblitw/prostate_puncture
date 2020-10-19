@@ -130,7 +130,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ComUtilityD.lib;ErrorManagerD.lib;frmgrab.lib;opencv_world300d.lib</AdditionalDependencies>
       <ImportLibrary>$(SolutionDir)\lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
-      <DelayLoadDLLs>opencv_world300d.lib;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <DelayLoadDLLs>opencv_world300d.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -180,7 +180,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;NDEBUG;USBCAPTURER_EXPORT;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\;$(SolutionDir)include\epiphan</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -189,7 +189,8 @@
       <ModuleDefinitionFile>.\USBCapturer.def</ModuleDefinitionFile>
       <ImportLibrary>$(SolutionDir)\lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ComUtility.lib;ErrorManager.lib;</AdditionalDependencies>
+      <AdditionalDependencies>ComUtility.lib;ErrorManager.lib;frmgrab.lib;opencv_world300.lib</AdditionalDependencies>
+      <DelayLoadDLLs>opencv_world300.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

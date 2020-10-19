@@ -72,6 +72,10 @@
     <IntDir>$(SolutionDir)\Int\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)D</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)Output\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Int\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -100,7 +104,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies />
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>$(SolutionDir)\lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <ImportLibrary>$(SolutionDir)lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
       <Command>copy *.h "$(SolutionDir)\include\$(ProjectName)"</Command>
@@ -138,6 +142,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ImportLibrary>$(SolutionDir)lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

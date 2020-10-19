@@ -43,7 +43,7 @@
     <PlatformToolset>v141</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -79,7 +79,7 @@
     <OutDir>$(SolutionDir)Output\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\Int\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\boost_1_55_0;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>D:\boost_1_55_0\bin\vc2012_x64\lib;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)D</TargetName>
   </PropertyGroup>
@@ -92,8 +92,7 @@
     <OutDir>$(SolutionDir)Output\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\Int\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>
-    </IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

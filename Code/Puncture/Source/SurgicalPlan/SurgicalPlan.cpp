@@ -270,10 +270,10 @@ Return Value:
 	int - Error Info
 Description:	根据平面截取轮廓图像
 *****************************************************************/
-int SurgicalPlan::GetOutline(cv::Mat &t_OutlineImg, Attitude t_Attitude)
-{
-	return LIST_NO_ERROR;
-}//GetOutline
+//int SurgicalPlan::GetOutline(cv::Mat &t_OutlineImg, Attitude t_Attitude)
+//{
+//	return LIST_NO_ERROR;
+//}//GetOutline
 
 /*****************************************************************
 Name:			GetMaskDataPtr
