@@ -21,6 +21,7 @@ Project Files Included
 #include <thread>
 #include <mutex>
 #include <atomic>
+#include <string>
 #include "Opencv2/opencv.hpp"
 
 using namespace std;
@@ -63,6 +64,7 @@ namespace USBCAPTURER
 
 	public:
 		int InitUSBDevice(CString t_strFilePathName);		//初始化B超图像采集设备
+		int InitUSBDevice(std::string t_strFilePathName);	//初始化B超图像采集设备
 		int ReleaseUSBDevice();		//释放B超图像采集设备
 
 		int StartGrab();		//开始采集B超数据

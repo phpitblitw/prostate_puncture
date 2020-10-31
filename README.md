@@ -49,6 +49,10 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 # v1.5.1 (尚未打tag)
 release版本生成完成,3d窗口创建过程中 m_p3DShowWnd->CreateWnd() 出现asseration failure debug 版本无问题。很可能是因为父窗口初始化出错
 
+# v1.6
+使用qt替换了mfc 原版本功能复现
+出现问题  窗口显示的轮廓 红色/蓝色残影
+
 
 
 

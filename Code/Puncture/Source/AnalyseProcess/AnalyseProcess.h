@@ -16,6 +16,7 @@ Library Files Included
 #include <vector>
 #include <thread>
 #include <atomic>
+#include <string>
 #include "AnalyseProcess/AnalyseConfig.h"
 #include "AnalyseProcess/PositionManager.h"
 #include "AnalyseProcess/ImageSampler.h"
@@ -68,7 +69,8 @@ namespace ANALYSEPROCESS
 		AnalyseProcess();
 		~AnalyseProcess();
 
-		int InitAnalyseProcess(CString t_strFilePathName);	//初始化分析模块
+		int InitAnalyseProcess(CString t_strFilePathName);		//初始化分析模块
+		int InitAnalyseProcess(std::string t_strFilePathName);	//初始化分析模块
 
 		void SetNDIDevicePtr(NDIOperatorPtr t_NDIOperatorPtr);			//设置NDI设备操作指针
 		void SetUSBCapturerPtr(USBCapturerPtr t_USBCapturerPtr);		//设置B超图像采集设备指针

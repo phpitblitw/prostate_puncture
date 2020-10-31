@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PunctureWindowClass</class>
+ <widget class="QMainWindow" name="PunctureWindowClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>703</width>
+    <height>508</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>PunctureWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="GraphicsView2D" name="view2D1"/>
+    </item>
+    <item row="0" column="1">
+     <widget class="QGraphicsView" name="view3D"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="GraphicsView2D" name="view2D2"/>
+    </item>
+    <item row="1" column="1">
+     <widget class="QGroupBox" name="userZone">
+      <property name="title">
+       <string>用户区</string>
+      </property>
+      <widget class="QPushButton" name="BtnRegister">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>130</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>锁定坐标</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BtnQuit">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>130</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>退出</string>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>703</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>GraphicsView2D</class>
+   <extends>QGraphicsView</extends>
+   <header>GraphicsView2D.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="PunctureWindow.qrc"/>
+ </resources>
+ <connections/>
+</ui>

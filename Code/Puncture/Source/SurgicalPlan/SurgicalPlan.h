@@ -16,6 +16,7 @@ Project Files Included
 *****************************************************************/
 #include <vector>
 #include <fstream>
+#include <string>
 #include "Opencv2/opencv.hpp"
 #include "Target.h"
 #include "NDIOperator/Attitude.h"
@@ -79,6 +80,7 @@ namespace SURGICALPLAN
 
 		int ExPortAsFileSet(CString t_strPlanFilePath);					//将手术计划导出为文件
 		int InPortAsFileSet(CString t_strFilePathName);					//导入手术计划文件
+		int InPortAsFileSet(std::string t_strFilePathName);				//导入手术计划文件
 		//int GetOutline(cv::Mat &t_OutlineImg, Attitude t_Attitude);		//根据平面截取轮廓图像
 
 		MRIDataPtr GetMRIDataPtr() { return m_pMRIData; }				//获取MRI信息

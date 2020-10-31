@@ -260,6 +260,11 @@ int SurgicalPlan::InPortAsFileSet(CString t_strFilePathName)
 	return LIST_NO_ERROR;
 }//InPortAsFileSet
 
+int SurgicalPlan::InPortAsFileSet(std::string t_strFilePathName)
+{
+	CString t_cstrFilePathName(t_strFilePathName.data());
+	return InPortAsFileSet(t_cstrFilePathName);
+}
 
 /*****************************************************************
 Name:			GetOutline

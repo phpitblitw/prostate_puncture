@@ -18,6 +18,7 @@ Project Files Included
 #include <functional>
 #include <thread>
 #include <atomic>
+#include <string>
 
 #include "Attitude.h"
 #include "afxmt.h"
@@ -70,6 +71,7 @@ namespace NDIOPERATOR
 
 	public:
 		int InitNDIDevice(CString t_strFilePathName);		//初始化NDI设备
+		int InitNDIDevice(std::string t_strFilePathName);	//初始化NDI设备
 
 		//传递数据至外部回调函数
 		//typedef std::function < void(std::vector<NDIOPERATOR::Attitude>) > Fun_UpdateAttitudeEvent;//因为可能有多个感应线，所以使用vector进行返回

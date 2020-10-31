@@ -91,6 +91,12 @@ int USBCapturer::InitUSBDevice(CString t_strFilePathName)
 	return LIST_NO_ERROR;
 }//InitNDIDevice
 
+int USBCapturer::InitUSBDevice(std::string t_strFilePathName)
+{
+	CString t_cstrFilePathName(t_strFilePathName.data());
+	return InitUSBDevice(t_cstrFilePathName);
+}
+
  /*****************************************************************
  Name:			ReleaseUSBDevice
  Inputs:

@@ -30,7 +30,7 @@ FrameData::FrameData()
 {
 	//m_pProstateMask = nullptr;
 	//m_pLesionMask = nullptr;
-	m_pFusionMask = nullptr;
+	//m_pFusionMask = nullptr;
 	m_dImageRes = 0;
 }//FrameData
 
@@ -53,10 +53,10 @@ FrameData::~FrameData()
 	//{
 	//	delete[] m_pLesionMask;
 	//}
-	if (m_pFusionMask != nullptr)
-	{
-		delete[] m_pFusionMask;
-	}
+	//if (m_pFusionMask != nullptr)
+	//{
+	//	delete[] m_pFusionMask;
+	//}
 }//~FrameData
 
 
@@ -68,29 +68,29 @@ Return Value:
 	none
 Description:	¿ª±Ù2DÑÚÄ£Í¼Ïñ¿Õ¼ä
 *****************************************************************/
-int	FrameData::CreatMaskData(int t_nShowWidth, int t_nShowHeight)
-{
-	//if (m_pProstateMask != nullptr)
-	//{
-	//	delete[] m_pProstateMask;
-	//}
-	//if (m_pLesionMask != nullptr)
-	//{
-	//	delete[] m_pLesionMask;
-	//}
-	if (m_pFusionMask != nullptr)
-		delete[] m_pFusionMask;
-	if (t_nShowWidth <= 100 || t_nShowWidth >= 4000
-		|| t_nShowHeight <= 100 || t_nShowHeight >= 4000)
-	{
-		return ER_2DImageSizeError;
-	}
-
-	//m_pProstateMask = new BYTE[t_nShowWidth * t_nShowWidth];
-	//m_pLesionMask = new BYTE[t_nShowWidth * t_nShowWidth];
-	m_pFusionMask = new BYTE[t_nShowWidth * t_nShowWidth];
-	return LIST_NO_ERROR;
-}
+//int	FrameData::CreatMaskData(int t_nShowWidth, int t_nShowHeight)
+//{
+//	//if (m_pProstateMask != nullptr)
+//	//{
+//	//	delete[] m_pProstateMask;
+//	//}
+//	//if (m_pLesionMask != nullptr)
+//	//{
+//	//	delete[] m_pLesionMask;
+//	//}
+//	if (m_pFusionMask != nullptr)
+//		delete[] m_pFusionMask;
+//	if (t_nShowWidth <= 100 || t_nShowWidth >= 4000
+//		|| t_nShowHeight <= 100 || t_nShowHeight >= 4000)
+//	{
+//		return ER_2DImageSizeError;
+//	}
+//
+//	//m_pProstateMask = new BYTE[t_nShowWidth * t_nShowWidth];
+//	//m_pLesionMask = new BYTE[t_nShowWidth * t_nShowWidth];
+//	m_pFusionMask = new BYTE[t_nShowWidth * t_nShowWidth];
+//	return LIST_NO_ERROR;
+//}
 
 /*****************************************************************
 Name:			SetPosition

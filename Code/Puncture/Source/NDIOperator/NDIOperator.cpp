@@ -127,6 +127,11 @@ int NDIOperator::InitNDIDevice(CString t_strFilePathName)
 	return LIST_NO_ERROR;
 }//InitNDIDevice
 
+int NDIOPERATOR::NDIOperator::InitNDIDevice(std::string t_strFilePathName)
+{
+	CString t_cstrFilePathName(t_strFilePathName.data());
+	return InitNDIDevice(t_cstrFilePathName);
+}
 
 /*****************************************************************
 Name:			BindUpdateAttitudeEvent
