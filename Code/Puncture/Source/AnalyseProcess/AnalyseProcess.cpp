@@ -86,6 +86,9 @@ Description:	AnalyzeProcess析构函数
 *****************************************************************/
 AnalyseProcess::~AnalyseProcess()
 {
+	delete[] m_pProstateMask;
+	delete[] m_pLesionMask;
+	delete[] m_pRectumMask;
 	this->StopAnalyse();
 }//~AnalyzeProcess
 
@@ -455,30 +458,12 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 {
 	//共享数据锁
 	CSingleLock singlelock(&m_ProcessDataMutex);
-
-	//开辟mask空间
 	singlelock.Lock();
-	//if (t_FrameDataPtr->CreatMaskData(m_nShowImageX, m_nShowImageY) != LIST_NO_ERROR)
-	//{
-	//	return;
-	//}
 
 	//计算当前截面位置
 	m_PositionManagerPtr->UpDate();	//根据已经获取的超声探头位置参数，更新MRI模拟采样位置参数
-	//m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIScanCenter, m_PositionManagerPtr->m_CurMRIRightDir, m_PositionManagerPtr->m_CurMRIUpDir, m_PositionManagerPtr->m_CurMRIMoveDir);	//为ImageSampler设置位置参数
-	//m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude.m_ScanCenter, 
-	//	m_PositionManagerPtr->m_CurMRIAttitude.m_RightDir, 
-	//	m_PositionManagerPtr->m_CurMRIAttitude.m_UpDir, 
-	//	m_PositionManagerPtr->m_CurMRIAttitude.m_MoveDir);	//为ImageSampler设置位置参数
 	m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);	//为ImageSampler设置位置参数
-
-
-	//更新当前截面姿态(借用ImageSampler的函数) TODO
-	//t_FrameDataPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude.m_ScanCenter,
-	//	m_PositionManagerPtr->m_CurMRIAttitude.m_RightDir,
-	//	m_PositionManagerPtr->m_CurMRIAttitude.m_UpDir,
-	//	m_PositionManagerPtr->m_CurMRIAttitude.m_MoveDir);
-	t_FrameDataPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);
+	t_FrameDataPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);  //将当前位置参数交付FrameDataPtr
 
 	//更新当前截面4个角点的位置(wld)
 	m_ImageSamplerPtr->GetPlaneCorners(t_FrameDataPtr->m_LeftTop, t_FrameDataPtr->m_RightTop, t_FrameDataPtr->m_LeftBottom, t_FrameDataPtr->m_RightBottom);
@@ -491,37 +476,17 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 	if (m_pRectumMask == nullptr)
 		m_pRectumMask = new BYTE[m_nShowImageX*m_nShowImageY];
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 0, 1);
-	////测试代码TODO
-	//int frontSum = 0;
-	//for (int i = 0; i < 800 * 700; i++)
-	//	frontSum += m_pProstateMask[i];
-	////测试代码TODO
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 0, 2);
 	m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 0, 3);
 	//转为CV_8UC1格式的cv::Mat形式存储
 	Mat prostateMask(m_nShowImageY, m_nShowImageX, CV_8UC1, m_pProstateMask);
 	Mat lesionMask(m_nShowImageY, m_nShowImageX, CV_8UC1, m_pLesionMask);
 	Mat rectumMask(m_nShowImageY, m_nShowImageX, CV_8UC1, m_pRectumMask);
-	////mask转为轮廓
-	//prostateContour = Mask2Edge(prostateContour);
-	//lesionContour = Mask2Edge(lesionContour);
-	//rectumContour = Mask2Edge(rectumContour);
-	////融合为FusionMask
-	//Mat fusionContour;
-	//addWeighted(prostateContour, 1, lesionContour, 2, 0, fusionContour);
-	//addWeighted(fusionContour, 1, rectumContour, 3, 0, fusionContour);
-	//imwrite("D:\\fusionMask.bmp", fusionContour);	//测试代码TODO
 	//交付FrameData
-	//memcpy(t_FrameDataPtr->m_pFusionMask, fusionContour.data, m_nShowImageX*m_nShowImageY * sizeof(BYTE));
 	t_FrameDataPtr->m_prostateMask = prostateMask;
 	t_FrameDataPtr->m_lesionMask = lesionMask;
 	t_FrameDataPtr->m_rectumMask = rectumMask;
 	singlelock.Unlock();
-
-	////裁剪几个截面
-	////TODO 原图截面
-	//m_ImageSamplerPtr->GetSampleMaskPlan(t_FrameDataPtr->m_pProstateMask, 0, 0);
-	//m_ImageSamplerPtr->GetSampleMaskPlan(t_FrameDataPtr->m_pLesionMask, 0, 1);
 	return;
 }
 

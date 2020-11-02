@@ -109,9 +109,9 @@ void PunctureWindow::OnTimerTimeout()
 	if(m_b2DAcquired)
 	{
 		ui.view2D1->LoadImg(m_FrameDataPtr->m_USBImage);
-		//ui.view2D1->LoadProstateMask(m_FrameDataPtr->m_prostateMask);
+		ui.view2D1->LoadProstateMask(m_FrameDataPtr->m_prostateMask);
 		ui.view2D1->LoadLesionMask(m_FrameDataPtr->m_lesionMask);
-		//ui.view2D1->LoadRectumMask(m_FrameDataPtr->m_rectumMask);
+		ui.view2D1->LoadRectumMask(m_FrameDataPtr->m_rectumMask);
 		ui.view2D1->ShowImg();
 	}
 	//3Dœ‘ æ
