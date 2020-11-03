@@ -30,44 +30,6 @@ Description:	USBConfig构造函数
 *****************************************************************/
 USBConfig::USBConfig()
 {
-	////B超坐标轴区域参数
-	//m_Axis.x = 0;
-	//m_Axis.y = 0;
-	//m_Axis.width = 0;
-	//m_Axis.height = 0;
-	
-	//右侧坐标轴坐标 用于判断分辨率
-	m_RightAxisRect.x = 0;
-	m_RightAxisRect.y = 0;
-	m_RightAxisRect.width = 0;
-	m_RightAxisRect.height = 0;
-
-	//左侧坐标轴坐标 用于判断单平面/双平面
-	m_UpAxisRect.x = 0;
-	m_UpAxisRect.y = 0;
-	m_UpAxisRect.width = 0;
-	m_UpAxisRect.height = 0;
-	m_DownAxisRect.x = 0;
-	m_DownAxisRect.y = 0;
-	m_DownAxisRect.width = 0;
-	m_DownAxisRect.height = 0;
-
-	//单屏幕下的参数
-	m_FullRect.x = 0;
-	m_FullRect.y = 0;
-	m_FullRect.width = 0;
-	m_FullRect.height = 0;
-
-	//双屏幕下的参数
-	m_UpRect.x = 0;
-	m_UpRect.y = 0;
-	m_UpRect.width = 0;
-	m_UpRect.height = 0;
-
-	m_DownRect.x = 0;
-	m_DownRect.y = 0;
-	m_DownRect.width = 0;
-	m_DownRect.height = 0;
 
 }//USBConfig
 
@@ -108,48 +70,61 @@ int USBConfig::LoadConfigFile(CString t_strFilePathName)
 		return ER_OpenUSBConfigFileFailed;
 	}
 
-	////B超坐标轴区域坐标
-	//t_ScanConfig.Move2Section(_T("Axis"));
-	//t_ScanConfig.ReadKey(_T("StartX"), m_Axis.x);
-	//t_ScanConfig.ReadKey(_T("StartY"), m_Axis.y);
-	//t_ScanConfig.ReadKey(_T("Width"), m_Axis.width);
-	//t_ScanConfig.ReadKey(_T("Height"), m_Axis.height);
+	//双平面的左侧长条区域
+	t_ScanConfig.Move2Section(_T("Dual Left Bar"));
+	t_ScanConfig.ReadKey(_T("x"), m_DualLeftBarRect.x);
+	t_ScanConfig.ReadKey(_T("y"), m_DualLeftBarRect.y);
+	t_ScanConfig.ReadKey(_T("width"), m_DualLeftBarRect.width);
+	t_ScanConfig.ReadKey(_T("height"), m_DualLeftBarRect.height);
 
-	//右侧坐标轴坐标 用于判断分辨率
-	t_ScanConfig.Move2Section(_T("Right Axis"));
-	t_ScanConfig.ReadKey(_T("StartX"), m_RightAxisRect.x);
-	t_ScanConfig.ReadKey(_T("StartY"), m_RightAxisRect.y);
-	t_ScanConfig.ReadKey(_T("Width"), m_RightAxisRect.width);
-	t_ScanConfig.ReadKey(_T("Height"), m_RightAxisRect.height);
+	//指示横断面(T)/矢状面(S)的字符区域
+	t_ScanConfig.Move2Section(_T("Char Sensor Type"));
+	t_ScanConfig.ReadKey(_T("x"), m_CharSensorTypeRect.x);
+	t_ScanConfig.ReadKey(_T("y"), m_CharSensorTypeRect.y);
+	t_ScanConfig.ReadKey(_T("width"), m_CharSensorTypeRect.width);
+	t_ScanConfig.ReadKey(_T("height"), m_CharSensorTypeRect.height);
 
-	//左侧坐标轴坐标 用于判断单平面/双平面
-	t_ScanConfig.Move2Section(_T("Left Axis"));
-	t_ScanConfig.ReadKey(_T("StartX_Up"), m_UpAxisRect.x);
-	t_ScanConfig.ReadKey(_T("StartY_Up"), m_UpAxisRect.y);
-	t_ScanConfig.ReadKey(_T("Width_Up"), m_UpAxisRect.width);
-	t_ScanConfig.ReadKey(_T("Height_Up"), m_UpAxisRect.height);
+	//单平面 右侧坐标轴区域
+	t_ScanConfig.Move2Section(_T("One Plane Right Axis"));
+	t_ScanConfig.ReadKey(_T("x"), m_OnePlaneRightAxisRect.x);
+	t_ScanConfig.ReadKey(_T("y"), m_OnePlaneRightAxisRect.y);
+	t_ScanConfig.ReadKey(_T("width"), m_OnePlaneRightAxisRect.width);
+	t_ScanConfig.ReadKey(_T("height"), m_OnePlaneRightAxisRect.height);
 
-	t_ScanConfig.ReadKey(_T("StartX_Down"), m_DownAxisRect.x);
-	t_ScanConfig.ReadKey(_T("StartY_Down"), m_DownAxisRect.y);
-	t_ScanConfig.ReadKey(_T("Width_Down"), m_DownAxisRect.width);
-	t_ScanConfig.ReadKey(_T("Height_Down"), m_DownAxisRect.height);
+	//双平面模式 上方(横断面)右侧坐标轴区域
+	t_ScanConfig.Move2Section(_T("Dual Plane Up Right Axis"));
+	t_ScanConfig.ReadKey(_T("x"), m_DualPlaneUpRightAxisRect.x);
+	t_ScanConfig.ReadKey(_T("y"), m_DualPlaneUpRightAxisRect.y);
+	t_ScanConfig.ReadKey(_T("width"), m_DualPlaneUpRightAxisRect.width);
+	t_ScanConfig.ReadKey(_T("height"), m_DualPlaneUpRightAxisRect.height);
 
-	//单平面/双平面ROI
-	t_ScanConfig.Move2Section(_T("ROI"));
-	t_ScanConfig.ReadKey(_T("StartX_Full"), m_FullRect.x);
-	t_ScanConfig.ReadKey(_T("StartY_Full"), m_FullRect.y);
-	t_ScanConfig.ReadKey(_T("Width_Full"), m_FullRect.width);
-	t_ScanConfig.ReadKey(_T("Height_Full"), m_FullRect.height);
+	//双平面模式 下方(矢状面)右侧坐标轴区域
+	t_ScanConfig.Move2Section(_T("Dual Plane Down Right Axis"));
+	t_ScanConfig.ReadKey(_T("x"), m_DualPlaneDownRightAxisRect.x);
+	t_ScanConfig.ReadKey(_T("y"), m_DualPlaneDownRightAxisRect.y);
+	t_ScanConfig.ReadKey(_T("width"), m_DualPlaneDownRightAxisRect.width);
+	t_ScanConfig.ReadKey(_T("height"), m_DualPlaneDownRightAxisRect.height);
 
-	t_ScanConfig.ReadKey(_T("StartX_Up"), m_UpRect.x);
-	t_ScanConfig.ReadKey(_T("StartY_Up"), m_UpRect.y);
-	t_ScanConfig.ReadKey(_T("Width_Up"), m_UpRect.width);
-	t_ScanConfig.ReadKey(_T("Height_Up"), m_UpRect.height);
+	//单平面模式下 图像区域
+	t_ScanConfig.Move2Section(_T("One Plane ROI"));
+	t_ScanConfig.ReadKey(_T("x"), m_OnePlaneROI.x);
+	t_ScanConfig.ReadKey(_T("y"), m_OnePlaneROI.y);
+	t_ScanConfig.ReadKey(_T("width"), m_OnePlaneROI.width);
+	t_ScanConfig.ReadKey(_T("height"), m_OnePlaneROI.height);
 
-	t_ScanConfig.ReadKey(_T("StartX_Down"), m_DownRect.x);
-	t_ScanConfig.ReadKey(_T("StartY_Down"), m_DownRect.y);
-	t_ScanConfig.ReadKey(_T("Width_Down"), m_DownRect.width);
-	t_ScanConfig.ReadKey(_T("Height_Down"), m_DownRect.height);
+	//双平面模式下 上方(横断面)图像区域
+	t_ScanConfig.Move2Section(_T("Dual Up ROI"));
+	t_ScanConfig.ReadKey(_T("x"), m_DualUpROI.x);
+	t_ScanConfig.ReadKey(_T("y"), m_DualUpROI.y);
+	t_ScanConfig.ReadKey(_T("width"), m_DualUpROI.width);
+	t_ScanConfig.ReadKey(_T("height"), m_DualUpROI.height);
+
+	//双平面模式下 下方(矢状面)图像区域
+	t_ScanConfig.Move2Section(_T("Dual Down ROI"));
+	t_ScanConfig.ReadKey(_T("x"), m_DualDownROI.x);
+	t_ScanConfig.ReadKey(_T("y"), m_DualDownROI.y);
+	t_ScanConfig.ReadKey(_T("width"), m_DualDownROI.width);
+	t_ScanConfig.ReadKey(_T("height"), m_DualDownROI.height);
 
 	return LIST_NO_ERROR;
 }//LoadConfigFile

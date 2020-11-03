@@ -46,6 +46,6 @@ enum ErrorCodeType {
 	ER_OpenUSBConfigFileFailed			= 0x00400002,	//打开NDI模块ini文件失败
 	ER_OpenUSBDeviceFailed				= 0x00400003,	//打开USB采集卡设备失败
 	ER_NoCapturePerFrameFun				= 0x00400004,	//未设置采集B超帧后调用的回调函数
-
+	ER_NoLetterTemplate					= 0x00400005	//未找到S,T的字符模板
 
 };

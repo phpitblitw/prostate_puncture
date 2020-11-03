@@ -26,28 +26,28 @@ void GraphicsView2D::LoadImg(cv::Mat img)
 
 void GraphicsView2D::LoadProstateMask(cv::Mat prostateMask)
 {
-	if (!prostateMask.data)
+	if (prostateMask.empty())
 		return;
-	m_prostateMask = Mask2Edge(prostateMask);
-	cv::Mat prostatePalette(prostateMask.rows, prostateMask.cols, CV_8UC3, cv::Scalar(0, 255, 0));
+	m_prostateMask = Mask2Edge(prostateMask.clone());
+	cv::Mat prostatePalette(m_prostateMask.rows, m_prostateMask.cols, CV_8UC3, cv::Scalar(0, 255, 0));
 	prostatePalette.copyTo(m_img, m_prostateMask);
 }
 
 void GraphicsView2D::LoadLesionMask(cv::Mat lesionMask)
 {
-	if (!lesionMask.data)
+	if (lesionMask.empty())
 		return;
-	m_lesionMask = Mask2Edge(lesionMask);
-	cv::Mat lesionPalette(lesionMask.rows, lesionMask.cols, CV_8UC3, cv::Scalar(0, 0, 255));
+	m_lesionMask = Mask2Edge(lesionMask.clone());
+	cv::Mat lesionPalette(m_lesionMask.rows, m_lesionMask.cols, CV_8UC3, cv::Scalar(0, 0, 255));
 	lesionPalette.copyTo(m_img, m_lesionMask);
 }
 
 void GraphicsView2D::LoadRectumMask(cv::Mat rectumMask)
 {
-	if (!rectumMask.data)
+	if (rectumMask.empty())
 		return;
-	m_rectumMask = Mask2Edge(rectumMask);
-	cv::Mat rectumPalette(rectumMask.rows, rectumMask.cols, CV_8UC3, cv::Scalar(255, 0, 0));
+	m_rectumMask = Mask2Edge(rectumMask.clone());
+	cv::Mat rectumPalette(m_rectumMask.rows, m_rectumMask.cols, CV_8UC3, cv::Scalar(255, 0, 0));
 	rectumPalette.copyTo(m_img, m_rectumMask);
 }
 
@@ -69,6 +69,14 @@ cv::Mat GraphicsView2D::Mask2Edge(cv::Mat src)
 	int ddepth = CV_16S;
 	int scale = 1, delta = 0;
 	cv::Mat res, grad_x, grad_y, grad;
+	//TODO
+	//cv::imwrite("D:\\other\\beforeSobel.bmp", src);
+	//int temp1 = src.type();
+	//int temp2 = grad_x.type();
+	//int temp3 = grad_y.type();
+	//int temp4 = grad.type();
+	//int temp5 = res.type();
+	//TODO
 	//求水平 竖直方向梯度
 	Sobel(src, grad_x, ddepth, 1, 0, 3, scale, delta, cv::BORDER_DEFAULT);
 	Sobel(src, grad_y, ddepth, 0, 1, 3, scale, delta, cv::BORDER_DEFAULT);
@@ -79,5 +87,7 @@ cv::Mat GraphicsView2D::Mask2Edge(cv::Mat src)
 	addWeighted(grad_x, 1, grad_y, 1, 0, grad);
 	//边缘强度置为1
 	threshold(grad, res, 1, 1, 0);
+
+	//cv::imwrite("D:\\other\\afterSobel.bmp", src);  //TODO
 	return res;
 }

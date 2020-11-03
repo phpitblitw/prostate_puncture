@@ -164,7 +164,7 @@ void ANALYSEPROCESS::ImageSampler::SetMRIPixelSize(double dPixelSizeX, double dP
 Name:			GetSampleMaskPlan
 Inputs:
 	MaskDataType* pImage - 结果mask数据指针
-	int nScanType - B超扫描类型，0-冠状面，1-矢状面
+	int nScanType - B超扫描类型，0-横截面，1-矢状面
 	int nMaskType - MRI模拟采样mask类型，1-前列腺，2-病灶,3-直肠
 Return Value:
 	int - error info

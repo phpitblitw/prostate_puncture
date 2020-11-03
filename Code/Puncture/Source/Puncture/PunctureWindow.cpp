@@ -77,8 +77,8 @@ int PunctureWindow::InitWindow()
 
 	//设置显示模块尺寸(逻辑像素数  即截取的B超图像尺寸) //TODO 是否应该监听B超的图像参数改动？(单平面/双平面，体素大小)
 	int t_nShowImageX, t_nShowImageY;
-	m_USBCapturerPtr->GetImageSize(t_nShowImageX, t_nShowImageY);
-	m_AnalyseProcessPtr->Set2DImageSize(t_nShowImageX, t_nShowImageY);
+	//m_USBCapturerPtr->GetImageSize(t_nShowImageX, t_nShowImageY);
+	//m_AnalyseProcessPtr->Set2DImageSize(t_nShowImageX, t_nShowImageY);
 
 	//启动分析
 	m_NDIOperatorPtr->StartTracking();
@@ -105,20 +105,40 @@ void PunctureWindow::OnTimerTimeout()
 	//检测数据是否导入
 	if (m_FrameDataPtr == nullptr)
 		return;
+
+	m_showMutex.lock();
 	//2D显示
 	if(m_b2DAcquired)
 	{
-		ui.view2D1->LoadImg(m_FrameDataPtr->m_USBImage);
-		ui.view2D1->LoadProstateMask(m_FrameDataPtr->m_prostateMask);
-		ui.view2D1->LoadLesionMask(m_FrameDataPtr->m_lesionMask);
-		ui.view2D1->LoadRectumMask(m_FrameDataPtr->m_rectumMask);
-		ui.view2D1->ShowImg();
+		if (!m_FrameDataPtr->m_USImgT.empty())  //横断面
+		{
+			ui.view2D1->LoadImg(m_FrameDataPtr->m_USImgT);
+			ui.view2D1->LoadProstateMask(m_FrameDataPtr->m_prostateMaskT);
+			ui.view2D1->LoadLesionMask(m_FrameDataPtr->m_lesionMaskT);
+			ui.view2D1->LoadRectumMask(m_FrameDataPtr->m_rectumMaskT);
+			ui.view2D1->ShowImg();
+		}
+		
+		if (!m_FrameDataPtr->m_USImgS.empty())  //矢状面
+		{
+			ui.view2D2->LoadImg(m_FrameDataPtr->m_USImgS);
+			ui.view2D2->LoadProstateMask(m_FrameDataPtr->m_prostateMaskS);
+			ui.view2D2->LoadLesionMask(m_FrameDataPtr->m_lesionMaskS);
+			ui.view2D2->LoadRectumMask(m_FrameDataPtr->m_rectumMaskS);
+			ui.view2D2->ShowImg();
+		}
+		//ui.view2D1->LoadImg(m_FrameDataPtr->m_USBImage);
+		//ui.view2D1->LoadProstateMask(m_FrameDataPtr->m_prostateMask);
+		//ui.view2D1->LoadLesionMask(m_FrameDataPtr->m_lesionMask);
+		//ui.view2D1->LoadRectumMask(m_FrameDataPtr->m_rectumMask);
+		//ui.view2D1->ShowImg();
 	}
 	//3D显示
 	if(m_b3DAcquired)
 	{
 		//TODO
 	}
+	m_showMutex.unlock();
 }
 
 void PunctureWindow::OnBtnRegisterClicked()

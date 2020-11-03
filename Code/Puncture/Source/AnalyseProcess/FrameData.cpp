@@ -31,7 +31,7 @@ FrameData::FrameData()
 	//m_pProstateMask = nullptr;
 	//m_pLesionMask = nullptr;
 	//m_pFusionMask = nullptr;
-	m_dImageRes = 0;
+	//m_dImageRes = 0;
 }//FrameData
 
 

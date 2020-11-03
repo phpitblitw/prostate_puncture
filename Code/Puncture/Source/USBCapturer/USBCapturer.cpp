@@ -17,6 +17,7 @@
 #include "USBConfig.h"
 #include "ErrorManager//ErrorCodeDefine.h"
 #include "ComUtility/SysPathManager.h"
+#include <string>
 //#include "opencv2/highgui.hpp"
 //#include "opencv2/imgproc/imgproc.hpp"
 
@@ -37,10 +38,11 @@ USBCapturer::USBCapturer()
 	this->m_pDevice = nullptr;
 	this->m_bRunning = false;
 	this->m_CapturePerFrameFun = nullptr;
-	this->m_bGetParameters = false;
+	//this->m_bGetParameters = false;
 
-	m_dImageRes = 1;
-	m_nScreenType = 1;
+	m_scanType = UNDEFINED;
+	m_dPixelSizeT = -1;
+	m_dPixelSizeS = -1;
 }//USBCapturer
 
 
@@ -70,7 +72,7 @@ int USBCapturer::InitUSBDevice(CString t_strFilePathName)
 {
 	Mat image;	//用于计算B超参数
 	FrmGrabNet_Init(); //初始化FrmGrab库的数据结构。在windows上非必须步骤。dll会自行初始化
-	
+
 	m_pDevice = FrmGrabLocal_Open();//打开默认支持设备,适用于单台设备连接
 	if (NULL == m_pDevice)
 	{
@@ -84,10 +86,18 @@ int USBCapturer::InitUSBDevice(CString t_strFilePathName)
 
 		return ER_OpenUSBConfigFileFailed;
 	}
-	
-	//从图像计算B超参数
-	GrabOneFrame(image);
-	CalParameters(image);
+
+	//载入字母T,S的截图
+	char exePath[MAX_PATH];
+	memset(exePath, 0, MAX_PATH);
+	GetModuleFileNameA(NULL, exePath, MAX_PATH);  //找到当前exe文件名
+	std::string strResourceRootPath = std::string(exePath);
+	strResourceRootPath = strResourceRootPath.substr(0, strResourceRootPath.rfind('\\')) + "\\Res\\";  //生成config文件夹路径
+	m_imgCharS = cv::imread(strResourceRootPath + "charS.bmp", cv::IMREAD_GRAYSCALE);
+	m_imgCharT = cv::imread(strResourceRootPath + "charT.bmp", cv::IMREAD_GRAYSCALE);
+	if (!m_imgCharS.data || !m_imgCharT.data)
+		return ER_NoLetterTemplate;
+
 	return LIST_NO_ERROR;
 }//InitNDIDevice
 
@@ -304,22 +314,23 @@ void USBCapturer::Grab()
 			cv::Mat iDst(iVideoMode.height, iVideoMode.width, CV_8UC3);//这里nHeight为760,nWidth为1024,8UC3表示8bit uchar 无符号类型,3通道值
 			cvtColor(iSrc, iDst, cv::COLOR_YUV2BGR_YV12);
 
-			cv::Mat t_ImageA;
-			cv::Mat t_ImageB;
-			if (m_nScreenType == 1)	//根据布局拷贝对应图像区域图像，采用clone
+			CalParameters(iDst);  //根据单张截图 更新参数
+			cv::Mat t_imgT;
+			cv::Mat t_imgS;
+			if (m_scanType == DUAL_PLANE)
 			{
-				t_ImageA = iDst(USBConfig::Instance().m_FullRect).clone();
+				t_imgT = iDst(USBConfig::Instance().m_DualUpROI).clone();
+				t_imgS = iDst(USBConfig::Instance().m_DualDownROI).clone();
 			}
-			else
-			{
-				t_ImageA = iDst(USBConfig::Instance().m_UpRect).clone();
-				t_ImageB = iDst(USBConfig::Instance().m_DownRect).clone();
-			}
-
+			else if (m_scanType == TRANSVERSE_ONLY)
+				t_imgT = iDst(USBConfig::Instance().m_OnePlaneROI).clone();
+			else if (m_scanType == SAGITTAL_ONLY)
+				t_imgS = iDst(USBConfig::Instance().m_OnePlaneROI).clone();
+			
 			//检查回调函数
 			if (m_CapturePerFrameFun != nullptr)
 			{
-				m_CapturePerFrameFun(t_ImageA, t_ImageB, m_dImageRes);
+				m_CapturePerFrameFun(t_imgT, t_imgS, m_dPixelSizeT, m_dPixelSizeS);
 			}			
 		}
 	}
@@ -328,77 +339,28 @@ void USBCapturer::Grab()
 
  /*****************************************************************
  Name:			CalParameters
- Inputs:
+ Inputs: t_img cv::Mat(8UC3) - 输入图片
  none
  Return Value:
  int - Error Info
- Description:	对采集图像进行分析，得到参数，
-				参数A：缩放比例
-				参数B：单/双屏
+ Description:	对采集图像进行分析，更新参数
  *****************************************************************/
-void USBCapturer::CalParameters(Mat t_Image)
+void USBCapturer::CalParameters(Mat t_img)
 {
-	this->m_dImageRes = 0;
-	this->m_nScreenType = 0;	//0-初始 1-单平面 2-双平面
-	//转为灰度图
-	Mat gryImage;
-	cv::cvtColor(t_Image, gryImage, cv::COLOR_BGR2GRAY);
-	//计算参数
-	this->m_dImageRes = this->CalResolution(gryImage);
-	this->m_nScreenType = this->CalScreenType(gryImage);
+	m_scanType = CalScanType(t_img);
+
+	m_dPixelSizeT = -1;
+	m_dPixelSizeS = -1;
+	if (m_scanType == DUAL_PLANE)
+	{
+		m_dPixelSizeT = CalPixelSize(t_img(USBConfig::Instance().m_DualPlaneUpRightAxisRect));
+		m_dPixelSizeS = CalPixelSize(t_img(USBConfig::Instance().m_DualPlaneDownRightAxisRect));
+	}
+	else if (m_scanType == TRANSVERSE_ONLY)
+		m_dPixelSizeT = CalPixelSize(t_img(USBConfig::Instance().m_OnePlaneRightAxisRect));
+	else if (m_scanType == SAGITTAL_ONLY)
+		m_dPixelSizeS = CalPixelSize(t_img(USBConfig::Instance().m_OnePlaneRightAxisRect));
 }//GetParameters
-
- /*****************************************************************
- Name:			CalScale
- Inputs:
- none
- Return Value:
- int - Error Info
- Description:	对采集图像进行分析，得到缩放比例，即1个像素对应的物理尺寸(mm)
- *****************************************************************/
-double USBCapturer::CalResolution(Mat t_Image)
-{
-	int x, y, y1, y2;
-	int dst;//为两个坐标点的距离（像素）,即1cm对应多少像素点
-	double resolution;
-	CvRect m_RightAxisRect=USBConfig::Instance().m_RightAxisRect;
-	int *hist = new int[m_RightAxisRect.height];
-	memset(hist, 0, sizeof(int)*(m_RightAxisRect.height));
-
-	//对于坐标轴区域，对前景点的数量作水平方向的积分
-	for (y = m_RightAxisRect.y; y < m_RightAxisRect.y + m_RightAxisRect.height; y++)
-	{
-		for (x = m_RightAxisRect.x; x < m_RightAxisRect.x + m_RightAxisRect.width; x++)
-		{
-			if (t_Image.at<uchar>(y, x) > 50)	//对于unsigned char 类型的像素点，判断是否为前景点
-			{
-				hist[y - m_RightAxisRect.y]++;
-			}
-		}
-	}
-
-	//找出两个坐标点之间的距离（像素数）
-	for (y = m_RightAxisRect.y; y < m_RightAxisRect.y + m_RightAxisRect.height; y++)
-	{
-		if (hist[y - m_RightAxisRect.y] == 0 && hist[y - m_RightAxisRect.y + 1] > 0)
-		{
-			y1 = y;
-			break;
-		}
-	}
-	for (y++; y < m_RightAxisRect.y + m_RightAxisRect.height; y++)
-	{
-		if (hist[y - m_RightAxisRect.y] == 0 && hist[y - m_RightAxisRect.y + 1] > 0)
-		{
-			y2 = y;
-			break;
-		}
-	}
-	dst = y2 - y1;
-	resolution = 10.0 / dst;
-	delete[] hist;
-	return resolution;
-}//GetScale
 
  /*****************************************************************
  Name:			CalScreenType
@@ -407,85 +369,83 @@ double USBCapturer::CalResolution(Mat t_Image)
  Return Value:	int - 单屏/双屏
  Description:	对采集图像进行分析，得到单/双屏信息
  *****************************************************************/
-int USBCapturer::CalScreenType(Mat t_Image)
+ScanType USBCapturer::CalScanType(cv::Mat t_img)
 {
-	int x, y;
-	int cntSumUp = 0, cntSumDown = 0;
-	double division; //上下区域 前景点数量之比
-	CvRect m_UpAxisRect=USBConfig::Instance().m_UpAxisRect;
-	CvRect m_DownAxisRect=USBConfig::Instance().m_DownAxisRect;
-	/*m_UpAxisRect.x = 600;
-	m_UpAxisRect.width = 100;
-	m_UpAxisRect.y = 240;
-	m_UpAxisRect.height = 260;
-	m_DownAxisRect.x = 600;
-	m_DownAxisRect.width = 100;
-	m_DownAxisRect.y = 760;
-	m_DownAxisRect.height = 260;*/
-	//坐标轴上半区域的前景点数量累加
-	for (y = m_UpAxisRect.y; y < m_UpAxisRect.y + m_UpAxisRect.height; y++)
-	{
-		for (x = m_UpAxisRect.x; x < m_UpAxisRect.x + m_UpAxisRect.width; x++)
-		{
-			if (t_Image.at<uchar>(y, x) > 50)	//对于unsigned char 类型的像素点，判断是否为前景点
-			{
-				cntSumUp++;
-			}
-		}
-	}
-	//坐标轴下半区域的前景点数量累加
-	for (y = m_DownAxisRect.y; y < m_DownAxisRect.y + m_DownAxisRect.height; y++)
-	{
-		for (x = m_DownAxisRect.x; x < m_DownAxisRect.x + m_DownAxisRect.width; x++)
-		{
-			if (t_Image.at<uchar>(y, x) > 50)	//对于unsigned char 类型的像素点，判断是否为前景点
-			{
-				cntSumDown++;
-			}
-		}
-	}
-	
-	division = double(cntSumUp) / cntSumDown;
-	if (division < 0.5)
-	{
-		return 1;//单平面
-	}
-	else
-	{
-		return 2;//双平面
-	}
-}
-
-double USBCapturer::GetResolution()
-{
-	return this->m_dImageRes;
+	int numForeGround;
+	cv::Mat imgLeftBar = t_img(USBConfig::Instance().m_DualLeftBarRect).clone();
+	cv::Mat imgCharArea = t_img(USBConfig::Instance().m_CharSensorTypeRect).clone();
+	cv::Mat imgDiffT, imgDiffS;
+	//判断是否为双平面
+	cv::cvtColor(imgLeftBar, imgLeftBar, cv::COLOR_BGR2GRAY);
+	cv::threshold(imgLeftBar, imgLeftBar, 50, 1, CV_THRESH_BINARY);
+	numForeGround = cv::countNonZero(imgLeftBar);
+	if (numForeGround > 200)
+		return DUAL_PLANE;
+	//判断是否为横断面(T)
+	cv::cvtColor(imgCharArea, imgCharArea, cv::COLOR_BGR2GRAY);
+	cv::absdiff(imgCharArea, m_imgCharT, imgDiffT);
+	cv::threshold(imgDiffT, imgDiffT, 50, 1, CV_THRESH_BINARY);
+	numForeGround = cv::countNonZero(imgDiffT);
+	if (numForeGround < 20)
+		return TRANSVERSE_ONLY;
+	//判断是否为矢状面(S)
+	cv::absdiff(imgCharArea, m_imgCharS, imgDiffS);
+	numForeGround = cv::countNonZero(imgDiffS);
+	if (numForeGround < 20)
+		return SAGITTAL_ONLY;
+	//都不是的话 返回"未定义"的结果
+	return UNDEFINED;
 }
 
 /*****************************************************************
-Name:			GetImageSize
-Inputs:
-	cx int - 冠状面宽度（像素数）
-	cx int - 冠状面高度（像素数）
-Return Value:	
-	nono
-Description:	返回图片尺寸(由单/双平面确定)
+Name:			CalPixelSize
+Inputs: t_imgAxis cv::Mat(CV_8UC3) - 坐标轴区域图片
+none
+Return Value: double - 像素的物理尺寸
+int - Error Info
+Description:	对采集图像进行分析，得到缩放比例，即1个像素对应的物理尺寸(mm)
 *****************************************************************/
-void USBCapturer::GetImageSize(int &cx, int &cy)
+double USBCapturer::CalPixelSize(cv::Mat t_imgAxis)
 {
-	if (m_nScreenType == 1)//单平面
+	int y, y1 = -1, y2 = -1;
+	int distance;  //两个坐标点之间的距离(像素数),即1cm对应多少像素点
+	int *hist = new int[t_imgAxis.rows];
+	double pixelSize;
+
+	//做前景点数量的水平积分
+	cv::cvtColor(t_imgAxis, t_imgAxis, cv::COLOR_BGR2GRAY);
+	cv::threshold(t_imgAxis, t_imgAxis, 50, 1, CV_THRESH_BINARY);
+	memset(hist, 0, sizeof(int)*t_imgAxis.rows);
+	for (y = 0; y < t_imgAxis.rows; y++)
 	{
-		cx = USBConfig::Instance().m_FullRect.width;
-		cy = USBConfig::Instance().m_FullRect.height;
+		hist[y] = cv::countNonZero(t_imgAxis(CvRect(0, y, t_imgAxis.cols, 1)));
 	}
-	else if (m_nScreenType == 2)//双平面
+
+	//找出两个坐标点之间的距离(像素数)
+	for (y = 0; y < t_imgAxis.rows - 1; y++)
 	{
-		cx = USBConfig::Instance().m_UpAxisRect.width;
-		cy = USBConfig::Instance().m_UpAxisRect.height;
+		if (hist[y] == 0 && hist[y + 1] > 0)
+		{
+			y1 = y;
+			break;
+		}
 	}
-	else//默认值
+	for (y++; y < t_imgAxis.rows - 1; y++)
 	{
-		cx = 0;
-		cy = 0;
+		if (hist[y] == 0 && hist[y + 1] > 0)
+		{
+			y2 = y;
+			break;
+		}
 	}
-	return;
+
+	//计算
+	if (y1 >= 0 && y2 >= 0)
+		distance = y2 - y1;
+	pixelSize = 10.0 / distance;
+
+	delete[] hist;
+	return pixelSize;
+
 }
+

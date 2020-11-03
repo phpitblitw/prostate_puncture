@@ -86,9 +86,6 @@ Description:	AnalyzeProcess析构函数
 *****************************************************************/
 AnalyseProcess::~AnalyseProcess()
 {
-	delete[] m_pProstateMask;
-	delete[] m_pLesionMask;
-	delete[] m_pRectumMask;
 	this->StopAnalyse();
 }//~AnalyzeProcess
 
@@ -153,7 +150,7 @@ void AnalyseProcess::SetUSBCapturerPtr(USBCapturerPtr t_USBCapturerPtr)
 {
 	m_USBCapturerPtr = t_USBCapturerPtr;
 
-	m_USBCapturerPtr->BindCapturePerFrameEvent(std::bind(&AnalyseProcess::UpdateUSBData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	m_USBCapturerPtr->BindCapturePerFrameEvent(std::bind(&AnalyseProcess::UpdateUSBData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 }//SetUSBCapturerPtr
 
 
@@ -291,7 +288,7 @@ void AnalyseProcess::Analyse()
 		CSingleLock singlelock(&m_ProcessDataMutex);
 		singlelock.Lock();
 		//如果有待处理的，来自B超采集模块的图像数据，则计算对应的MRI模拟采样，生成对应的FrameData
-		if (!m_NextFrameDataPtr->m_USBImage.empty())
+		if(m_NextFrameDataPtr->m_USImgT.data || m_NextFrameDataPtr->m_USImgS.data)
 		{
 			m_CurrentFrameDataPtr = m_NextFrameDataPtr;
 			m_NextFrameDataPtr.reset(new FrameData);
@@ -326,17 +323,9 @@ int AnalyseProcess::Register()
 	//在配准前，默认NDI设备已经采集到当前超声探头的位置
 	//将MRI模拟采样的base位置传递给PositionManager
 	m_PositionManagerPtr->m_BaseMRIAttitude = AnalyseConfig::Instance().m_Attitude;
-	//m_PositionManagerPtr->m_BaseMRIScanCenter = AnalyseConfig::Instance().m_ScanCenter;
-	//m_PositionManagerPtr->m_BaseMRIRightDir = AnalyseConfig::Instance().m_RightDir;
-	//m_PositionManagerPtr->m_BaseMRIUpDir = AnalyseConfig::Instance().m_UpDir;
-	//m_PositionManagerPtr->m_BaseMRIMoveDir = AnalyseConfig::Instance().m_MoveDir;
 	//将当前超声位置作为超声base位置，记录在PositionManager中
 	singlelock.Lock();
 	m_PositionManagerPtr->m_BaseUSAttitude = m_PositionManagerPtr->m_CurUSAttitude;
-	//m_PositionManagerPtr->m_BaseUSScanCenter = m_PositionManagerPtr->m_CurUSScanCenter;
-	//m_PositionManagerPtr->m_BaseUSRightDir = m_PositionManagerPtr->m_CurUSRightDir;
-	//m_PositionManagerPtr->m_BaseUSUpDir = m_PositionManagerPtr->m_CurUSUpDir;
-	//m_PositionManagerPtr->m_BaseUSMoveDir = m_PositionManagerPtr->m_CurUSMoveDir;
 	singlelock.Unlock();
 	//由 US的base位置、MRI模拟采样的base位置，计算变换矩阵
 	if (m_PositionManagerPtr->CalculateTransformMatrix() != LIST_NO_ERROR)
@@ -377,15 +366,38 @@ Return Value:
 	none
 Description:	更新USB数据，回调函数，由US模块调用
 *****************************************************************/
-void AnalyseProcess::UpdateUSBData(cv::Mat t_USBImgA, cv::Mat t_USBImgB, double m_dImageRes)
+//void AnalyseProcess::UpdateUSBData(cv::Mat t_USBImgA, cv::Mat t_USBImgB, double m_dImageRes)
+//{
+//	CSingleLock singlelock(&m_ProcessDataMutex);
+//	singlelock.Lock();
+//	m_NextFrameDataPtr->m_USBImage = t_USBImgA;
+//	m_NextFrameDataPtr->m_dImageRes = m_dImageRes;
+//	
+//	m_ImageSamplerPtr->SetUSPixelSize(m_dImageRes);	//设置B超图像像素大小(一个像素的物理尺寸)
+//	m_ImageSamplerPtr->SetImageSize(t_USBImgA.cols, t_USBImgA.rows);	//设置B超图像大小(像素数)
+//	singlelock.Unlock();
+//}//UpdateUSBData
+
+/*****************************************************************
+Name:			UpdateUSBData
+Inputs:
+	cv::Mat t_USBImgA - 全图或上半区图像
+	cv::Mat t_USBImgB - 下半区图像，可能为空
+	int m_dImageRes - 缩放比例
+Return Value:
+	none
+Description:	更新USB数据，回调函数，由US模块调用
+*****************************************************************/
+void AnalyseProcess::UpdateUSBData(cv::Mat t_USBImgT, cv::Mat t_USBImgS, double dPixelSizeT, double dPixelSizeS)
 {
 	CSingleLock singlelock(&m_ProcessDataMutex);
 	singlelock.Lock();
-	m_NextFrameDataPtr->m_USBImage = t_USBImgA;
-	m_NextFrameDataPtr->m_dImageRes = m_dImageRes;
+
+	m_NextFrameDataPtr->m_USImgT = t_USBImgT;
+	m_NextFrameDataPtr->m_USImgS = t_USBImgS;
+	m_NextFrameDataPtr->m_dPixelSizeT = dPixelSizeT;
+	m_NextFrameDataPtr->m_dPixelSizeS = dPixelSizeS;
 	
-	m_ImageSamplerPtr->SetUSPixelSize(m_dImageRes);	//设置B超图像像素大小(一个像素的物理尺寸)
-	m_ImageSamplerPtr->SetImageSize(t_USBImgA.cols, t_USBImgA.rows);	//设置B超图像大小(像素数)
 	singlelock.Unlock();
 }//UpdateUSBData
 
@@ -430,6 +442,34 @@ void AnalyseProcess::ProcessSingleFrameA(FrameDataPtr t_FrameDataPtr)
 {
 	CSingleLock singlelock(&m_ProcessDataMutex);
 
+	int width, height;
+	//处理横断面Transverse
+	if (!t_FrameDataPtr->m_USImgT.empty())
+	{
+		width = t_FrameDataPtr->m_USImgT.cols;
+		height = t_FrameDataPtr->m_USImgT.rows;
+		//m_ImageSamplerPtr->SetUSPixelSize(t_FrameDataPtr->m_dPixelSizeT);
+		//m_ImageSamplerPtr->SetImageSize(width, height);
+		m_pProstateMask = new BYTE[width * height];
+		m_pLesionMask = new BYTE[width * height];
+		m_pRectumMask = new BYTE[width * height];
+		memset(m_pProstateMask, 0, sizeof(BYTE)*width*height);
+		memset(m_pLesionMask, 0, sizeof(BYTE)*width*height);
+		memset(m_pRectumMask, 0, sizeof(BYTE)*width*height);
+		//m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 0, 1);
+		//m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 0, 2);
+		//m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 0, 3);
+		Mat prostateMask(height, width, CV_8UC1, m_pProstateMask);
+		Mat lesionMask(height, width, CV_8UC1, m_pLesionMask);
+		Mat rectumMask(height, width, CV_8UC1, m_pRectumMask);
+		t_FrameDataPtr->m_prostateMaskT = prostateMask.clone();
+		t_FrameDataPtr->m_lesionMaskT = lesionMask.clone();
+		t_FrameDataPtr->m_rectumMaskT = rectumMask.clone();
+		delete[] m_pProstateMask;
+		delete[] m_pLesionMask;
+		delete[] m_pRectumMask;
+	}
+
 	////开辟mask空间
 	//singlelock.Lock();
 	//if (t_FrameDataPtr->CreatMaskData(m_nShowImageX, m_nShowImageY) != LIST_NO_ERROR)
@@ -466,26 +506,56 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 	t_FrameDataPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);  //将当前位置参数交付FrameDataPtr
 
 	//更新当前截面4个角点的位置(wld)
-	m_ImageSamplerPtr->GetPlaneCorners(t_FrameDataPtr->m_LeftTop, t_FrameDataPtr->m_RightTop, t_FrameDataPtr->m_LeftBottom, t_FrameDataPtr->m_RightBottom);
+	//m_ImageSamplerPtr->GetPlaneCorners(t_FrameDataPtr->m_LeftTop, t_FrameDataPtr->m_RightTop, t_FrameDataPtr->m_LeftBottom, t_FrameDataPtr->m_RightBottom);
 
-	//裁剪3类mask截面
-	if (m_pProstateMask == nullptr)
-		m_pProstateMask = new BYTE[m_nShowImageX*m_nShowImageY];
-	if (m_pLesionMask == nullptr)
-		m_pLesionMask = new BYTE[m_nShowImageX*m_nShowImageY];
-	if (m_pRectumMask == nullptr)
-		m_pRectumMask = new BYTE[m_nShowImageX*m_nShowImageY];
-	m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 0, 1);
-	m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 0, 2);
-	m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 0, 3);
-	//转为CV_8UC1格式的cv::Mat形式存储
-	Mat prostateMask(m_nShowImageY, m_nShowImageX, CV_8UC1, m_pProstateMask);
-	Mat lesionMask(m_nShowImageY, m_nShowImageX, CV_8UC1, m_pLesionMask);
-	Mat rectumMask(m_nShowImageY, m_nShowImageX, CV_8UC1, m_pRectumMask);
-	//交付FrameData
-	t_FrameDataPtr->m_prostateMask = prostateMask;
-	t_FrameDataPtr->m_lesionMask = lesionMask;
-	t_FrameDataPtr->m_rectumMask = rectumMask;
+	int width, height;
+	//处理横断面Transverse
+	if (!t_FrameDataPtr->m_USImgT.empty())
+	{
+		width = t_FrameDataPtr->m_USImgT.cols;
+		height = t_FrameDataPtr->m_USImgT.rows;
+		m_ImageSamplerPtr->SetUSPixelSize(t_FrameDataPtr->m_dPixelSizeT);
+		m_ImageSamplerPtr->SetImageSize(width, height);
+		m_pProstateMask = new BYTE[width * height];
+		m_pLesionMask = new BYTE[width * height];
+		m_pRectumMask = new BYTE[width * height];
+		m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 0, 1);
+		m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 0, 2);
+		m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 0, 3);
+		Mat prostateMask(height, width, CV_8UC1, m_pProstateMask);
+		Mat lesionMask(height, width, CV_8UC1, m_pLesionMask);
+		Mat rectumMask(height, width, CV_8UC1, m_pRectumMask);
+		t_FrameDataPtr->m_prostateMaskT = prostateMask.clone();
+		t_FrameDataPtr->m_lesionMaskT = lesionMask.clone();
+		t_FrameDataPtr->m_rectumMaskT = rectumMask.clone();
+		delete[] m_pProstateMask;
+		delete[] m_pLesionMask;
+		delete[] m_pRectumMask;
+	}
+	//处理矢状面Sagittal
+	if (!t_FrameDataPtr->m_USImgS.empty())
+	{
+		width = t_FrameDataPtr->m_USImgS.cols;
+		height = t_FrameDataPtr->m_USImgS.rows;
+		m_ImageSamplerPtr->SetUSPixelSize(t_FrameDataPtr->m_dPixelSizeS);
+		m_ImageSamplerPtr->SetImageSize(width, height);
+		m_pProstateMask = new BYTE[width * height];
+		m_pLesionMask = new BYTE[width * height];
+		m_pRectumMask = new BYTE[width * height];
+		m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 1, 1);
+		m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 1, 2);
+		m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 1, 3);
+		Mat prostateMask(height, width, CV_8UC1, m_pProstateMask);
+		Mat lesionMask(height, width, CV_8UC1, m_pLesionMask);
+		Mat rectumMask(height, width, CV_8UC1, m_pRectumMask);
+		t_FrameDataPtr->m_prostateMaskS = prostateMask.clone();
+		t_FrameDataPtr->m_lesionMaskS = lesionMask.clone();
+		t_FrameDataPtr->m_rectumMaskS = rectumMask.clone();
+		delete[] m_pProstateMask;
+		delete[] m_pLesionMask;
+		delete[] m_pRectumMask;
+	}
+
 	singlelock.Unlock();
 	return;
 }

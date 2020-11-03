@@ -59,13 +59,22 @@ namespace ANALYSEPROCESS
 		//void SetPosition(Coordinate ScanCenter, Coordinate RightDir, Coordinate UpDir, Coordinate MoveDir);	//设置当前切片MRI模拟采样姿态参数(wld)
 
 	public:
-		cv::Mat		m_USBImage;		//截取所得的超声图像
-		cv::Mat		m_prostateMask; //mask数据 CV_8UC1
-		cv::Mat		m_lesionMask;
-		cv::Mat		m_rectumMask;
+		//Transverse横断面数据
+		cv::Mat		m_USImgT;  //超声图像
+		cv::Mat		m_prostateMaskT;  //mask数据 CV_8UC1
+		cv::Mat		m_lesionMaskT;
+		cv::Mat		m_rectumMaskT;
+		double		m_dPixelSizeT;  //像素物理尺寸(mm)
+
+		//Sagittal矢状面数据
+		cv::Mat		m_USImgS;  //超声图像
+		cv::Mat		m_prostateMaskS;  //mask数据 CV_8UC1
+		cv::Mat		m_lesionMaskS;
+		cv::Mat		m_rectumMaskS;
+		double		m_dPixelSizeS;  //像素物理尺寸(mm)
 
 		//int			m_nScale;		//当前b超图像的比例尺
-		double m_dImageRes;		//缩放比例，即1个像素对应的物理尺寸(mm)
+		//double m_dImageRes;		//缩放比例，即1个像素对应的物理尺寸(mm)
 
 		//Attitude	m_USBPos;		//超声探头的空间位置
 		//Attitude	m_NeedlePos;	//探针空间位置（预留，待后期完善）

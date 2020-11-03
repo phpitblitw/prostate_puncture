@@ -51,6 +51,15 @@ Defines
 *****************************************************************/
 namespace USBCAPTURER
 {
+	//定义B超机扫描模式
+	enum ScanType
+	{
+		UNDEFINED = 0,  //扫描类型未确定
+		TRANSVERSE_ONLY = 1,  //仅横断面
+		SAGITTAL_ONLY = 2, //仅矢状面
+		DUAL_PLANE = 3  //双平面
+	};
+
 	//定义智能指针类
 	class USBCapturer;
 	typedef std::shared_ptr<USBCapturer> USBCapturerPtr;
@@ -72,19 +81,22 @@ namespace USBCAPTURER
 		BOOL GrabOneFrame(Mat &t_Image);		//获取一帧B超图像
 
 		//传递数据至外部回调函数
-		typedef std::function < void(cv::Mat, cv::Mat, double) > Fun_CapturePerFrameEvent;		//支持两个图像和尺度信息
+		typedef std::function < void(cv::Mat, cv::Mat, double, double) > Fun_CapturePerFrameEvent;		//支持两个图像和尺度信息
 		void BindCapturePerFrameEvent(Fun_CapturePerFrameEvent eventFun);  //绑定刷新坐标回调函数
 
-		double GetResolution(); //获取缩放比例
-		void GetImageSize(int &cx, int &cy);	//返回图片尺寸(由单/双平面确定)
 		void Grab(); //持续采集B超数据
 
 		
 
 	private:
 		Fun_CapturePerFrameEvent m_CapturePerFrameFun;		//更新预览图
+		void CalParameters(cv::Mat t_img);  //对于CV_8UC3格式的Mat图片 更新b超参数:扫描类型  像素物理尺寸  TODO
+		ScanType CalScanType(cv::Mat t_img);  //对于CV_8UC3格式的Mat图片，计算其对应b超扫描平面类型  TODO
+		double CalPixelSize(cv::Mat t_imgAxis);  //对于CV_8UC3格式的Mat图片，计算其像素大小，即1个像素对应的物理尺寸(mm)  TODO
 
 	private:
+		cv::Mat m_imgCharT;  //字母T的截图(8UC1) 用于比对 确定单平面类型是否为Transverse横截面
+		cv::Mat m_imgCharS;  //字母S的截图(8UC1) 用于比对 确定单平面类型是否为Sagittal矢状面
 		vector <cv::Point2f> m_NeedlePos;			//穿刺架投影点坐标，从ini文件中读出
 
 		FrmGrabber * m_pDevice;						//采集卡设备对象指针
@@ -93,11 +105,8 @@ namespace USBCAPTURER
 		std::thread m_tGrabThread;						//B超采集线程
 		std::mutex m_CaptureMutex;					//采集标志位操作互斥量
 
-		double m_dImageRes;		//缩放比例，即1个像素对应的物理尺寸(mm)
-		int m_nScreenType;		//屏显种类 1-单平面 2-双平面
-		bool m_bGetParameters;	//已经采集参数标志位
-		void CalParameters(Mat t_Image);
-		double CalResolution(Mat t_Image);
-		int CalScreenType(Mat t_Image);
+		ScanType m_scanType;  //b超机的扫描类型
+		double m_dPixelSizeT;  //横截面的像素物理尺寸
+		double m_dPixelSizeS;  //矢状面的像素物理尺寸
 	};
 }
