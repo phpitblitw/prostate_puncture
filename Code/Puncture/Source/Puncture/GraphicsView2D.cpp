@@ -18,6 +18,27 @@ GraphicsView2D::~GraphicsView2D()
 	delete m_pScene;
 }
 
+void GraphicsView2D::keyPressEvent(QKeyEvent * event)
+{
+	switch (event->key())
+	{
+	case Qt::Key_Left:
+		emit(KeyLeftPressed());
+		break;
+	case Qt::Key_Right:
+		emit(KeyRightPressed());
+		break;
+	case Qt::Key_Up:
+		emit(KeyUpPressed());
+		break;
+	case Qt::Key_Down:
+		emit(KeyDownPressed());
+		break;
+	default:
+		break;
+	}
+}
+
 //载入8UC3 BGR的cv::Mat格式的数据,转为QPixmap存储
 void GraphicsView2D::LoadImg(cv::Mat img)
 {	

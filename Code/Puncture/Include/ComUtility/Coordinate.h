@@ -26,7 +26,7 @@ namespace fsutility
 		~Coordinate();
 
 		//运算符重载，坐标或向量的加减运算
-		//不应进行点与向量的加减，但是程序中不作检查
+		//不应进行点与向量的加减，但是程序中不作检查，默认保持本对象的类别(点/向量)
 		Coordinate operator+(Coordinate c);
 		Coordinate operator-(Coordinate c);
 		

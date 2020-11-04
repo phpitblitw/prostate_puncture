@@ -59,9 +59,10 @@ namespace ANALYSEPROCESS
 	//用于区分当前工作状态，不同工作状态工作内容不相同
 	enum AnalyzeState
 	{
-		Init,					//初始化(尚未配准完成)
-		Registration,			//配准中(尚未配准完成)
-		Puncture,				//穿刺	(已经配准完成)
+		INIT,					//初始化 未配准 此时根据默认US探头的位置截取平面
+		REGISTERING1,			//配准过程中 尚未获取最新的US探头姿态
+		REGISTERING2,			//配准过程中 已获取最新的US探头姿态
+		PUNCTURE,				//穿刺	(已经配准完成)
 	};
 	class ANALYSEPROCESS_API AnalyseProcess
 	{
@@ -79,6 +80,10 @@ namespace ANALYSEPROCESS
 		void Set2DImageSize(int t_nWidth, int t_nHeight);				//设置2D图像大小
 		void Set3DSize(float t_fMaxX, float t_fMaxY, float t_fMaxZ);	//设置3D空间尺寸
 
+		void MoveMRIRight(float distance);  //MRI mask向右(rightDir)移动
+		void MoveMRIUp(float distance);  //MRI mask向上(upDir)移动
+		void MoveMRIForward(float distance);  //MRI mask向前(moveDir)移动
+
 		int	 StartAnalyse();			//启动分析函数
 		int	 StopAnalyse();				//结束分析函数
 
@@ -89,9 +94,7 @@ namespace ANALYSEPROCESS
 
 		int Register();				//配准操作,由医生手动发起
 	private:
-		//void UpdateNDIData(std::vector<NDIOPERATOR::Attitude> t_Attitude);			//更新NDI数据，回调函数，由NDI模块调用
 		void UpdateNDIData(fsutility::Attitude attitude);								//更新NDI数据，回调函数，由NDI模块调用
-		//void UpdateUSBData(cv::Mat t_USBImgA, cv::Mat t_USBImgB, double m_dImageRes);	//更新B超数据，回调函数，由B超模块调用
 		void UpdateUSBData(cv::Mat t_USBImgT, cv::Mat t_USBImgS, double dPixelSizeT, double dPixelSizeS);	//更新B超数据，回调函数，由B超模块调用
 
 		void ProcessSingleFrame(FrameDataPtr t_FrameDataPtr);	//处理单帧数据

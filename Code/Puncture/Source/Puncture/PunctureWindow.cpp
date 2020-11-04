@@ -5,6 +5,7 @@
 #pragma execution_character_set("utf-8")  //设置默认编码格式 避免中文乱码
 
 #define UPDATE_INTERVAL 100  //图像刷新间隔(ms)
+#define MRI_MOVE_STEP 1  //键盘控制MRI移动  实际步长
 
 PunctureWindow::PunctureWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -22,10 +23,34 @@ PunctureWindow::PunctureWindow(QWidget *parent)
 	InitWindow();
 }
 
-int PunctureWindow::InitWindow()
+void PunctureWindow::InitWindow()
+{
+	//按钮状态初始化
+	ui.BtnInitDevice->setEnabled(true);
+	ui.BtnQuit->setEnabled(false);
+
+	//绑定信号与槽
+	connect(&m_timer, SIGNAL(timeout()), this, SLOT(OnTimerTimeout()));  //定时刷新显示图像
+	connect(ui.BtnInitDevice, SIGNAL(clicked()), this, SLOT(InitDevice()));  //初始化设备
+	connect(ui.BtnRegister, SIGNAL(clicked()), this, SLOT(OnBtnRegisterClicked()));  //医生手动点击按钮 锁定坐标
+	connect(ui.BtnQuit, SIGNAL(clicked()), this, SLOT(OnBtnQuitClicked()));  //点击退出程序 释放各个设备
+	connect(ui.view2D1, SIGNAL(KeyLeftPressed()), this, SLOT(MoveMRILeft()));
+	connect(ui.view2D1, SIGNAL(KeyRightPressed()), this, SLOT(MoveMRIRight()));
+	connect(ui.view2D1, SIGNAL(KeyUpPressed()), this, SLOT(MoveMRIUp()));
+	connect(ui.view2D1, SIGNAL(KeyDownPressed()), this, SLOT(MoveMRIDown()));
+	connect(ui.view2D2, SIGNAL(KeyLeftPressed()), this, SLOT(MoveMRIForward()));
+	connect(ui.view2D2, SIGNAL(KeyRightPressed()), this, SLOT(MoveMRIBackward()));
+	connect(ui.view2D2, SIGNAL(KeyUpPressed()), this, SLOT(MoveMRIUp()));
+	connect(ui.view2D2, SIGNAL(KeyDownPressed()), this, SLOT(MoveMRIDown()));
+
+	//允许手动配准
+	ui.BtnRegister->setEnabled(false);
+}
+
+int PunctureWindow::InitDevice()
 {
 	//灰化按钮
-	ui.BtnRegister->setEnabled(false);
+	ui.BtnInitDevice->setEnabled(false);
 
 	//初始化
 	char exePath[MAX_PATH];
@@ -74,21 +99,11 @@ int PunctureWindow::InitWindow()
 		QMessageBox::information(this, "错误", "启动分析模块失败");
 		return ER_InitAnalyseProcessFailed;
 	}
-
-	//设置显示模块尺寸(逻辑像素数  即截取的B超图像尺寸) //TODO 是否应该监听B超的图像参数改动？(单平面/双平面，体素大小)
-	int t_nShowImageX, t_nShowImageY;
-	//m_USBCapturerPtr->GetImageSize(t_nShowImageX, t_nShowImageY);
-	//m_AnalyseProcessPtr->Set2DImageSize(t_nShowImageX, t_nShowImageY);
-
+	
 	//启动分析
 	m_NDIOperatorPtr->StartTracking();
 	m_USBCapturerPtr->StartGrab();
 	m_AnalyseProcessPtr->StartAnalyse();
-
-	//绑定信号与槽
-	connect(&m_timer, SIGNAL(timeout()), this, SLOT(OnTimerTimeout()));  //定时刷新显示图像
-	connect(ui.BtnRegister, SIGNAL(clicked()), this, SLOT(OnBtnRegisterClicked()));  //医生手动点击按钮 锁定坐标
-	connect(ui.BtnQuit, SIGNAL(clicked()), this, SLOT(OnBtnQuitClicked()));  //点击退出程序 释放各个设备
 
 	//开启定时器
 	m_timer.setInterval(UPDATE_INTERVAL);
@@ -96,6 +111,9 @@ int PunctureWindow::InitWindow()
 
 	//开启按钮
 	ui.BtnRegister->setEnabled(true);
+	ui.BtnQuit->setEnabled(true);
+
+	return LIST_NO_ERROR;
 }
 
 void PunctureWindow::OnTimerTimeout()
@@ -127,11 +145,6 @@ void PunctureWindow::OnTimerTimeout()
 			ui.view2D2->LoadRectumMask(m_FrameDataPtr->m_rectumMaskS);
 			ui.view2D2->ShowImg();
 		}
-		//ui.view2D1->LoadImg(m_FrameDataPtr->m_USBImage);
-		//ui.view2D1->LoadProstateMask(m_FrameDataPtr->m_prostateMask);
-		//ui.view2D1->LoadLesionMask(m_FrameDataPtr->m_lesionMask);
-		//ui.view2D1->LoadRectumMask(m_FrameDataPtr->m_rectumMask);
-		//ui.view2D1->ShowImg();
 	}
 	//3D显示
 	if(m_b3DAcquired)
@@ -158,6 +171,36 @@ void PunctureWindow::OnBtnQuitClicked()
 		m_USBCapturerPtr->StopGrab();
 	//关闭窗口
 	this->close();
+}
+
+void PunctureWindow::MoveMRILeft()
+{
+	m_AnalyseProcessPtr->MoveMRIRight(-MRI_MOVE_STEP);
+}
+
+void PunctureWindow::MoveMRIRight()
+{
+	m_AnalyseProcessPtr->MoveMRIRight(MRI_MOVE_STEP);
+}
+
+void PunctureWindow::MoveMRIUp()
+{
+	m_AnalyseProcessPtr->MoveMRIUp(MRI_MOVE_STEP);
+}
+
+void PunctureWindow::MoveMRIDown()
+{
+	m_AnalyseProcessPtr->MoveMRIUp(-MRI_MOVE_STEP);
+}
+
+void PunctureWindow::MoveMRIForward()
+{
+	m_AnalyseProcessPtr->MoveMRIForward(MRI_MOVE_STEP);
+}
+
+void PunctureWindow::MoveMRIBackward()
+{
+	m_AnalyseProcessPtr->MoveMRIForward(-MRI_MOVE_STEP);
 }
 
 void PunctureWindow::UpdateFrame(FrameDataPtr t_FrameDataPtr)

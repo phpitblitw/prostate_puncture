@@ -22,15 +22,23 @@ class PunctureWindow : public QMainWindow
 
 public:
     PunctureWindow(QWidget *parent = Q_NULLPTR);
-	int InitWindow();  //初始化设备
+	void InitWindow();  //初始化窗口
 
 public slots:
 	void OnTimerTimeout();
+	int InitDevice();  //初始化设备
 	void OnBtnRegisterClicked();
 	void OnBtnQuitClicked();
+	void MoveMRILeft();
+	void MoveMRIRight();
+	void MoveMRIUp();
+	void MoveMRIDown();
+	void MoveMRIForward();
+	void MoveMRIBackward();
 
 private:
 	void UpdateFrame(FrameDataPtr t_FrameDataPtr);  //作为回调函数传递给AnalyseProcess，更新处理后的单帧数据
+
 
 private:
     Ui::PunctureWindowClass ui;

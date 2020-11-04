@@ -164,7 +164,7 @@ void ANALYSEPROCESS::ImageSampler::SetMRIPixelSize(double dPixelSizeX, double dP
 Name:			GetSampleMaskPlan
 Inputs:
 	MaskDataType* pImage - 结果mask数据指针
-	int nScanType - B超扫描类型，0-横截面，1-矢状面
+	int nScanType - B超扫描类型，0-横断面，1-矢状面
 	int nMaskType - MRI模拟采样mask类型，1-前列腺，2-病灶,3-直肠
 Return Value:
 	int - error info
@@ -174,7 +174,7 @@ int ANALYSEPROCESS::ImageSampler::GetSampleMaskPlan(MaskDataType *pImage, int nS
 {
 	//计算B超切面的四个角点，对应的3D MRI数据的WLD坐标
 	if (nScanType==0)
-		CalculateCoronalMaskPlan();//计算冠状面四个角点位置
+		CalculateCoronalMaskPlan();//计算横断面四个角点位置
 	else if (nScanType == 1)
 		CalculateSagittalMaskPlan();//计算矢状面四个角点位置
 	else
@@ -270,11 +270,19 @@ Description:	计算B超矢状面图像四个角点的WLD坐标
 *****************************************************************/
 void ANALYSEPROCESS::ImageSampler::CalculateSagittalMaskPlan()
 {
-	double dTrueHalfCx = m_nResolution.cx*m_dUSPixelSize / 2.0;	//超声图像宽度的一半(实际物理尺寸)
-	double dTrueCy = m_nResolution.cy*m_dUSPixelSize;			//超声图像高度(实际物理尺寸)
+	//double dTrueHalfCx = m_nResolution.cx*m_dUSPixelSize / 2.0;	//超声图像宽度的一半(实际物理尺寸)
+	//double dTrueCy = m_nResolution.cy*m_dUSPixelSize;			//超声图像高度(实际物理尺寸)
 
-	m_LeftBottom = m_ScanCenter - m_MoveDir * dTrueHalfCx;
-	m_RightBottom = m_ScanCenter + m_MoveDir * dTrueHalfCx;
+	//m_LeftBottom = m_ScanCenter - m_MoveDir * dTrueHalfCx;
+	//m_RightBottom = m_ScanCenter + m_MoveDir * dTrueHalfCx;
+	//m_LeftTop = m_LeftBottom + m_UpDir * dTrueCy;
+	//m_RightTop = m_RightBottom + m_UpDir * dTrueCy;
+
+	double dTrueCx = m_nResolution.cx*m_dUSPixelSize;	//超声图像宽度(实际物理尺寸)
+	double dTrueCy = m_nResolution.cy*m_dUSPixelSize;	//超声图像高度(实际物理尺寸)
+
+	m_LeftBottom = m_ScanCenter;
+	m_RightBottom = m_ScanCenter - m_MoveDir * dTrueCx;
 	m_LeftTop = m_LeftBottom + m_UpDir * dTrueCy;
 	m_RightTop = m_RightBottom + m_UpDir * dTrueCy;
 	return;

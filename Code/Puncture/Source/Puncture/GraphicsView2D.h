@@ -1,6 +1,7 @@
 #pragma once
 #include <qgraphicsview.h>
 #include <qgraphicsitem.h>
+#include <Qt3DInput/qkeyevent.h>
 #include "opencv2/opencv.hpp"
 
 class GraphicsView2D :
@@ -11,12 +12,20 @@ public:
 	GraphicsView2D(QWidget *parent = Q_NULLPTR);
 	~GraphicsView2D();
 
+	void keyPressEvent(QKeyEvent * event);
+
 	void LoadImg(cv::Mat img);
 	void LoadProstateMask(cv::Mat prostateMask);  //读取前列腺mask并叠加
 	void LoadLesionMask(cv::Mat lesionMask);  //读取肿瘤mask并叠加
 	void LoadRectumMask(cv::Mat rectumMask);  //读取直肠mask并叠加
 	void ShowImg();  //更新图元 显示图像
 	cv::Mat Mask2Edge(cv::Mat src);
+
+signals:
+	void KeyLeftPressed();
+	void KeyRightPressed();
+	void KeyUpPressed();
+	void KeyDownPressed();
 
 private:
 	cv::Mat m_img;  //图像数据总是存储在此

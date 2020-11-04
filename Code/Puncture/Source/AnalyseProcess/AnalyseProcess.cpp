@@ -69,7 +69,7 @@ AnalyseProcess::AnalyseProcess()
 	m_NextFrameDataPtr.reset(new FrameData);
 	m_CurrentFrameDataPtr = nullptr;
 	m_bAnalysing = false;
-	m_nAnalyseState = Init;
+	m_nAnalyseState = INIT;
 	m_pProstateMask = nullptr;
 	m_pLesionMask = nullptr;
 	m_pRectumMask = nullptr;
@@ -112,6 +112,21 @@ int AnalyseProcess::InitAnalyseProcess(CString t_strFilePathName)
 		return ER_NoSurgicalPlan;
 	}
 	m_ImageSamplerPtr->SetMRIPixelSize(AnalyseConfig::Instance().m_fVoxelSizeX, AnalyseConfig::Instance().m_fVoxelSizeY, AnalyseConfig::Instance().m_fVoxelSizeZ);
+
+	//将MRI模拟采样的base位置传递给PositionManager
+	m_PositionManagerPtr->m_BaseMRIAttitude = AnalyseConfig::Instance().m_Attitude;
+
+	//设置默认的US位置 配准 用于计算默认的mask
+	fsutility::Attitude simulatedAttitude;
+	simulatedAttitude.SetValue(fsutility::Coordinate(0, 0, 0, 1), fsutility::Coordinate(0, 1, 0, 0), fsutility::Coordinate(-1, 0, 0, 0), fsutility::Coordinate(0, 0, 1, 0));
+	m_PositionManagerPtr->m_BaseUSAttitude = simulatedAttitude;
+	m_PositionManagerPtr->m_CurUSAttitude = simulatedAttitude;
+	
+	//使用默认位置 进行初始配准
+	if (m_PositionManagerPtr->CalculateTransformMatrix() != LIST_NO_ERROR)
+	{
+		return ER_CalculateTransformMatrix;
+	}
 	return LIST_NO_ERROR;
 }//InitAnalyseProcess
 
@@ -213,6 +228,59 @@ void AnalyseProcess::Set3DSize(float t_fMaxX, float t_fMaxY, float t_fMaxZ)
 	m_fMaxZ = t_fMaxZ;
 }//Set3DSize
 
+/*****************************************************************
+Name:			MoveMRIRight
+Inputs:
+	float step - 向rightDir移动的距离(mm)
+Return Value:
+	none
+Description:	通过移动base MRI 位置 来移动mask
+*****************************************************************/
+void AnalyseProcess::MoveMRIRight(float distance)
+{
+	m_PositionManagerPtr->m_BaseMRIAttitude.m_ScanCenter =
+		m_PositionManagerPtr->m_BaseMRIAttitude.m_ScanCenter - m_PositionManagerPtr->m_BaseMRIAttitude.m_RightDir*distance;
+	CSingleLock singlelock(&m_ProcessDataMutex);
+	singlelock.Lock();
+	m_PositionManagerPtr->CalculateTransformMatrix();
+	singlelock.Unlock();
+}
+
+/*****************************************************************
+Name:			MoveMRIUp
+Inputs:
+	float step - 向upDir移动的距离(mm)
+Return Value:
+	none
+Description:	通过移动base MRI 位置 来移动mask
+*****************************************************************/
+void AnalyseProcess::MoveMRIUp(float distance)
+{
+	m_PositionManagerPtr->m_BaseMRIAttitude.m_ScanCenter =
+		m_PositionManagerPtr->m_BaseMRIAttitude.m_ScanCenter - m_PositionManagerPtr->m_BaseMRIAttitude.m_UpDir*distance;
+	CSingleLock singlelock(&m_ProcessDataMutex);
+	singlelock.Lock();
+	m_PositionManagerPtr->CalculateTransformMatrix();
+	singlelock.Unlock();
+}
+
+/*****************************************************************
+Name:			MoveMRIForward
+Inputs:
+	float step - 向moveDir移动的距离(mm)
+Return Value:
+	none
+Description:	通过移动base MRI 位置 来移动mask
+*****************************************************************/
+void AnalyseProcess::MoveMRIForward(float distance)
+{
+	m_PositionManagerPtr->m_BaseMRIAttitude.m_ScanCenter =
+		m_PositionManagerPtr->m_BaseMRIAttitude.m_ScanCenter - m_PositionManagerPtr->m_BaseMRIAttitude.m_MoveDir*distance;
+	CSingleLock singlelock(&m_ProcessDataMutex);
+	singlelock.Lock();
+	m_PositionManagerPtr->CalculateTransformMatrix();
+	singlelock.Unlock();
+}
 
 /*****************************************************************
 Name:			StartAnalyze
@@ -235,7 +303,6 @@ int AnalyseProcess::StartAnalyse()
 	return LIST_NO_ERROR;
 }//StartAnalyze
 
-
 /*****************************************************************
 Name:			StopAnalyze
 Inputs:
@@ -254,7 +321,7 @@ int AnalyseProcess::StopAnalyse()
 		return ER_CloseAnalyseProcessFailed;
 
 	m_bAnalysing = false;
-	m_nAnalyseState = Init;
+	m_nAnalyseState = INIT;
 	return LIST_NO_ERROR;
 }//StopAnalyze
 
@@ -319,10 +386,10 @@ int AnalyseProcess::Register()
 {
 	CSingleLock singlelock(&m_ProcessDataMutex);
 	//设置分析状态为Registration(正在配准)
-	m_nAnalyseState = Registration;
-	//在配准前，默认NDI设备已经采集到当前超声探头的位置
-	//将MRI模拟采样的base位置传递给PositionManager
-	m_PositionManagerPtr->m_BaseMRIAttitude = AnalyseConfig::Instance().m_Attitude;
+	m_nAnalyseState = REGISTERING1;
+	//等待NDI设备更新最新的US探头位置
+	while (m_nAnalyseState != REGISTERING2)
+		Sleep(15);
 	//将当前超声位置作为超声base位置，记录在PositionManager中
 	singlelock.Lock();
 	m_PositionManagerPtr->m_BaseUSAttitude = m_PositionManagerPtr->m_CurUSAttitude;
@@ -334,7 +401,7 @@ int AnalyseProcess::Register()
 	}
 	else
 	{
-		m_nAnalyseState = Puncture;
+		m_nAnalyseState = PUNCTURE;
 		return LIST_NO_ERROR;
 	}
 }
@@ -351,7 +418,15 @@ void AnalyseProcess::UpdateNDIData(fsutility::Attitude attitude)
 {
 	CSingleLock singlelock(&m_ProcessDataMutex);
 	singlelock.Lock();
-	m_PositionManagerPtr->m_CurUSAttitude = attitude;
+	if (m_nAnalyseState == INIT)
+		;
+	else if (m_nAnalyseState == REGISTERING1)
+	{
+		m_PositionManagerPtr->m_CurUSAttitude = attitude;
+		m_nAnalyseState = REGISTERING2;
+	}
+	else
+		m_PositionManagerPtr->m_CurUSAttitude = attitude;
 	singlelock.Unlock();
 	return;
 }//UpdateNDIData
@@ -413,7 +488,7 @@ Description:	处理单帧数据
 void AnalyseProcess::ProcessSingleFrame(FrameDataPtr t_FrameDataPtr)
 {
 	//根据当前分析状态(已配准/未配准),调用次一级分析函数
-	if (m_nAnalyseState == Puncture)
+	if (m_nAnalyseState == PUNCTURE)
 	{
 		ProcessSingleFrameB(t_FrameDataPtr);	//已配准状态，调用分析函数 计算截面
 	}
@@ -441,6 +516,12 @@ Description:	处理单帧数据(Init或Registration，未关联状态)
 void AnalyseProcess::ProcessSingleFrameA(FrameDataPtr t_FrameDataPtr)
 {
 	CSingleLock singlelock(&m_ProcessDataMutex);
+	singlelock.Lock();
+
+	//计算当前截面位置
+	m_PositionManagerPtr->UpDate();	//根据已经获取的超声探头位置参数，更新MRI模拟采样位置参数
+	m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);	//为ImageSampler设置姿态参数
+	t_FrameDataPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);  //将当前mri模拟采样姿态参数交付FrameDataPtr
 
 	int width, height;
 	//处理横断面Transverse
@@ -448,17 +529,17 @@ void AnalyseProcess::ProcessSingleFrameA(FrameDataPtr t_FrameDataPtr)
 	{
 		width = t_FrameDataPtr->m_USImgT.cols;
 		height = t_FrameDataPtr->m_USImgT.rows;
-		//m_ImageSamplerPtr->SetUSPixelSize(t_FrameDataPtr->m_dPixelSizeT);
-		//m_ImageSamplerPtr->SetImageSize(width, height);
+		m_ImageSamplerPtr->SetUSPixelSize(t_FrameDataPtr->m_dPixelSizeT);
+		m_ImageSamplerPtr->SetImageSize(width, height);
 		m_pProstateMask = new BYTE[width * height];
 		m_pLesionMask = new BYTE[width * height];
 		m_pRectumMask = new BYTE[width * height];
 		memset(m_pProstateMask, 0, sizeof(BYTE)*width*height);
 		memset(m_pLesionMask, 0, sizeof(BYTE)*width*height);
 		memset(m_pRectumMask, 0, sizeof(BYTE)*width*height);
-		//m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 0, 1);
-		//m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 0, 2);
-		//m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 0, 3);
+		m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 0, 1);
+		m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 0, 2);
+		m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 0, 3);
 		Mat prostateMask(height, width, CV_8UC1, m_pProstateMask);
 		Mat lesionMask(height, width, CV_8UC1, m_pLesionMask);
 		Mat rectumMask(height, width, CV_8UC1, m_pRectumMask);
@@ -469,18 +550,29 @@ void AnalyseProcess::ProcessSingleFrameA(FrameDataPtr t_FrameDataPtr)
 		delete[] m_pLesionMask;
 		delete[] m_pRectumMask;
 	}
-
-	////开辟mask空间
-	//singlelock.Lock();
-	//if (t_FrameDataPtr->CreatMaskData(m_nShowImageX, m_nShowImageY) != LIST_NO_ERROR)
-	//{
-	//	return;
-	//}
-	//未关联状态，无需进行MRI模拟采样，将MASK直接置为全0
-	//TODO，设置空的MRI原始数据截面
-	//memset(t_FrameDataPtr->m_pFusionMask, 0, sizeof(BYTE)*m_nShowImageX*m_nShowImageY);
-	//memset(t_FrameDataPtr->m_pLesionMask, 0, sizeof(BYTE)*m_nShowImageX*m_nShowImageY);
-	//memset(t_FrameDataPtr->m_pProstateMask, 0, sizeof(BYTE)*m_nShowImageX*m_nShowImageY);
+	//处理矢状面Sagittal
+	if (!t_FrameDataPtr->m_USImgS.empty())
+	{
+		width = t_FrameDataPtr->m_USImgS.cols;
+		height = t_FrameDataPtr->m_USImgS.rows;
+		m_ImageSamplerPtr->SetUSPixelSize(t_FrameDataPtr->m_dPixelSizeS);
+		m_ImageSamplerPtr->SetImageSize(width, height);
+		m_pProstateMask = new BYTE[width * height];
+		m_pLesionMask = new BYTE[width * height];
+		m_pRectumMask = new BYTE[width * height];
+		m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 1, 1);
+		m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 1, 2);
+		m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 1, 3);
+		Mat prostateMask(height, width, CV_8UC1, m_pProstateMask);
+		Mat lesionMask(height, width, CV_8UC1, m_pLesionMask);
+		Mat rectumMask(height, width, CV_8UC1, m_pRectumMask);
+		t_FrameDataPtr->m_prostateMaskS = prostateMask.clone();
+		t_FrameDataPtr->m_lesionMaskS = lesionMask.clone();
+		t_FrameDataPtr->m_rectumMaskS = rectumMask.clone();
+		delete[] m_pProstateMask;
+		delete[] m_pLesionMask;
+		delete[] m_pRectumMask;
+	}
 	singlelock.Unlock();
 	return;
 }
@@ -502,8 +594,8 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 
 	//计算当前截面位置
 	m_PositionManagerPtr->UpDate();	//根据已经获取的超声探头位置参数，更新MRI模拟采样位置参数
-	m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);	//为ImageSampler设置位置参数
-	t_FrameDataPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);  //将当前位置参数交付FrameDataPtr
+	m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);	//为ImageSampler设置姿态参数
+	t_FrameDataPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);  //将当前mri模拟采样姿态参数交付FrameDataPtr
 
 	//更新当前截面4个角点的位置(wld)
 	//m_ImageSamplerPtr->GetPlaneCorners(t_FrameDataPtr->m_LeftTop, t_FrameDataPtr->m_RightTop, t_FrameDataPtr->m_LeftBottom, t_FrameDataPtr->m_RightBottom);
