@@ -24,11 +24,13 @@ public:
     PunctureWindow(QWidget *parent = Q_NULLPTR);
 	void InitWindow();  //初始化窗口
 
+	void closeEvent(QCloseEvent * event);
+
 public slots:
 	void OnTimerTimeout();
 	int InitDevice();  //初始化设备
 	void OnBtnRegisterClicked();
-	void OnBtnQuitClicked();
+	void Quit();  //释放设备并退出
 	void MoveMRILeft();
 	void MoveMRIRight();
 	void MoveMRIUp();

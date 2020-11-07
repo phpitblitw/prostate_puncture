@@ -45,7 +45,7 @@ void GraphicsView2D::keyPressEvent(QKeyEvent * event)
 void GraphicsView2D::LoadImg(cv::Mat img)
 {	
 	img.copyTo(m_img);
-	m_img = transformImg(m_img);  //使用查找表变换图片 使得显示出的图片更易读
+	transformImg(m_img);  //使用查找表变换图片 使得显示出的图片更易读
 }
 
 void GraphicsView2D::LoadProstateMask(cv::Mat prostateMask)
@@ -125,9 +125,9 @@ cv::Mat GraphicsView2D::transformImg(cv::Mat& srcImg)
 	//确保输入的图片深度与uchar相同
 	CV_Assert(srcImg.depth() != sizeof(uchar));
 
-	int channels = srcImg.channels();
+	int channels = srcImg.channels()*channels;
 	int nRows = srcImg.rows;
-	int nCols = srcImg.cols*channels;
+	int nCols = srcImg.cols;
 	int x, y;
 	uchar* pCur;
 

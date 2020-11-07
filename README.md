@@ -63,7 +63,9 @@ release版本生成完成,3d窗口创建过程中 m_p3DShowWnd->CreateWnd() 出�
 配准前 允许由键盘手动调整MASK位置
 
 # v1.6.3(尚未打tag)
-为GraphicsView2D读取us图片时 添加gama变换 使得能够清楚看到图像边缘
+为GraphicsView2D读取us图片时 添加gama变换 使得能够清楚看到图像边缘--背景黑色区域有彩色亮带 应该是因为USBCapturer采集到的8UC3的背景并非全黑
+修改了PunctureWindow中的timer定时器  帧率提高了
+添加了退出逻辑 在任何情况下退出都不会报错了
 
 
 

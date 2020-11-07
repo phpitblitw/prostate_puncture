@@ -4,7 +4,7 @@
 #include "ErrorManager/ErrorCodeDefine.h"
 #pragma execution_character_set("utf-8")  //设置默认编码格式 避免中文乱码
 
-#define UPDATE_INTERVAL 100  //图像刷新间隔(ms)
+#define UPDATE_INTERVAL 20  //图像刷新间隔(ms)
 #define MRI_MOVE_STEP 1  //键盘控制MRI移动  实际步长
 
 PunctureWindow::PunctureWindow(QWidget *parent)
@@ -33,7 +33,7 @@ void PunctureWindow::InitWindow()
 	connect(&m_timer, SIGNAL(timeout()), this, SLOT(OnTimerTimeout()));  //定时刷新显示图像
 	connect(ui.BtnInitDevice, SIGNAL(clicked()), this, SLOT(InitDevice()));  //初始化设备
 	connect(ui.BtnRegister, SIGNAL(clicked()), this, SLOT(OnBtnRegisterClicked()));  //医生手动点击按钮 锁定坐标
-	connect(ui.BtnQuit, SIGNAL(clicked()), this, SLOT(OnBtnQuitClicked()));  //点击退出程序 释放各个设备
+	connect(ui.BtnQuit, SIGNAL(clicked()), this, SLOT(Quit()));  //点击退出程序 释放各个设备
 	connect(ui.view2D1, SIGNAL(KeyLeftPressed()), this, SLOT(MoveMRILeft()));
 	connect(ui.view2D1, SIGNAL(KeyRightPressed()), this, SLOT(MoveMRIRight()));
 	connect(ui.view2D1, SIGNAL(KeyUpPressed()), this, SLOT(MoveMRIUp()));
@@ -45,6 +45,11 @@ void PunctureWindow::InitWindow()
 
 	//允许手动配准
 	ui.BtnRegister->setEnabled(false);
+}
+
+void PunctureWindow::closeEvent(QCloseEvent * event)
+{
+	this->Quit();
 }
 
 int PunctureWindow::InitDevice()
@@ -160,7 +165,7 @@ void PunctureWindow::OnBtnRegisterClicked()
 	m_bRegistered = true;
 }
 
-void PunctureWindow::OnBtnQuitClicked()
+void PunctureWindow::Quit()
 {
 	//停止各个模块
 	if (m_AnalyseProcessPtr != nullptr)
