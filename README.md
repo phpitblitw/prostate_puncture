@@ -46,7 +46,7 @@ USBCapturer模块添加USE_LOCAL_US_IMAGE宏，用于在B超探头不在时，�
 完成了NDIConfig，从ini文件读取 NDI探头端口号、探头初始姿态、标定变换矩阵。使用了标定矩阵，定性测试通过
 添加了fsutility::Attitude类，用四个其次坐标表示姿态，全面替换了NDIOperator::Attitude中欧拉角形式的姿态
 
-# v1.5.1 (尚未打tag)
+# v1.5.1 (未打tag)
 release版本生成完成,3d窗口创建过程中 m_p3DShowWnd->CreateWnd() 出现asseration failure debug 版本无问题。很可能是因为父窗口初始化出错
 
 # v1.6
@@ -61,6 +61,9 @@ release版本生成完成,3d窗口创建过程中 m_p3DShowWnd->CreateWnd() 出�
 # v1.6.2
 修复了矢状面截取错误的问题 由于矢状面ROI不确定 仍然有偏差
 配准前 允许由键盘手动调整MASK位置
+
+# v1.6.3(尚未打tag)
+为GraphicsView2D读取us图片时 添加gama变换 使得能够清楚看到图像边缘
 
 
 

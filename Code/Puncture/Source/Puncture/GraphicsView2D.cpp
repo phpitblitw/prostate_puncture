@@ -1,5 +1,6 @@
 #include "GraphicsView2D.h"
 #include <vector>
+#include <Windows.h>
 
 
 GraphicsView2D::GraphicsView2D(QWidget *parent)
@@ -10,6 +11,7 @@ GraphicsView2D::GraphicsView2D(QWidget *parent)
 	m_pScene->addItem(m_pPixmapItem);
 	this->setScene(m_pScene);
 
+	createGamaLut(m_lut, 1.0, 0.5);
 }
 
 GraphicsView2D::~GraphicsView2D()
@@ -39,10 +41,11 @@ void GraphicsView2D::keyPressEvent(QKeyEvent * event)
 	}
 }
 
-//载入8UC3 BGR的cv::Mat格式的数据,转为QPixmap存储
+//载入8UC3 BGR的cv::Mat格式的数据
 void GraphicsView2D::LoadImg(cv::Mat img)
 {	
-	m_img = img;
+	img.copyTo(m_img);
+	m_img = transformImg(m_img);  //使用查找表变换图片 使得显示出的图片更易读
 }
 
 void GraphicsView2D::LoadProstateMask(cv::Mat prostateMask)
@@ -90,14 +93,6 @@ cv::Mat GraphicsView2D::Mask2Edge(cv::Mat src)
 	int ddepth = CV_16S;
 	int scale = 1, delta = 0;
 	cv::Mat res, grad_x, grad_y, grad;
-	//TODO
-	//cv::imwrite("D:\\other\\beforeSobel.bmp", src);
-	//int temp1 = src.type();
-	//int temp2 = grad_x.type();
-	//int temp3 = grad_y.type();
-	//int temp4 = grad.type();
-	//int temp5 = res.type();
-	//TODO
 	//求水平 竖直方向梯度
 	Sobel(src, grad_x, ddepth, 1, 0, 3, scale, delta, cv::BORDER_DEFAULT);
 	Sobel(src, grad_y, ddepth, 0, 1, 3, scale, delta, cv::BORDER_DEFAULT);
@@ -109,6 +104,46 @@ cv::Mat GraphicsView2D::Mask2Edge(cv::Mat src)
 	//边缘强度置为1
 	threshold(grad, res, 1, 1, 0);
 
-	//cv::imwrite("D:\\other\\afterSobel.bmp", src);  //TODO
 	return res;
+}
+
+//gama变换 s=c*r^gama  其中 r为原始灰度值 c为变换后灰度值
+void GraphicsView2D::createGamaLut(uchar lutGama[256], float fC, float fGama)
+{
+	for (int i = 0; i < 256; i++)
+	{
+		lutGama[i] = min(fC*uchar(pow(float(i) / 255, fGama) * 255), 255);
+	}
+	return;
+}
+
+//使用查找表 对cv::Mat赋值
+//Mat遍历方式 参考http://www.opencv.org.cn/opencvdoc/2.3.2/html/doc/tutorials/core/how_to_scan_images/how_to_scan_images.html
+//传参方式 参考https://blog.csdn.net/u012814856/article/details/84099328
+cv::Mat GraphicsView2D::transformImg(cv::Mat& srcImg)
+{
+	//确保输入的图片深度与uchar相同
+	CV_Assert(srcImg.depth() != sizeof(uchar));
+
+	int channels = srcImg.channels();
+	int nRows = srcImg.rows;
+	int nCols = srcImg.cols*channels;
+	int x, y;
+	uchar* pCur;
+
+	if (srcImg.isContinuous())
+	{
+		nCols *= nRows;
+		nRows = 1;
+	}
+
+	for (y = 0; y < nRows; y++)
+	{
+		pCur = srcImg.ptr<uchar>(y);  //第y行首元素
+		for (x = 0; x < nCols; x++)
+		{
+			pCur[x] = m_lut[pCur[x]];
+		}
+	}
+	return srcImg;
 }
