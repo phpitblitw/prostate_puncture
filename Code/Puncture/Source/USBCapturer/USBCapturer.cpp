@@ -313,7 +313,6 @@ void USBCapturer::Grab()
 
 			cv::Mat iDst(iVideoMode.height, iVideoMode.width, CV_8UC3);//这里nHeight为760,nWidth为1024,8UC3表示8bit uchar 无符号类型,3通道值
 			cvtColor(iSrc, iDst, cv::COLOR_YUV2BGR_YV12);
-
 			CalParameters(iDst);  //根据单张截图 更新参数
 			cv::Mat t_imgT;
 			cv::Mat t_imgS;

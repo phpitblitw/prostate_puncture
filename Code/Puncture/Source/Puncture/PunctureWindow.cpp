@@ -71,6 +71,7 @@ int PunctureWindow::InitDevice()
 	if (m_NDIOperatorPtr->InitNDIDevice(strIniFileName) != LIST_NO_ERROR)
 	{
 		QMessageBox::information(this, "´íÎó", "Æô¶¯NDIÉè±¸Ê§°Ü");
+		ui.BtnInitDevice->setEnabled(true);
 		return ER_InitNDIDeviceFailed;
 	}
 
@@ -80,6 +81,7 @@ int PunctureWindow::InitDevice()
 	if (m_USBCapturerPtr->InitUSBDevice(strIniFileName) != LIST_NO_ERROR)
 	{
 		QMessageBox::information(this, "´íÎó", "Æô¶¯³¬ÉùÉè±¸Ê§°Ü");
+		ui.BtnInitDevice->setEnabled(true);
 		return ER_InitUSBDeviceFailed;
 	}
 
@@ -89,6 +91,7 @@ int PunctureWindow::InitDevice()
 	if (m_SurgicalPlanPtr->InPortAsFileSet(strIniFileName) != LIST_NO_ERROR)
 	{
 		QMessageBox::information(this, "´íÎó", "µ¼ÈëÊÖÊõ¼Æ»®Ê§°Ü");
+		ui.BtnInitDevice->setEnabled(true);
 		return ER_FileOpenFailed;
 	}
 
@@ -102,6 +105,7 @@ int PunctureWindow::InitDevice()
 	if (m_AnalyseProcessPtr->InitAnalyseProcess(strIniFileName)!=LIST_NO_ERROR)
 	{
 		QMessageBox::information(this, "´íÎó", "Æô¶¯·ÖÎöÄ£¿éÊ§°Ü");
+		ui.BtnInitDevice->setEnabled(true);
 		return ER_InitAnalyseProcessFailed;
 	}
 	
