@@ -134,6 +134,25 @@ void PunctureWindow::OnTimerTimeout()
 		return;
 
 	m_showMutex.lock();
+	//更新数值参数
+	ui.ScanCenterX->setText("123");
+	ui.ScanCenterX->setText(QString::number(m_FrameDataPtr->m_Attitude.m_ScanCenter.x, 'f', 4));
+	ui.ScanCenterY->setText(QString::number(m_FrameDataPtr->m_Attitude.m_ScanCenter.y, 'f', 4));
+	ui.ScanCenterZ->setText(QString::number(m_FrameDataPtr->m_Attitude.m_ScanCenter.z, 'f', 4));
+	ui.ScanCenterW->setText(QString::number(m_FrameDataPtr->m_Attitude.m_ScanCenter.w, 'f', 4));
+	ui.RightDirX->setText(QString::number(m_FrameDataPtr->m_Attitude.m_RightDir.x, 'f', 4));
+	ui.RightDirY->setText(QString::number(m_FrameDataPtr->m_Attitude.m_RightDir.y, 'f', 4));
+	ui.RightDirZ->setText(QString::number(m_FrameDataPtr->m_Attitude.m_RightDir.z, 'f', 4));
+	ui.RightDirW->setText(QString::number(m_FrameDataPtr->m_Attitude.m_RightDir.w, 'f', 4));
+	ui.UpDirX->setText(QString::number(m_FrameDataPtr->m_Attitude.m_UpDir.x, 'f', 4));
+	ui.UpDirY->setText(QString::number(m_FrameDataPtr->m_Attitude.m_UpDir.y, 'f', 4));
+	ui.UpDirZ->setText(QString::number(m_FrameDataPtr->m_Attitude.m_UpDir.z, 'f', 4));
+	ui.UpDirW->setText(QString::number(m_FrameDataPtr->m_Attitude.m_UpDir.w, 'f', 4));
+	ui.MoveDirX->setText(QString::number(m_FrameDataPtr->m_Attitude.m_MoveDir.x, 'f', 4));
+	ui.MoveDirY->setText(QString::number(m_FrameDataPtr->m_Attitude.m_MoveDir.y, 'f', 4));
+	ui.MoveDirZ->setText(QString::number(m_FrameDataPtr->m_Attitude.m_MoveDir.z, 'f', 4));
+	ui.MoveDirW->setText(QString::number(m_FrameDataPtr->m_Attitude.m_MoveDir.w, 'f', 4));
+
 	//2D显示
 	if(m_b2DAcquired)
 	{

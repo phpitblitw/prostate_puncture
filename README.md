@@ -62,11 +62,11 @@ release版本生成完成,3d窗口创建过程中 m_p3DShowWnd->CreateWnd() 出�
 修复了矢状面截取错误的问题 由于矢状面ROI不确定 仍然有偏差
 配准前 允许由键盘手动调整MASK位置
 
-# v1.6.3(尚未打tag)
-为GraphicsView2D读取us图片时 添加gama变换 使得能够清楚看到图像边缘--背景黑色区域有彩色亮带 应该是因为USBCapturer采集到的8UC3的背景并非全黑
+# v1.7
+为GraphicsView2D读取us图片时 添加gama变换 使得能够清楚看到图像边缘--背景黑色区域有彩色亮带 是因为USBCapturer采集到的8UC3的背景并非全黑。通过转灰度图 阈值筛选>1区域作为roi 解决了该问题
 修改了PunctureWindow中的timer定时器  帧率提高了
 添加了退出逻辑 在任何情况下退出都不会报错了
-
+显示界面添加了MRI模拟采样的姿态参数
 
 
 
