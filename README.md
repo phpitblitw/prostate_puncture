@@ -69,5 +69,11 @@ release版本生成完成,3d窗口创建过程中 m_p3DShowWnd->CreateWnd() 出�
 显示界面添加了MRI模拟采样的姿态参数
 
 
+# v1.7.1 (尚未tag)
+发现横断面物理中心始终对应图像下方正中心；矢状面物理中心始终对应图像下方正中心；这个物理偏移量记录在NDIConfig.ini中。在imageSampler计算横断面截图的时候，考虑此变量
+更新了USBCapturer.ini，保证截图ROI的横向中心 总是对应中心坐标
+
+
+
 
 

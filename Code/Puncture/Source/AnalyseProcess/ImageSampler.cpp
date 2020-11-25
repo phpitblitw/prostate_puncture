@@ -278,13 +278,23 @@ void ANALYSEPROCESS::ImageSampler::CalculateSagittalMaskPlan()
 	//m_LeftTop = m_LeftBottom + m_UpDir * dTrueCy;
 	//m_RightTop = m_RightBottom + m_UpDir * dTrueCy;
 
-	double dTrueCx = m_nResolution.cx*m_dUSPixelSize;	//超声图像宽度(实际物理尺寸)
-	double dTrueCy = m_nResolution.cy*m_dUSPixelSize;	//超声图像高度(实际物理尺寸)
+	Coordinate sagittalScanCenter = m_ScanCenter + m_MoveDir * m_dMoveDirOffset;  //矢状面在MRI模拟采样坐标系下的中心点
 
-	m_LeftBottom = m_ScanCenter;
-	m_RightBottom = m_ScanCenter - m_MoveDir * dTrueCx;
+	double dTrueHalfCx = m_nResolution.cx*m_dUSPixelSize / 2.0;  //超声图像宽度的一半(实际物理尺寸)
+	double dTrueCy = m_nResolution.cy*m_dUSPixelSize;  //超声图像高度(实际物理尺寸)
+
+	m_LeftBottom = sagittalScanCenter + m_MoveDir * dTrueHalfCx;
+	m_RightBottom = sagittalScanCenter - m_MoveDir * dTrueHalfCx;
 	m_LeftTop = m_LeftBottom + m_UpDir * dTrueCy;
 	m_RightTop = m_RightBottom + m_UpDir * dTrueCy;
+
+	//double dTrueCx = m_nResolution.cx*m_dUSPixelSize;	//超声图像宽度(实际物理尺寸)
+	//double dTrueCy = m_nResolution.cy*m_dUSPixelSize;	//超声图像高度(实际物理尺寸)
+
+	//m_LeftBottom = m_ScanCenter;
+	//m_RightBottom = m_ScanCenter - m_MoveDir * dTrueCx;
+	//m_LeftTop = m_LeftBottom + m_UpDir * dTrueCy;
+	//m_RightTop = m_RightBottom + m_UpDir * dTrueCy;
 	return;
 }
 

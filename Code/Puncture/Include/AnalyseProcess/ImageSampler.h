@@ -52,6 +52,7 @@ namespace ANALYSEPROCESS
 		int SetDataPackage(SurgicalPlanPtr pPackage);
 		void SetPosition(fsutility::Attitude Attitude);	//设置当前切片位置参数 WLD坐标
 		//void SetPosition(Coordinate ScanCenter, Coordinate RightDir, Coordinate UpDir, Coordinate MoveDir);		//设置当前切片位置参数 WLD坐标
+		void SetProbeOffset(double moveDirOffset) { this->m_dMoveDirOffset = moveDirOffset; }  //设置B超探头矢状面中心点相对横断面中心点的物理偏差
 		void SetUSPixelSize(double dPixelSize);		//设置B超图像像素大小(像素对应的物理尺寸)
 		void SetImageSize(int cx, int cy);			//设置B超图像分辨率(像素数)
 		void SetMRIPixelSize(double dPixelSizeX, double dPixelSizeY, double dPixelSizeZ);	//设置MRI数据体素大小
@@ -89,6 +90,7 @@ namespace ANALYSEPROCESS
 		Coordinate m_LeftBottomIJK;
 		Coordinate m_RightBottomIJK;
 
+		double m_dMoveDirOffset;		//B超探头，矢状面中心点，相对于横断面中心点，在探头朝向moveDir上的偏移量(mm)
 		double m_dUSPixelSize;			//B超图像中，1个像素对应的实际物理尺寸(mm)
 		ImageSize m_nResolution;		//B超图像尺寸(像素数)
 

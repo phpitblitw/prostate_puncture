@@ -77,6 +77,7 @@ namespace NDIOPERATOR
 		//typedef std::function < void(std::vector<NDIOPERATOR::Attitude>) > Fun_UpdateAttitudeEvent;//因为可能有多个感应线，所以使用vector进行返回
 		typedef std::function<void(fsutility::Attitude)> Fun_UpdateAttitudeEvent;	//回调函数 返回当前NDI探头姿态(以4个齐次坐标的形式)
 		void BindUpdateAttitudeEvent(Fun_UpdateAttitudeEvent eventFun);  //绑定刷新坐标回调函数
+		double GetProbeOffset() { return m_dMoveDirOffset; }  //返回矢状面中心点相对横断面中心点的物理偏移
 
 		int Calibrate(void);				//NDI坐标系与B超探头坐标系间标定功能
 
@@ -91,6 +92,7 @@ namespace NDIOPERATOR
 	private:
 		Fun_UpdateAttitudeEvent m_UpdateAttitudeFun;		//更新预览图
 
+		double  m_dMoveDirOffset;	//矢状面中心点，相对于横断面中心点，在探头朝向moveDir上的偏移量(mm)
 		double m_pMatRtoT[16];		//存放4*4转换矩阵（Receiver to Transmitter）
 
 		CombinedApi m_capi;			//自带的操作类

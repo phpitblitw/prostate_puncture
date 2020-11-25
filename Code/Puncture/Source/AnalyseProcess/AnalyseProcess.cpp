@@ -112,6 +112,7 @@ int AnalyseProcess::InitAnalyseProcess(CString t_strFilePathName)
 		return ER_NoSurgicalPlan;
 	}
 	m_ImageSamplerPtr->SetMRIPixelSize(AnalyseConfig::Instance().m_fVoxelSizeX, AnalyseConfig::Instance().m_fVoxelSizeY, AnalyseConfig::Instance().m_fVoxelSizeZ);
+	m_ImageSamplerPtr->SetProbeOffset(m_NDIOperatorPtr->GetProbeOffset());
 
 	//将MRI模拟采样的base位置传递给PositionManager
 	m_PositionManagerPtr->m_BaseMRIAttitude = AnalyseConfig::Instance().m_Attitude;

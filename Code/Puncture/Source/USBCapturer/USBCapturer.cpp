@@ -314,6 +314,7 @@ void USBCapturer::Grab()
 			cv::Mat iDst(iVideoMode.height, iVideoMode.width, CV_8UC3);//这里nHeight为760,nWidth为1024,8UC3表示8bit uchar 无符号类型,3通道值
 			cvtColor(iSrc, iDst, cv::COLOR_YUV2BGR_YV12);
 			CalParameters(iDst);  //根据单张截图 更新参数
+
 			cv::Mat t_imgT;
 			cv::Mat t_imgS;
 			if (m_scanType == DUAL_PLANE)
@@ -421,19 +422,36 @@ double USBCapturer::CalPixelSize(cv::Mat t_imgAxis)
 	}
 
 	//找出两个坐标点之间的距离(像素数)
-	for (y = 0; y < t_imgAxis.rows - 1; y++)
+	//for (y = 0; y < t_imgAxis.rows - 1; y++)
+	//{
+	//	if (hist[y] == 0 && hist[y + 1] > 0)
+	//	{
+	//		y1 = y;
+	//		break;
+	//	}
+	//}
+	//for (y++; y < t_imgAxis.rows - 1; y++)
+	//{
+	//	if (hist[y] == 0 && hist[y + 1] > 0)
+	//	{
+	//		y2 = y;
+	//		break;
+	//	}
+	//}
+
+	for (y = t_imgAxis.rows - 1; y >= 1; y--)
 	{
-		if (hist[y] == 0 && hist[y + 1] > 0)
+		if (hist[y] == 0 && hist[y - 1] > 0)
 		{
-			y1 = y;
+			y2 = y;
 			break;
 		}
 	}
-	for (y++; y < t_imgAxis.rows - 1; y++)
+	for (y--; y >= 1; y--)
 	{
-		if (hist[y] == 0 && hist[y + 1] > 0)
+		if (hist[y] == 0 && hist[y - 1] > 0)
 		{
-			y2 = y;
+			y1 = y;
 			break;
 		}
 	}

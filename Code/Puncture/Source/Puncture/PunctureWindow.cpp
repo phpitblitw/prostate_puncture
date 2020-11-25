@@ -134,7 +134,7 @@ void PunctureWindow::OnTimerTimeout()
 		return;
 
 	m_showMutex.lock();
-	//更新数值参数
+	//更新MRI模拟采样姿态参数
 	ui.ScanCenterX->setText("123");
 	ui.ScanCenterX->setText(QString::number(m_FrameDataPtr->m_Attitude.m_ScanCenter.x, 'f', 4));
 	ui.ScanCenterY->setText(QString::number(m_FrameDataPtr->m_Attitude.m_ScanCenter.y, 'f', 4));
