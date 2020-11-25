@@ -79,6 +79,7 @@ namespace USBCAPTURER
 		int StartGrab();		//开始采集B超数据
 		int StopGrab();			//停止采集B超数据
 		BOOL GrabOneFrame(Mat &t_Image);		//获取一帧B超图像
+		void UpdateParameters() { m_bUpdateFlag = true; }  //在下一帧图像到来时，更新超声参数
 
 		//传递数据至外部回调函数
 		typedef std::function < void(cv::Mat, cv::Mat, double, double) > Fun_CapturePerFrameEvent;		//支持两个图像和尺度信息
@@ -108,5 +109,6 @@ namespace USBCAPTURER
 		ScanType m_scanType;  //b超机的扫描类型
 		double m_dPixelSizeT;  //横截面的像素物理尺寸
 		double m_dPixelSizeS;  //矢状面的像素物理尺寸
+		bool m_bUpdateFlag;  //指示下一帧是否需要更新超声参数
 	};
 }

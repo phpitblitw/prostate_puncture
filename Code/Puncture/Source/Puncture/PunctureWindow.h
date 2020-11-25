@@ -29,7 +29,8 @@ public:
 public slots:
 	void OnTimerTimeout();
 	int InitDevice();  //初始化设备
-	void OnBtnRegisterClicked();
+	void OnBtnRegisterClicked();  //超声探头-MRI模拟采样 配准(仿射变换)
+	void OnBtnUpdateUSClicked();  //更新超声设备参数
 	void Quit();  //释放设备并退出
 	void MoveMRILeft();
 	void MoveMRIRight();

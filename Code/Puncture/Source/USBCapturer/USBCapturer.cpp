@@ -43,6 +43,7 @@ USBCapturer::USBCapturer()
 	m_scanType = UNDEFINED;
 	m_dPixelSizeT = -1;
 	m_dPixelSizeS = -1;
+	m_bUpdateFlag = true;
 }//USBCapturer
 
 
@@ -313,7 +314,13 @@ void USBCapturer::Grab()
 
 			cv::Mat iDst(iVideoMode.height, iVideoMode.width, CV_8UC3);//这里nHeight为760,nWidth为1024,8UC3表示8bit uchar 无符号类型,3通道值
 			cvtColor(iSrc, iDst, cv::COLOR_YUV2BGR_YV12);
-			CalParameters(iDst);  //根据单张截图 更新参数
+
+			//更新B超参数
+			if (m_bUpdateFlag || CalScanType(iDst) != m_scanType)  //对于每一帧图像 都检测是否切换了扫描平面类型
+			{
+				m_bUpdateFlag = false;
+				CalParameters(iDst);  //如果扫描平面类型改变了，则更新所有b超参数(包括扫描类型和像素物理尺寸)
+			}
 
 			cv::Mat t_imgT;
 			cv::Mat t_imgS;
