@@ -612,12 +612,17 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 		m_pProstateMask = new BYTE[width * height];
 		m_pLesionMask = new BYTE[width * height];
 		m_pRectumMask = new BYTE[width * height];
+		//计算mask数据
 		m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 0, 1);
 		m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 0, 2);
 		m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 0, 3);
+		//更新角点位置至FrameDataPtr
+		m_ImageSamplerPtr->GetPlaneCorners(t_FrameDataPtr->m_TransverseLeftTop, t_FrameDataPtr->m_TransverseRightTop, 
+			t_FrameDataPtr->m_TransverseLeftBottom, t_FrameDataPtr->m_TransverseRightBottom);
 		Mat prostateMask(height, width, CV_8UC1, m_pProstateMask);
 		Mat lesionMask(height, width, CV_8UC1, m_pLesionMask);
 		Mat rectumMask(height, width, CV_8UC1, m_pRectumMask);
+		//更新mask至FrameDataPtr
 		t_FrameDataPtr->m_prostateMaskT = prostateMask.clone();
 		t_FrameDataPtr->m_lesionMaskT = lesionMask.clone();
 		t_FrameDataPtr->m_rectumMaskT = rectumMask.clone();
@@ -635,12 +640,17 @@ void AnalyseProcess::ProcessSingleFrameB(FrameDataPtr t_FrameDataPtr)
 		m_pProstateMask = new BYTE[width * height];
 		m_pLesionMask = new BYTE[width * height];
 		m_pRectumMask = new BYTE[width * height];
+		//计算mask数据
 		m_ImageSamplerPtr->GetSampleMaskPlan(m_pProstateMask, 1, 1);
 		m_ImageSamplerPtr->GetSampleMaskPlan(m_pLesionMask, 1, 2);
 		m_ImageSamplerPtr->GetSampleMaskPlan(m_pRectumMask, 1, 3);
+		//更新角点位置至FrameDataPtr
+		m_ImageSamplerPtr->GetPlaneCorners(t_FrameDataPtr->m_SagittalLeftTop, t_FrameDataPtr->m_SagittalRightTop,
+			t_FrameDataPtr->m_SagittalLeftBottom, t_FrameDataPtr->m_SagittalRightBottom);
 		Mat prostateMask(height, width, CV_8UC1, m_pProstateMask);
 		Mat lesionMask(height, width, CV_8UC1, m_pLesionMask);
 		Mat rectumMask(height, width, CV_8UC1, m_pRectumMask);
+		//更新mask至FrameDataPtr
 		t_FrameDataPtr->m_prostateMaskS = prostateMask.clone();
 		t_FrameDataPtr->m_lesionMaskS = lesionMask.clone();
 		t_FrameDataPtr->m_rectumMaskS = rectumMask.clone();

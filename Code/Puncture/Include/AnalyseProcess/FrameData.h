@@ -92,11 +92,17 @@ namespace ANALYSEPROCESS
 		//MRI模拟采样 截面的姿态参数 (wld)
 		fsutility::Attitude m_Attitude;
 
-		//MRI模拟采样 截面的四个角点(wld)
-		Coordinate m_LeftTop;
-		Coordinate m_RightTop;
-		Coordinate m_LeftBottom;
-		Coordinate m_RightBottom;
+		//MRI模拟采样 横断面的四个角点(wld)
+		Coordinate m_TransverseLeftTop;
+		Coordinate m_TransverseRightTop;
+		Coordinate m_TransverseLeftBottom;
+		Coordinate m_TransverseRightBottom;
+
+		//MRI模拟采样 矢状面的四个角点(wld)
+		Coordinate m_SagittalLeftTop;
+		Coordinate m_SagittalRightTop;
+		Coordinate m_SagittalLeftBottom;
+		Coordinate m_SagittalRightBottom;
 	};
 }
 

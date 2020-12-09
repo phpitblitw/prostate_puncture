@@ -194,7 +194,11 @@ void PunctureWindow::OnTimerTimeout()
 	//3D显示
 	if(m_b3DAcquired)
 	{
-		//TODO
+		ui.view3D->SetTransversePlane(m_FrameDataPtr->m_TransverseLeftTop, m_FrameDataPtr->m_TransverseRightTop, 
+			m_FrameDataPtr->m_TransverseLeftBottom, m_FrameDataPtr->m_TransverseRightBottom);  //更新横断面示意
+		ui.view3D->SetSagittalPlane(m_FrameDataPtr->m_SagittalLeftTop, m_FrameDataPtr->m_SagittalRightTop,
+			m_FrameDataPtr->m_SagittalLeftBottom, m_FrameDataPtr->m_SagittalRightBottom);  //更新矢状面示意
+		ui.view3D->update();
 	}
 	m_showMutex.unlock();
 }
