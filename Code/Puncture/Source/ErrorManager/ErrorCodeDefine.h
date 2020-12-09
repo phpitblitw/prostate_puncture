@@ -25,9 +25,10 @@ enum ErrorCodeType {
 	ER_InportSurgicalPlanFailed			= 0x00200002,	//导入手术计划失败
 	ER_OpenSurgicalPlanConfigFileFailed = 0x00200003,	//导入手术计划ini文件失败
 	ER_InportMaskDataError				= 0x00200004,	//导入Mask数据失败
-	ER_InportMRIDataError				= 0x00200005,	//导入Mask数据失败
+	ER_InportMRIDataError				= 0x00200005,	//导入MRI数据失败
 	ER_ReachedRectumEnd					= 0x00200006,	//到达了直肠中轴线坐标序列的终点
 	ER_ImportRectumCenterError			= 0x00200007,	//导入直肠中轴线txt数据失败
+	ER_ImportObjDataError				= 0x00200008,	//导入Obj数据失败
 
 	//AnalyseProcess模块
 	ER_2DImageSizeError					= 0x00300001,	//2D图像尺寸错误

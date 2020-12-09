@@ -22,7 +22,8 @@ Project Files Included
 #include "NDIOperator/Attitude.h"
 #include "MaskData.h"
 #include "MRIData.h"
-#include "SurfaceData.h"
+//#include "SurfaceData.h"
+#include "ObjData.h"
 #include "CPubFunc.h"
 //#include "ImageSampler.h"
 
@@ -85,7 +86,8 @@ namespace SURGICALPLAN
 
 		MRIDataPtr GetMRIDataPtr() { return m_pMRIData; }				//获取MRI信息
 		MaskDataPtr GetMaskDataPtr(int nMaskType);						//获取Mask信息
-		SurfaceDataPtr GetSurfaceDataPtr() { return m_pSurface; }		//获取表面信息
+		ObjDataPtr GetObjDataPtr(int nObjType);						//获取Obj数据
+		//SurfaceDataPtr GetSurfaceDataPtr() { return m_pSurface; }		//获取表面信息
 		
 
 		void SetImageSize(int nImageX, int nImageY); //设置2d显示的超声尺寸(像素数)
@@ -100,7 +102,11 @@ namespace SURGICALPLAN
 		MaskDataPtr m_pLesionMaskData;					//病灶Mask数据
 		MaskDataPtr m_pRectumMaskData;					//直肠Mask数据
 
-		SurfaceDataPtr m_pSurface;						//表面标签数据(目前为prostate标签)
+		ObjDataPtr m_pProstateObjData;					//前列腺Obj数据
+		ObjDataPtr m_pLesionObjData;					//病灶Obj数据
+		ObjDataPtr m_pRectumObjData;					//直肠Obj数据
+
+		//SurfaceDataPtr m_pSurface;					//表面标签数据(目前为prostate标签)
 
 		vector <Point3D> m_vRectumCenterPath;			//直肠中心点序列
 		int m_iCurCenterPtIndex;						//当前直肠点在序列中的位置

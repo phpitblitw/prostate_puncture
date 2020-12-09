@@ -59,6 +59,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)\include;$(SolutionDir)\include\epiphan;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Configuration);$(SolutionDir)lib\Commonlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -121,11 +122,15 @@
     <QtUic Include="PunctureWindow.ui" />
     <QtMoc Include="PunctureWindow.h" />
     <ClCompile Include="GraphicsView2D.cpp" />
+    <ClCompile Include="OpenGLWidget3D.cpp" />
     <ClCompile Include="PunctureWindow.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="GraphicsView2D.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="OpenGLWidget3D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

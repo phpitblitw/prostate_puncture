@@ -44,9 +44,15 @@
     <ClCompile Include="GraphicsView2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OpenGLWidget3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="GraphicsView2D.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="OpenGLWidget3D.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

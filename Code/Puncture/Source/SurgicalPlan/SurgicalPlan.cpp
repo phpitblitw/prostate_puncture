@@ -70,8 +70,11 @@ void SurgicalPlan::InitData()
 	m_pProstateMaskData.reset(new MaskData());
 	m_pLesionMaskData.reset(new MaskData());
 	m_pRectumMaskData.reset(new MaskData());
+	m_pProstateObjData.reset(new ObjData());
+	m_pLesionObjData.reset(new ObjData());
+	m_pRectumObjData.reset(new ObjData());
 	m_pMRIData.reset(new MRIData());
-	m_pSurface.reset(new SurfaceData());
+	//m_pSurface.reset(new SurfaceData());
 	//m_pMaskSampler.reset(new ImageSampler());
 }
 
@@ -232,7 +235,7 @@ int SurgicalPlan::InPortAsFileSet(CString t_strFilePathName)
 	//t_ConfigFile.ReadKey(_T("Gama"), gama);
 
 	//m_BasePlanAttitude.SetPosition(x, y, z, alpha, beta, gama);
-
+	
 	m_strRootPath = t_strFilePathName.Left(t_strFilePathName.GetLength() - t_strFilePathName.ReverseFind('\\'));
 
 	//导入MASK数据
@@ -256,7 +259,17 @@ int SurgicalPlan::InPortAsFileSet(CString t_strFilePathName)
 		return ER_InportMaskDataError;
 	}
 	m_pMRIData->SetMRIVolumeResolution(m_fVoxelSizeX, m_fVoxelSizeY, m_fVoxelSizeZ);
-
+	
+	
+	//导入Obj数据
+	if (m_pProstateObjData->LoadObjFile(m_strProstateObjFileName) != LIST_NO_ERROR)
+	{
+		return ER_ImportObjDataError;
+	}
+	if (m_pLesionObjData->LoadObjFile(m_strLesionObjFileName) != LIST_NO_ERROR)
+	{
+		return ER_ImportObjDataError;
+	}
 	return LIST_NO_ERROR;
 }//InPortAsFileSet
 
@@ -296,7 +309,26 @@ MaskDataPtr SurgicalPlan::GetMaskDataPtr(int nMaskType)
 		return m_pLesionMaskData;
 	else
 		return m_pRectumMaskData;
-}//GetMaskDataPtr
+}
+
+/*****************************************************************
+Name:			GetObjDataPtr
+Inputs:
+	int nObjType - obj类型 1前列腺 2病灶 其他直肠
+Return Value:
+	ObjDataPtr - obj数据指针
+Description:	返回obj指针
+*****************************************************************/
+ObjDataPtr SURGICALPLAN::SurgicalPlan::GetObjDataPtr(int nObjType)
+{
+	if (nObjType == 1)
+		return m_pProstateObjData;
+	else if (nObjType == 2)
+		return m_pLesionObjData;
+	else
+		return m_pRectumObjData;
+}
+//GetMaskDataPtr
 
 
 /*****************************************************************

@@ -31,6 +31,7 @@ void PunctureWindow::InitWindow()
 
 	//绑定信号与槽
 	connect(&m_timer, SIGNAL(timeout()), this, SLOT(OnTimerTimeout()));  //定时刷新显示图像
+	connect(ui.BtnLoadPatientData, SIGNAL(clicked()), this, SLOT(LoadPatientData()));  //载入病人数据
 	connect(ui.BtnInitDevice, SIGNAL(clicked()), this, SLOT(InitDevice()));  //初始化设备
 	connect(ui.BtnRegister, SIGNAL(clicked()), this, SLOT(OnBtnRegisterClicked()));  //医生手动点击按钮 锁定坐标
 	connect(ui.BtnUpdateUS, SIGNAL(clicked()), this, SLOT(OnBtnUpdateUSClicked()));  //在US图像分辨率改变时，医生需要手动点击按钮 更新US参数
@@ -85,17 +86,7 @@ int PunctureWindow::InitDevice()
 		ui.BtnInitDevice->setEnabled(true);
 		return ER_InitUSBDeviceFailed;
 	}
-
-	//创建手术计划模块
-	strIniFileName = strConfigRootPath + "SurgicalPlan.ini";
-	m_SurgicalPlanPtr.reset(new SurgicalPlan());
-	if (m_SurgicalPlanPtr->InPortAsFileSet(strIniFileName) != LIST_NO_ERROR)
-	{
-		QMessageBox::information(this, "错误", "导入手术计划失败");
-		ui.BtnInitDevice->setEnabled(true);
-		return ER_FileOpenFailed;
-	}
-
+	
 	//创建分析处理模块
 	strIniFileName = strConfigRootPath + "AnalyseProcess.ini";
 	m_AnalyseProcessPtr.reset(new AnalyseProcess());
@@ -123,6 +114,31 @@ int PunctureWindow::InitDevice()
 	ui.BtnRegister->setEnabled(true);
 	ui.BtnQuit->setEnabled(true);
 
+	return LIST_NO_ERROR;
+}
+
+int PunctureWindow::LoadPatientData()
+{
+	//初始化
+	char exePath[MAX_PATH];
+	memset(exePath, 0, MAX_PATH);
+	GetModuleFileNameA(NULL, exePath, MAX_PATH);  //找到当前exe文件名
+	std::string strConfigRootPath = std::string(exePath);
+	strConfigRootPath = strConfigRootPath.substr(0, strConfigRootPath.rfind('\\')) + "\\Config\\";  //生成config文件夹路径
+	std::string strIniFileName;
+
+	//创建手术计划模块
+	strIniFileName = strConfigRootPath + "SurgicalPlan.ini";
+	m_SurgicalPlanPtr.reset(new SurgicalPlan());
+	if (m_SurgicalPlanPtr->InPortAsFileSet(strIniFileName) != LIST_NO_ERROR)
+	{
+		QMessageBox::information(this, "错误", "导入手术计划失败");
+		ui.BtnInitDevice->setEnabled(true);
+		return ER_FileOpenFailed;
+	}
+	ui.view3D->LoadProstateObj(m_SurgicalPlanPtr->GetObjDataPtr(1));  //载入prostate obj
+	ui.view3D->LoadLesionObj(m_SurgicalPlanPtr->GetObjDataPtr(2));  //载入lesion obj
+	ui.view3D->update();  //刷新显示3D窗口
 	return LIST_NO_ERROR;
 }
 

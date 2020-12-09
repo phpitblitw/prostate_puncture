@@ -1,6 +1,6 @@
 #include "GraphicsView2D.h"
 #include <vector>
-#include <Windows.h>
+//#include <Windows.h>
 
 
 GraphicsView2D::GraphicsView2D(QWidget *parent)
@@ -52,15 +52,6 @@ void GraphicsView2D::LoadImg(cv::Mat img)
 	cv::threshold(m_imgGray, m_imgGray, 1, 255, cv::THRESH_BINARY_INV);  //筛选出灰度<=1的部分,设置为255
 	m_img.setTo(0, m_imgGray);  //将灰度<=1的部分 置为0
 	this->transformImg(m_img);  //使用查找表变换图片 使图像更加易读
-	   
-	//存储图片测试
-	static int index = 0;
-	std::string filename;
-	filename = "D:\\other\\横断面图像\\" + std::to_string(index) + ".bmp";
-	cv::imwrite(filename, m_img);
-	Sleep(100);
-	index++;
-	//测试
 }
 
 void GraphicsView2D::LoadProstateMask(cv::Mat prostateMask)
@@ -128,7 +119,7 @@ void GraphicsView2D::createGamaLut(uchar lutGama[256], float fC, float fGama)
 	memset(lutGama, 0, sizeof(uchar) * 2);  //灰度值过低的点 直接置为0
 	for (int i = 2; i < 256; i++)
 	{
-		lutGama[i] = min(fC*uchar(pow(float(i) / 255, fGama) * 255), 255);
+		lutGama[i] = fC * uchar(pow(float(i) / 255, fGama) * 255) < 255 ? fC * uchar(pow(float(i) / 255, fGama) * 255) : 255;
 	}
 	return;
 }

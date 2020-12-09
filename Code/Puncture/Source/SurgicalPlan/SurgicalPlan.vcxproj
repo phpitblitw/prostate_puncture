@@ -207,6 +207,7 @@
     <ClCompile Include="CPubFunc.cpp" />
     <ClCompile Include="MaskData.cpp" />
     <ClCompile Include="MRIData.cpp" />
+    <ClCompile Include="ObjData.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -225,6 +226,7 @@
     <ClInclude Include="CPubFunc.h" />
     <ClInclude Include="MaskData.h" />
     <ClInclude Include="MRIData.h" />
+    <ClInclude Include="ObjData.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StructDef.h" />

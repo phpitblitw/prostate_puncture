@@ -1,15 +1,13 @@
 #pragma once
-
-#include "ui_PunctureWindow.h"
 #include <QtWidgets/QMainWindow>
 #include <qtimer.h>
 #include <thread>
 #include <mutex>
-//#include <afx.h>  //MFC支持
 #include "NDIOperator/NDIOperator.h"
 #include "SurgicalPlan/SurgicalPlan.h"
 #include "USBCapturer/USBCapturer.h"
 #include "AnalyseProcess/AnalyseProcess.h"
+#include "ui_PunctureWindow.h"  //由于https://www.cnblogs.com/time-is-life/p/5436633.html所述的原因，要把mfc涉及的#include <windows.h>放在前面，其他文件(QOpenglWidget3D.h)包含的include<windows.h>放在后面
 
 using namespace NDIOPERATOR;
 using namespace SURGICALPLAN;
@@ -29,6 +27,7 @@ public:
 public slots:
 	void OnTimerTimeout();
 	int InitDevice();  //初始化设备
+	int LoadPatientData();  //载入病人数据
 	void OnBtnRegisterClicked();  //超声探头-MRI模拟采样 配准(仿射变换)
 	void OnBtnUpdateUSClicked();  //更新超声设备参数
 	void Quit();  //释放设备并退出

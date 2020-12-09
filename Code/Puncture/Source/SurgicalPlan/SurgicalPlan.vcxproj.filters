@@ -36,7 +36,7 @@
     <ClCompile Include="CPubFunc.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ImageSampler.cpp">
+    <ClCompile Include="ObjData.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -79,7 +79,7 @@
     <ClInclude Include="CPubFunc.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="ImageSampler.h">
+    <ClInclude Include="ObjData.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
