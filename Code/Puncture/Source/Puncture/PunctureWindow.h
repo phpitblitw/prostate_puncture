@@ -3,6 +3,7 @@
 #include <qtimer.h>
 #include <thread>
 #include <mutex>
+#include <string>
 #include "NDIOperator/NDIOperator.h"
 #include "SurgicalPlan/SurgicalPlan.h"
 #include "USBCapturer/USBCapturer.h"
@@ -49,6 +50,7 @@ private:
 	bool m_b3DAcquired;  //是否已获取3D图像标志位
 	bool m_bRegistered;  //是否已经配准完成
 	std::mutex m_showMutex;  //显示互斥量
+	std::string m_strDataDir;  //病人数据文件夹
 	FrameDataPtr		m_FrameDataPtr;			//单帧数据
 	NDIOperatorPtr		m_NDIOperatorPtr;		//NDI设备操作指针
 	USBCapturerPtr		m_USBCapturerPtr;		//B超图像采集设备指针

@@ -126,7 +126,7 @@ namespace SURGICALPLAN
 		float m_fVoxelSizeY;
 		float m_fVoxelSizeZ;
 
-		CString m_strRootPath;
+		CString m_strRootPath;  //单个病人的数据文件夹路径
 		CString m_strMRIFileName;
 		//CString m_strMaskFileName;
 		CString m_strProstateMaskFileName;

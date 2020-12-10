@@ -200,16 +200,24 @@ int SurgicalPlan::InPortAsFileSet(CString t_strFilePathName)
 		return ER_OpenSurgicalPlanConfigFileFailed;
 	}
 
-	//文件路径
+	//从ini文件读取数据相对路径
 	t_ConfigFile.Move2Section(_T("PATH"));
 	t_ConfigFile.ReadKey(_T("mri_filename"), m_strMRIFileName);
 	t_ConfigFile.ReadKey(_T("prostate_mask_filename"), m_strProstateMaskFileName);
 	t_ConfigFile.ReadKey(_T("lesion_mask_filename"), m_strLesionMaskFileName);
-	t_ConfigFile.ReadKey(_T("rectum_mask_filename"), m_strRectumMaskFileName);
-	//t_ConfigFile.ReadKey(_T("prostate_surface_filename"), m_strSurfaceFileName);	
+	t_ConfigFile.ReadKey(_T("rectum_mask_filename"), m_strRectumMaskFileName);	
 	t_ConfigFile.ReadKey(_T("prostate_surface_filename"), m_strProstateObjFileName);	//obj格式的模型数据
 	t_ConfigFile.ReadKey(_T("lesion_surface_filename"), m_strLesionObjFileName);
 	t_ConfigFile.ReadKey(_T("rectum_surface_filename"), m_strRectumObjFileName);
+
+	//生成文件绝对路径
+	m_strMRIFileName = m_strRootPath + m_strMRIFileName;
+	m_strProstateMaskFileName = m_strRootPath + m_strProstateMaskFileName;
+	m_strLesionMaskFileName = m_strRootPath + m_strLesionMaskFileName;
+	m_strRectumMaskFileName = m_strRootPath + m_strRectumMaskFileName;
+	m_strProstateObjFileName = m_strRootPath + m_strProstateObjFileName;
+	m_strLesionObjFileName = m_strRootPath + m_strLesionObjFileName;
+	m_strRectumObjFileName = m_strRootPath + m_strRectumObjFileName;
 
 	//mr数据尺寸(像素数)
 	t_ConfigFile.Move2Section(_T("ImageSize"));
@@ -275,7 +283,9 @@ int SurgicalPlan::InPortAsFileSet(CString t_strFilePathName)
 
 int SurgicalPlan::InPortAsFileSet(std::string t_strFilePathName)
 {
-	CString t_cstrFilePathName(t_strFilePathName.data());
+	m_strRootPath = CString(t_strFilePathName.data())+'/';
+	std::string strIniFileName = t_strFilePathName + "/SurgicalPlan.ini";
+	CString t_cstrFilePathName(strIniFileName.data());
 	return InPortAsFileSet(t_cstrFilePathName);
 }
 

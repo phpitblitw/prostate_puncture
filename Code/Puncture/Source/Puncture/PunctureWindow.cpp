@@ -1,6 +1,7 @@
 #include "PunctureWindow.h"
 #include <string>
 #include <qmessagebox.h>
+#include <qfiledialog.h>
 #include "ErrorManager/ErrorCodeDefine.h"
 #pragma execution_character_set("utf-8")  //设置默认编码格式 避免中文乱码
 
@@ -20,6 +21,7 @@ PunctureWindow::PunctureWindow(QWidget *parent)
 	m_SurgicalPlanPtr = nullptr;
 	m_AnalyseProcessPtr = nullptr;
 	m_FrameDataPtr = nullptr;
+	m_strDataDir = "";
 	InitWindow();
 }
 
@@ -88,7 +90,7 @@ int PunctureWindow::InitDevice()
 	}
 	
 	//创建分析处理模块
-	strIniFileName = strConfigRootPath + "AnalyseProcess.ini";
+	strIniFileName = m_strDataDir + "/AnalyseProcess.ini";
 	m_AnalyseProcessPtr.reset(new AnalyseProcess());
 	m_AnalyseProcessPtr->BindUpdateFrameEvent(std::bind(&PunctureWindow::UpdateFrame, this, std::placeholders::_1));
 	m_AnalyseProcessPtr->SetNDIDevicePtr(m_NDIOperatorPtr);
@@ -119,18 +121,23 @@ int PunctureWindow::InitDevice()
 
 int PunctureWindow::LoadPatientData()
 {
-	//初始化
-	char exePath[MAX_PATH];
-	memset(exePath, 0, MAX_PATH);
-	GetModuleFileNameA(NULL, exePath, MAX_PATH);  //找到当前exe文件名
-	std::string strConfigRootPath = std::string(exePath);
-	strConfigRootPath = strConfigRootPath.substr(0, strConfigRootPath.rfind('\\')) + "\\Config\\";  //生成config文件夹路径
-	std::string strIniFileName;
+	////初始化
+	//char exePath[MAX_PATH];
+	//memset(exePath, 0, MAX_PATH);
+	//GetModuleFileNameA(NULL, exePath, MAX_PATH);  //找到当前exe文件名
+	//std::string strConfigRootPath = std::string(exePath);
+	//strConfigRootPath = strConfigRootPath.substr(0, strConfigRootPath.rfind('\\')) + "\\Config\\";  //生成config文件夹路径
+	//std::string strIniFileName;
 
+	//std::string strIniFileName;
+	QString qstrDataDir = QFileDialog::getExistingDirectory(this, tr("病人数据路径"), "dirNotAcquired", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+	//m_strDataDir = qstrDataDir.toStdString();
+	m_strDataDir = (const char*)qstrDataDir.toLocal8Bit();  //转换为std::string 且避免中文字符出现乱码
+	
 	//创建手术计划模块
-	strIniFileName = strConfigRootPath + "SurgicalPlan.ini";
+	//strIniFileName = m_strDataDir + "SurgicalPlan.ini";
 	m_SurgicalPlanPtr.reset(new SurgicalPlan());
-	if (m_SurgicalPlanPtr->InPortAsFileSet(strIniFileName) != LIST_NO_ERROR)
+	if (m_SurgicalPlanPtr->InPortAsFileSet(m_strDataDir) != LIST_NO_ERROR)
 	{
 		QMessageBox::information(this, "错误", "导入手术计划失败");
 		ui.BtnInitDevice->setEnabled(true);

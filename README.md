@@ -76,6 +76,7 @@ release版本生成完成,3d窗口创建过程中 m_p3DShowWnd->CreateWnd() 出�
 
 # v1.8
 添加了3D显示窗口，以及“导入数据”按钮
+导入病人数据，需要用户手动选择数据文件夹。AnalyseProcess.ini SurgicalPlan.ini文件移动至病人文件夹而非程序文件夹
 
 
 
