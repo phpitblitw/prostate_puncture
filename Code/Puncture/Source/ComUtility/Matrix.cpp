@@ -189,7 +189,7 @@ void Matrix::ConstructEulerTransform(double x, double y, double z, double roll, 
 	m_dItem[3][3] = 1;
 }
 
-//根据欧拉角形式的旋转参数，求变换矩阵
+//根据四元数形式的旋转参数，求变换矩阵
 void Matrix::ConstructQuaternionTransform(double q0, double qx, double qy, double qz, double tx, double ty, double tz)
 {
 	// roll (x-axis rotation)

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CalibrateWindowClass</class>
+ <widget class="QMainWindow" name="CalibrateWindowClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>752</width>
+    <height>519</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CalibrateWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="GraphicsAnnotator" name="view2D"/>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="title">
+       <string>GroupBox</string>
+      </property>
+      <widget class="QPushButton" name="BtnInitDevice">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>250</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>初始化设备</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BtnStartCapture">
+       <property name="geometry">
+        <rect>
+         <x>110</x>
+         <y>250</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>开始采集</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BtnAnnotate">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>300</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>标注图片</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="RadioBtnTransverse">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>60</y>
+         <width>89</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>横断面</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="RadioBtnSagittal">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>90</y>
+         <width>89</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>矢状面</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BtnReleaseDevice">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>250</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>关闭设备</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="BtnLocatePhantom">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>300</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>定位体模</string>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>752</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>GraphicsAnnotator</class>
+   <extends>QGraphicsView</extends>
+   <header>GraphicsAnnotator.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="CalibrateWindow.qrc"/>
+ </resources>
+ <connections/>
+</ui>

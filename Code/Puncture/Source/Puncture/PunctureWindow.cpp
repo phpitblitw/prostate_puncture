@@ -131,8 +131,11 @@ int PunctureWindow::LoadPatientData()
 
 	//std::string strIniFileName;
 	QString qstrDataDir = QFileDialog::getExistingDirectory(this, tr("病人数据路径"), "dirNotAcquired", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-	//m_strDataDir = qstrDataDir.toStdString();
 	m_strDataDir = (const char*)qstrDataDir.toLocal8Bit();  //转换为std::string 且避免中文字符出现乱码
+	if (m_strDataDir.empty())
+	{
+		return LIST_NO_ERROR;
+	}
 	
 	//创建手术计划模块
 	//strIniFileName = m_strDataDir + "SurgicalPlan.ini";

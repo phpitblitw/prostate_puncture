@@ -35,8 +35,10 @@ NDIOperator::NDIOperator()
 {
 	//m_capi = CombinedApi();//不知道这个地方需要不需要
 	m_UpdateAttitudeFun = nullptr;
+	m_UpdateEulerFun = nullptr;
 
 	m_bTracking = false;
+	m_nSensorNumber = -1;
 }//NDIOperator
 
 
@@ -77,7 +79,7 @@ int NDIOperator::InitNDIDevice(CString t_strFilePathName)
 
 	//初始化矢状面中心点相对横断面中心点的物理误差
 	m_dMoveDirOffset = NDIConfig::Instance().m_dMoveDirOffset;
-
+	m_nSensorNumber = NDIConfig::Instance().m_nSensorNumber;
 	//连接设备
 	//bool t_bConnected = false;		//标志位，是否正确链接
 	//for (i = 1; i < 10; ++i)
@@ -142,12 +144,26 @@ Inputs:
 	Fun_UpdateAttitudeEvent eventFun - 更新坐标函数指针
 Return Value:
 	none
-Description:	绑定刷新坐标回调函数
+Description:	绑定刷新坐标回调函数(四个齐次坐标的形式)
 *****************************************************************/
 void NDIOperator::BindUpdateAttitudeEvent(Fun_UpdateAttitudeEvent eventFun)
 {
 	m_UpdateAttitudeFun = eventFun;
-}//BindUpdateAttitudeEvent
+}
+
+/*****************************************************************
+Name:			BindUpdateAttitudeEvent
+Inputs:
+	Fun_UpdateEulerEvent eventFun - 更新坐标函数指针
+Return Value:
+	none
+Description:	绑定刷新坐标回调函数(欧拉角的形式)
+*****************************************************************/
+void NDIOPERATOR::NDIOperator::BindUpdateAttitudeEvent(Fun_UpdateEulerEvent eventFun)
+{
+	m_UpdateEulerFun = eventFun;
+}
+//BindUpdateAttitudeEvent
 
 
  /*****************************************************************
@@ -217,7 +233,7 @@ Description:	采集函数
 void NDIOperator::Tracking()
 {
 	// TODO: 在此处添加实现代码.
-	if (m_UpdateAttitudeFun == NULL)
+	if (m_UpdateAttitudeFun == NULL && m_UpdateEulerFun == NULL)
 	{
 		return;
 	}
@@ -236,7 +252,8 @@ void NDIOperator::Tracking()
 															//构造姿态数据
 		for (int i = 0; i < toolData.size(); i++)
 		{
-			if (i != NDIConfig::Instance().m_nSensorNumber)	//筛选目前使用的sensor
+			if (i != m_nSensorNumber)	//筛选目前使用的sensor
+			//if (i != NDIConfig::Instance().m_nSensorNumber)	//筛选目前使用的sensor
 			{
 				continue;
 			}
@@ -258,11 +275,19 @@ void NDIOperator::Tracking()
 		/*ConstructMatRtoTusingQuaternion(toolData[0].transform.q0, toolData[0].transform.qx, toolData[0].transform.qy,
 		toolData[0].transform.qz, toolData[0].transform.tx, toolData[0].transform.ty, toolData[0].transform.tz);*/
 
-		//传送姿态数据
+		//传送姿态数据(四个齐次坐标的形式)
 		if (m_UpdateAttitudeFun != NULL)
 		{
 			//m_UpdateAttitudeFun(attitude);
 			m_UpdateAttitudeFun(m_CurAttitude);
+		}
+		//传送姿态数据(欧拉角的形式)
+		if (m_UpdateEulerFun != NULL)
+		{
+			int sensorNumber = NDIConfig::Instance().m_nSensorNumber;
+			NDIOPERATOR::Attitude eulerAttitude = QuaternionToAttitude(toolData[sensorNumber].transform.q0, toolData[sensorNumber].transform.qx, toolData[sensorNumber].transform.qy,
+				toolData[sensorNumber].transform.qz, toolData[sensorNumber].transform.tx, toolData[sensorNumber].transform.ty, toolData[sensorNumber].transform.tz);  //用四元数构造欧拉角形式的转换参数
+			m_UpdateEulerFun(eulerAttitude);
 		}
 
 		m_critical_section.Unlock();
@@ -281,7 +306,12 @@ Description:	NDI坐标系与B超探头坐标系间标定功能
 int NDIOperator::Calibrate(void)
 {
 	return LIST_NO_ERROR;
-}//Calibrate
+}
+void NDIOPERATOR::NDIOperator::ResetSensorNumber()
+{
+	this->m_nSensorNumber = NDIConfig::Instance().m_nSensorNumber;
+}
+//Calibrate
 
 
  /*****************************************************************

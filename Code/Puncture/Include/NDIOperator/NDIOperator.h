@@ -76,10 +76,16 @@ namespace NDIOPERATOR
 		//传递数据至外部回调函数
 		//typedef std::function < void(std::vector<NDIOPERATOR::Attitude>) > Fun_UpdateAttitudeEvent;//因为可能有多个感应线，所以使用vector进行返回
 		typedef std::function<void(fsutility::Attitude)> Fun_UpdateAttitudeEvent;	//回调函数 返回当前NDI探头姿态(以4个齐次坐标的形式)
-		void BindUpdateAttitudeEvent(Fun_UpdateAttitudeEvent eventFun);  //绑定刷新坐标回调函数
+		typedef std::function<void(NDIOPERATOR::Attitude)> Fun_UpdateEulerEvent;  //回调函数 返回当前NDI探头的姿态(以欧拉角的形式)
+		void BindUpdateAttitudeEvent(Fun_UpdateAttitudeEvent eventFun);  //绑定刷新坐标回调函数(四个齐次坐标的形式)
+		void BindUpdateAttitudeEvent(Fun_UpdateEulerEvent eventFun);  //重载绑定刷新坐标回调函数(欧拉角的形式)
 		double GetProbeOffset() { return m_dMoveDirOffset; }  //返回矢状面中心点相对横断面中心点的物理偏移
 
 		int Calibrate(void);				//NDI坐标系与B超探头坐标系间标定功能
+		int GetSensorNumber() { return m_nSensorNumber; }  //获取正在使用的sensor序号
+		void SetSensorNumber(int n) { this->m_nSensorNumber = n; }  //设置正在使用的sensor序号
+		void ResetSensorNumber();  //将正在使用的sensor序号重置为配置文件上规定的
+		bool IsTracking() { return m_bTracking; }
 
 		int StartTracking();				//开始采集
 		void Tracking();					//采集函数
@@ -90,7 +96,10 @@ namespace NDIOPERATOR
 		static void ConstructMatRtoTusingAttitude(NDIOPERATOR::Attitude attitude, double pMatRtoT[16]);		//从Attitude类得到转换矩阵
 	
 	private:
-		Fun_UpdateAttitudeEvent m_UpdateAttitudeFun;		//更新预览图
+		Fun_UpdateAttitudeEvent m_UpdateAttitudeFun;  //更新探头姿态(四个齐次坐标的形式)
+		Fun_UpdateEulerEvent m_UpdateEulerFun;  //更新探头姿态(欧拉角的形式)
+
+		volatile int m_nSensorNumber;
 
 		double  m_dMoveDirOffset;	//矢状面中心点，相对于横断面中心点，在探头朝向moveDir上的偏移量(mm)
 		double m_pMatRtoT[16];		//存放4*4转换矩阵（Receiver to Transmitter）

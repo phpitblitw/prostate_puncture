@@ -78,6 +78,12 @@ release版本生成完成,3d窗口创建过程中 m_p3DShowWnd->CreateWnd() 出�
 添加了3D显示窗口，以及“导入数据”按钮
 导入病人数据，需要用户手动选择数据文件夹。AnalyseProcess.ini SurgicalPlan.ini文件移动至病人文件夹而非程序文件夹
 
+# v1.9
+重新添加了Calibrate项目。
+CalibrateWindow，主界面
+AnatotateWindow,采集一组标定数据后，用来手工标注所有的点(目前是360张图片*9个点)
+LocatePhantomDlg，用于定位体模(目前是8个点)
+以上的数据，记录为txt文件，待matlab分析计算
 
 
 
