@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+//#pragma execution_character_set("utf-8")  //避免中文乱码 参考https://blog.csdn.net/liyuanbhu/article/details/72596952
 
 LocatePhantomDlg::LocatePhantomDlg(QWidget *parent)
 	: QDialog(parent)
@@ -28,12 +29,12 @@ void LocatePhantomDlg::SetNDIOperator(NDIOperatorPtr pNDIOperator)
 	m_NDIOperatorPtr = pNDIOperator;
 	if (m_NDIOperatorPtr == nullptr)
 	{
-		QMessageBox::information(this, "错误", "NDI设备为空");
+		QMessageBox::information(this, u8"错误", u8"NDI设备为空");
 		return;
 	}
 	else if (!m_NDIOperatorPtr->IsTracking())
 	{
-		QMessageBox::information(this, "错误", "NDI设备未在运行");
+		QMessageBox::information(this, u8"错误", u8"NDI设备未在运行");
 	}
 	ui.SensorNumber->setValue(m_NDIOperatorPtr->GetSensorNumber());
 }
@@ -81,7 +82,7 @@ void LocatePhantomDlg::OnBtnSaveClicked()
 	int i, j;
 	string s,info;
 	stringstream sstream;  //将float浮点数转为string类型，参考https://blog.csdn.net/feidaji/article/details/85123002
-	QString qstrTxtFilename = QFileDialog::getSaveFileName(this, tr("存储点集"), "D:/", "*.txt");
+	QString qstrTxtFilename = QFileDialog::getSaveFileName(this, tr(u8"存储点集"), "D:/", "*.txt");
 	string strTxtFileName = (const char*)qstrTxtFilename.toLocal8Bit();  //转换为std::string 且避免中文字符出现乱码
 	if (strTxtFileName.empty())
 		return;
@@ -100,5 +101,5 @@ void LocatePhantomDlg::OnBtnSaveClicked()
 	sstream.clear();
 	sstream << "已存储了" << m_vctPoints.size() << "个点的位置";
 	info = sstream.str();
-	QMessageBox::information(this, "完成", QString::fromLocal8Bit(info.c_str()));
+	QMessageBox::information(this, u8"完成", QString::fromLocal8Bit(info.c_str()));
 }

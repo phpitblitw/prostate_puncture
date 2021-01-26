@@ -1,5 +1,5 @@
 #pragma once
-
+//标定主程序的GUI界面
 #include <mutex>
 #include <QtWidgets/QMainWindow>
 #include <qtimer.h>
@@ -23,6 +23,8 @@ public:
 private:
 	void UpdateUSImage(cv::Mat, cv::Mat, double, double);  //作为回调函数传给USCapturer,更新超声数据
 	void UpdateNDIData(NDIOPERATOR::Attitude);  //作为回调函数传给NDIOperator,更新NDI数据(欧拉角形式)
+	void createGamaLut(uchar lutGama[256], float fC, float fGama);  //构造gama变换查找表
+	cv::Mat transformImg(cv::Mat& srcImg);  //使用查找表进行变换
 private slots:
 	int OnBtnInitDeviceClicked();
 	void OnBtnStartCaptureClicked();
@@ -40,6 +42,7 @@ private:
 	NDIOperatorPtr		m_NDIOperatorPtr;		//NDI设备操作指针
 	USBCapturerPtr		m_USBCapturerPtr;		//B超图像采集设备指针
 	cv::Mat m_imgUS;  //超声图像
+	uchar m_lut[256];  //超声图像查找表
 	float m_fUSRes;  //超声图像分辨率(一个像素的物理尺寸 mm/pixel)
 	NDIOPERATOR::Attitude m_euler;  //超声探头姿态(欧拉角形式)
 	bool m_bUSAcquired;  //超声图像已获得标志位

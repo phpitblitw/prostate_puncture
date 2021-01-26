@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>601</width>
-    <height>533</height>
+    <height>564</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -56,9 +56,44 @@
         </layout>
        </item>
        <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="LabelPixelSize">
+           <property name="text">
+            <string>像素大小(mm)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="PixelSize"/>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="RadioBtnTransverse">
+           <property name="text">
+            <string>横断面</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="RadioBtnSagittal">
+           <property name="text">
+            <string>矢状面</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
         <widget class="QPushButton" name="BtnSetImageDir">
          <property name="text">
           <string>载入图片</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="BtnLoadPhantomTriangles">
+         <property name="text">
+          <string>载入体模N线顶点坐标</string>
          </property>
         </widget>
        </item>
@@ -88,9 +123,23 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="BtnSave">
+        <widget class="QPushButton" name="BtnSave2D">
          <property name="text">
-          <string>保存</string>
+          <string>保存(2D图片坐标系 像素坐标)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="BtnSave3DInImage">
+         <property name="text">
+          <string>保存(3D图片坐标系 物理坐标)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="BtnSave3D">
+         <property name="text">
+          <string>保存(3D体模坐标系 物理坐标)</string>
          </property>
         </widget>
        </item>

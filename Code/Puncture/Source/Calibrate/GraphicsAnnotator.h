@@ -1,4 +1,5 @@
 #pragma once
+//用于标注的图片显示widget的扩展
 #include <qgraphicsview.h>
 #include <qgraphicsitem.h>
 #include <Qt3DInput/qkeyevent.h>

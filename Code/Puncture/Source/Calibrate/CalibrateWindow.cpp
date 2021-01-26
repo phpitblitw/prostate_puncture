@@ -5,6 +5,7 @@
 #include <fstream>
 #include "ErrorManager/ErrorCodeDefine.h"
 #pragma execution_character_set("utf-8")  //避免中文乱码 参考https://blog.csdn.net/liyuanbhu/article/details/72596952
+#define GAMA_TRANSFORM  //是否对采集到的图像进行gama校正
 
 #define DISPLAY_INTERVAL 20 //图像刷新间隔(ms)
 #define CAPTURE_INTERVAL 333  //采集数据间隔(ms)
@@ -20,6 +21,7 @@ CalibrateWindow::CalibrateWindow(QWidget *parent)
 	m_NDIOperatorPtr = nullptr;
 	m_bUSAcquired = false;
 	m_nDataIndex = 0;
+	createGamaLut(m_lut, 1.0, 0.5);  //初始化gama校正参数
 
 	//界面状态初始化
 	ui.BtnStartCapture->setEnabled(false);
@@ -74,6 +76,47 @@ void CalibrateWindow::UpdateNDIData(NDIOPERATOR::Attitude euler)
 	m_showMutex.lock();
 	m_euler = euler;
 	m_showMutex.unlock();
+}
+
+void CalibrateWindow::createGamaLut(uchar lutGama[256], float fC, float fGama)
+{
+	memset(lutGama, 0, sizeof(uchar) * 2);  //灰度值过低的点 直接置为0
+	for (int i = 2; i < 256; i++)
+	{
+		lutGama[i] = fC * uchar(pow(float(i) / 255, fGama) * 255) < 255 ? fC * uchar(pow(float(i) / 255, fGama) * 255) : 255;
+	}
+	return;
+}
+
+//使用查找表 对cv::Mat赋值
+//Mat遍历方式 参考http://www.opencv.org.cn/opencvdoc/2.3.2/html/doc/tutorials/core/how_to_scan_images/how_to_scan_images.html
+//传参方式 参考https://blog.csdn.net/u012814856/article/details/84099328
+cv::Mat CalibrateWindow::transformImg(cv::Mat & srcImg)
+{
+	//确保输入的图片深度与uchar相同
+	CV_Assert(srcImg.depth() != sizeof(uchar));
+
+	int channels = srcImg.channels();
+	int nRows = srcImg.rows;
+	int nCols = srcImg.cols*channels;
+	int x, y;
+	uchar* pCur;
+
+	if (srcImg.isContinuous())
+	{
+		nCols *= nRows;
+		nRows = 1;
+	}
+
+	for (y = 0; y < nRows; y++)
+	{
+		pCur = srcImg.ptr<uchar>(y);  //第y行首元素
+		for (x = 0; x < nCols; x++)
+		{
+			pCur[x] = m_lut[pCur[x]];
+		}
+	}
+	return srcImg;
 }
 
 int CalibrateWindow::OnBtnInitDeviceClicked()
@@ -184,7 +227,16 @@ void CalibrateWindow::OnTimerCapture()
 	float fX, fY, fZ, fAlpha, fBeta, fGama;
 	string strAbsName;
 	
+	m_showMutex.lock();
 	//存储图片数据
+#ifdef GAMA_TRANSFORM
+	//gama校正  TODO
+	cv::Mat imgGray;  //灰度图 中间变量
+	cv::cvtColor(m_imgUS, imgGray, cv::COLOR_BGR2GRAY);
+	cv::threshold(imgGray, imgGray, 1, 255, cv::THRESH_BINARY_INV);  //筛选出灰度<=1的部分,设置为255
+	m_imgUS.setTo(0, imgGray);  //将灰度<=1的部分 置为0
+	this->transformImg(m_imgUS);  //使用查找表变换图片 使图像更加易读
+#endif
 	strAbsName = m_strDataDir + '/' + "baseUS_" + std::to_string(m_nDataIndex) + ".bmp";
 	cv::imwrite(strAbsName, m_imgUS);
 	//存储NDI姿态参数
@@ -207,4 +259,5 @@ void CalibrateWindow::OnTimerCapture()
 		ui.BtnStartCapture->setEnabled(true);
 		QMessageBox::information(this, "通知", "采集完成");
 	}
+	m_showMutex.unlock();
 }

@@ -1,5 +1,5 @@
 #pragma once
-
+//用于定位体模的GUI界面
 #include <QDialog>
 #include <vector>
 #include "NDIOperator/NDIOperator.h"

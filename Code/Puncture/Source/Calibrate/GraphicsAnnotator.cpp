@@ -25,18 +25,6 @@ void GraphicsAnnotator::keyPressEvent(QKeyEvent * event)
 {
 	switch (event->key())
 	{
-	//case Qt::Key_Left:
-	//	emit(KeyLeftPressed());
-	//	break;
-	//case Qt::Key_Right:
-	//	emit(KeyRightPressed());
-	//	break;
-	//case Qt::Key_Up:
-	//	emit(KeyUpPressed());
-	//	break;
-	//case Qt::Key_Down:
-	//	emit(KeyDownPressed());
-	//	break;
 	case Qt::Key_Delete:
 		this->DeleteLastPoint();
 		break;
@@ -160,8 +148,8 @@ void GraphicsAnnotator::mouseReleaseEvent(QMouseEvent *event)
 {
 	//emit mouseMoveSignal(event->x(), event->y());
 	QPoint curPos = event->pos();  //视图坐标系下的坐标
-	QPointF scenePos = this->mapToScene(curPos);  //场景坐标系下的坐标
-	QPointF itemPos = m_pPixmapItem->mapFromParent(scenePos);  //图元坐标系下的
+	QPointF scenePos = this->mapToScene(curPos);  //场景坐标系下的坐标  //坐标转换参考https://zhuanlan.zhihu.com/p/51495825
+	QPointF itemPos = m_pPixmapItem->mapFromParent(scenePos);  //图元(这张图片即是图元)坐标系下的坐标(左上角为原点，像素坐标)
 	emit mouseMoveSignal(itemPos.x(), itemPos.y());
 
 	m_pointPos.push_back(itemPos);  //记录当前点坐标
@@ -171,6 +159,7 @@ void GraphicsAnnotator::mouseReleaseEvent(QMouseEvent *event)
 	m_pScene->addItem(item);
 	item->setPos(scenePos.x()-6,scenePos.y()-6);  //设置椭圆位置（图元坐标系下）
 	m_pointItem.push_back(item);
-
+	////将图元坐标(图片左上角为原点，向右x正方向,向下y轴正方向,单位为像素)转为图片坐标系坐标(图片最下面一行中心为原点，向右x轴正方向，向上y轴正方向)
+	////TODO
 	QGraphicsView::mouseReleaseEvent(event);
 }

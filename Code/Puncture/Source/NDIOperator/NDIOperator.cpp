@@ -266,8 +266,8 @@ void NDIOperator::Tracking()
 				m_NDIMatrix.ConstructQuaternionTransform(toolData[i].transform.q0, toolData[i].transform.qx, toolData[i].transform.qy,
 					toolData[i].transform.qz, toolData[i].transform.tx, toolData[i].transform.ty, toolData[i].transform.tz);	//用四元数构造变换矩阵
 				
-				m_CurAttitude = m_InitialAttitude.Transform(m_CalibrationMatrix);  //标定矩阵*初始姿态
-				m_CurAttitude = m_CurAttitude.Transform(m_NDIMatrix);  //NDI变换矩阵*当前姿态
+				m_CurAttitude = m_InitialAttitude.Transform(m_CalibrationMatrix);  //标定矩阵*初始姿态 即接收器receiver坐标系下的坐标
+				m_CurAttitude = m_CurAttitude.Transform(m_NDIMatrix);  //NDI变换矩阵*当前姿态 即发射器transmitter坐标系下的坐标
 			}
 		}
 		//hsh:这一句是一个例子，表示可以在Tracking函数中用四元数得到转换矩阵；
