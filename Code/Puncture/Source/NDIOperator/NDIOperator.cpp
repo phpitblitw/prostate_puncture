@@ -78,7 +78,7 @@ int NDIOperator::InitNDIDevice(CString t_strFilePathName)
 	}
 
 	//初始化矢状面中心点相对横断面中心点的物理误差
-	m_dMoveDirOffset = NDIConfig::Instance().m_dMoveDirOffset;
+	//m_dMoveDirOffset = NDIConfig::Instance().m_dMoveDirOffset;
 	m_nSensorNumber = NDIConfig::Instance().m_nSensorNumber;
 	//连接设备
 	//bool t_bConnected = false;		//标志位，是否正确链接
@@ -213,10 +213,12 @@ int NDIOperator::StopTracking()
 	// TODO: 在此处添加实现代码.
 	m_bTracking = false;
 
+	m_critical_section.Lock();
 	if (m_capi.stopTracking() != 0)
 	{
 		return ER_StopTrackingNDIFailed;
 	}
+	m_critical_section.Unlock();
 
 	return LIST_NO_ERROR;
 }//StopTracking
@@ -249,7 +251,7 @@ void NDIOperator::Tracking()
 		std::vector<ToolData> toolData = m_capi.getTrackingDataBX();
 		std::vector<Attitude> attitude(toolData.size());	//大小为在工作的Tools的数量，一个Tool对应一个Attitude
 
-															//构造姿态数据
+		//构造姿态数据
 		for (int i = 0; i < toolData.size(); i++)
 		{
 			if (i != m_nSensorNumber)	//筛选目前使用的sensor
@@ -284,10 +286,10 @@ void NDIOperator::Tracking()
 		//传送姿态数据(欧拉角的形式)
 		if (m_UpdateEulerFun != NULL)
 		{
-			int sensorNumber = NDIConfig::Instance().m_nSensorNumber;
-			NDIOPERATOR::Attitude eulerAttitude = QuaternionToAttitude(toolData[sensorNumber].transform.q0, toolData[sensorNumber].transform.qx, toolData[sensorNumber].transform.qy,
-				toolData[sensorNumber].transform.qz, toolData[sensorNumber].transform.tx, toolData[sensorNumber].transform.ty, toolData[sensorNumber].transform.tz);  //用四元数构造欧拉角形式的转换参数
-			m_UpdateEulerFun(eulerAttitude);
+			//int sensorNumber = NDIConfig::Instance().m_nSensorNumber;
+			m_CurEulerAttitude = QuaternionToAttitude(toolData[m_nSensorNumber].transform.q0, toolData[m_nSensorNumber].transform.qx, toolData[m_nSensorNumber].transform.qy,
+				toolData[m_nSensorNumber].transform.qz, toolData[m_nSensorNumber].transform.tx, toolData[m_nSensorNumber].transform.ty, toolData[m_nSensorNumber].transform.tz);  //用四元数构造欧拉角形式的转换参数
+			m_UpdateEulerFun(m_CurEulerAttitude);
 		}
 
 		m_critical_section.Unlock();

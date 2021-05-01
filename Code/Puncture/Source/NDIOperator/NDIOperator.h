@@ -28,6 +28,7 @@ Project Files Included
 #include "CAPIcommon/ToolData.h"
 #include "ComUtility/Matrix.h"
 #include "ComUtility/Attitude.h"
+#include "NDIConfig.h"
 
 //using namespace std;
 /*****************************************************************
@@ -79,7 +80,10 @@ namespace NDIOPERATOR
 		typedef std::function<void(NDIOPERATOR::Attitude)> Fun_UpdateEulerEvent;  //回调函数 返回当前NDI探头的姿态(以欧拉角的形式)
 		void BindUpdateAttitudeEvent(Fun_UpdateAttitudeEvent eventFun);  //绑定刷新坐标回调函数(四个齐次坐标的形式)
 		void BindUpdateAttitudeEvent(Fun_UpdateEulerEvent eventFun);  //重载绑定刷新坐标回调函数(欧拉角的形式)
-		double GetProbeOffset() { return m_dMoveDirOffset; }  //返回矢状面中心点相对横断面中心点的物理偏移
+		//double GetProbeOffset() { return m_dMoveDirOffset; }  //返回矢状面中心点相对横断面中心点的物理偏移
+		float GetRightOffset() { return NDIConfig::Instance().m_dRightDirOffset; }  //返回矢状面中心点相对横断面中心点的物理偏移
+		float GetUpOffset() { return NDIConfig::Instance().m_dUpDirOffset; }
+		float GetMoveOffset() { return NDIConfig::Instance().m_dMoveDirOffset; }
 
 		int Calibrate(void);				//NDI坐标系与B超探头坐标系间标定功能
 		int GetSensorNumber() { return m_nSensorNumber; }  //获取正在使用的sensor序号
@@ -90,8 +94,10 @@ namespace NDIOPERATOR
 		int StartTracking();				//开始采集
 		void Tracking();					//采集函数
 		int StopTracking();					//停止采集
+
+		NDIOPERATOR::Attitude GetCurEulerAttitude() { return m_CurEulerAttitude; }  //得到当前的探头姿态(欧拉角形式) (仅供低频率使用。要求性能时，应在tracking()中使用回调函数获取姿态)
 		
-		NDIOPERATOR::Attitude QuaternionToAttitude(double, double, double, double, double, double, double);	//从四元数得到Attitude类
+		NDIOPERATOR::Attitude QuaternionToAttitude(double, double, double, double, double, double, double);	//从四元数得到探头姿态(欧拉角形式)
 		void ConstructMatRtoTusingQuaternion(double, double, double, double, double, double, double, double pMatRtoT[16]);		//从四元数得到转换矩阵
 		static void ConstructMatRtoTusingAttitude(NDIOPERATOR::Attitude attitude, double pMatRtoT[16]);		//从Attitude类得到转换矩阵
 	
@@ -109,8 +115,9 @@ namespace NDIOPERATOR
 		std::thread m_tNDIThread;			//NDI采集线程
 		CCriticalSection m_critical_section;
 
-		fsutility::Attitude m_InitialAttitude;			//初始超声探头姿态
-		fsutility::Attitude	m_CurAttitude;				//当前超声探头姿态
+		fsutility::Attitude m_InitialAttitude;			//初始超声探头姿态(4个齐次坐标形式)
+		fsutility::Attitude	m_CurAttitude;				//当前超声探头姿态(4个齐次坐标形式)
+		NDIOPERATOR::Attitude m_CurEulerAttitude;		//当前超声探头姿态(欧拉角形式)
 		fsutility::Matrix m_CalibrationMatrix;			//ndi-超声探头 标定矩阵
 		fsutility::Matrix m_NDIMatrix;					//ndi设备传回的四元数 对应的转换矩阵
 	};

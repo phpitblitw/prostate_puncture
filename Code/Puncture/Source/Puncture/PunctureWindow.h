@@ -30,6 +30,7 @@ public slots:
 	int InitDevice();  //初始化设备
 	int LoadPatientData();  //载入病人数据
 	void OnBtnRegisterClicked();  //超声探头-MRI模拟采样 配准(仿射变换)
+	void OnBtnResetRegisterClicked();  //取消配准 重置超声探头-MRI模拟采样的配准状态。
 	void OnBtnUpdateUSClicked();  //更新超声设备参数
 	void Quit();  //释放设备并退出
 	void MoveMRILeft();

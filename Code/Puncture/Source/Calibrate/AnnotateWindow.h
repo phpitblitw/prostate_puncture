@@ -19,7 +19,7 @@ public slots:
 	void UpdateMousePos(float x, float y);
 
 private:
-	void Cal3DPosInImage(bool bTransverse,float fPixelSize);  //根据已经标注好的图片数据，计算每张图片每行中心点的物理坐标(图像坐标系下)
+	void Cal3DPosInImage(bool bTransverse, float fPixelSizeX, float fPixelSizeY); //根据已经标注好的图片数据，计算每张图片每行中心点的物理坐标(图像坐标系下)
 	void Cal3DPosInPhantom();  //根据已经标注好的图片数据，计算每张图片每行中间点的坐标(体模坐标系下)
 
 private slots:
@@ -30,7 +30,7 @@ private slots:
 	void OnBtnSave2DClicked();  //存储已标注的所有数据(在2D图像坐标系中的坐标 图片数*每张图9个点)
 	void OnBtnSave3DInImageClicked ();  //存储各个图片中，各行中间的点，在3D图片坐标系下的物理坐标(单位:mm)
 	void OnBtnSave3DInPhantomClicked();  //计算并存储已标注的所有数据(在体模坐标系中的坐标 图片数*每张图3个点)
-	void OnBtnLoadPhantomTriangles();  //载入体模参考点坐标(即三角形的6个角点在体模坐标系下的坐标 x1y1z1 x2y2z2 x3y3z3 x4y4z4 x5y5z5 x6y6z6)
+	void OnBtnLoadPhantomTriangles();  //载入体模参考点坐标(即每组N线的2个角点在体模坐标系下的坐标 对于3N线 即为x1y1z1 x2y2z2 x3y3z3 x4y4z4 x5y5z5 x6y6z6)
 
 private:
 	Ui::AnnotateWindow ui;

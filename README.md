@@ -90,6 +90,19 @@ Calibrate项目的标注模块，新增了功能
 1 计算3d图像坐标系物理坐标
 2 计算体模坐标系物理坐标
 
+# v1.9.2
+修改了Calibrate项目。对LocatePhantomDlg，增添按钮，使得允许一次采集多个点的坐标
+相应地修改了NDIOperator项目，允许通过函数返回单个欧拉角形式的探头姿态
+标注工具增添了 可以回车确认标注完成单帧图片
+定位体模窗口 为定位点坐标添加了序号
+将定位体模窗口 设置为关闭时即销毁(DeleteOnClose)。析构时将使用的NDI sensor序号重置
+修复了采集模块中的“关闭设备”功能
+通过在NDIOperator中停止采集的函数加锁，修复了一个错误
+通过在CalibrateWindow::OnTimerCapturer中注释掉QMessageBox一行，修复了一个错误
+
+
+
+
 
 
 

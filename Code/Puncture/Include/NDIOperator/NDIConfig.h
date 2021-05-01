@@ -55,6 +55,8 @@ namespace NDIOPERATOR
 		fsutility::Coordinate		m_MoveDir;
 		fsutility::Coordinate		m_UpDir;
 		fsutility::Matrix			m_CalibrationMatrix;			//NDI sensor-超声探头 标定矩阵
+		double						m_dRightDirOffset;				//矢状面中心点，相对于横断面中心点，在探头右方向rightDir上的偏移量(mm)
+		double						m_dUpDirOffset;					//矢状面中心点，相对于横断面中心点，在探头上方向upDir上的偏移量(mm)
 		double						m_dMoveDirOffset;				//矢状面中心点，相对于横断面中心点，在探头朝向moveDir上的偏移量(mm)
 
 	};

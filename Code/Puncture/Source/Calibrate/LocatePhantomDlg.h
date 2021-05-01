@@ -17,7 +17,7 @@ public:
 	~LocatePhantomDlg();
 
 	void SetNDIOperator(NDIOperatorPtr pNDIOperator);
-	void UpdateNDIData(NDIOPERATOR::Attitude euler) { m_euler = euler; }
+	//void UpdateNDIData(NDIOPERATOR::Attitude euler) { m_euler = euler; }
 
 private:
 	Ui::LocatePhantomDlg ui;
@@ -29,6 +29,7 @@ private:
 private slots:
 	void ChangeSensor(int n);
 	void OnBtnRecordClicked();  //记录当前点位置
+	void OnBtnRecordRepeatClicked();  //记录多个点的位置
 	void OnBtnDeleteClicked();  //删除最近添加的点
 	void OnBtnSaveClicked();  //存储至文件
 };

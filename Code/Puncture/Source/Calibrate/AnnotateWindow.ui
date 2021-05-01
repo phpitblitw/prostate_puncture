@@ -58,14 +58,24 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QLabel" name="LabelPixelSize">
+          <widget class="QLabel" name="LabelPixelSizeX">
            <property name="text">
-            <string>像素大小(mm)</string>
+            <string>像素大小X(mm)</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="PixelSize"/>
+          <widget class="QLineEdit" name="PixelSizeX"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="LabelPixelSizeY">
+           <property name="text">
+            <string>像素大小Y(mm)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="PixelSizeY"/>
          </item>
          <item>
           <widget class="QRadioButton" name="RadioBtnTransverse">
@@ -93,7 +103,7 @@
        <item>
         <widget class="QPushButton" name="BtnLoadPhantomTriangles">
          <property name="text">
-          <string>载入体模N线顶点坐标</string>
+          <string>载入体模N线顶点坐标(体模坐标系 物理坐标)</string>
          </property>
         </widget>
        </item>
@@ -132,7 +142,7 @@
        <item>
         <widget class="QPushButton" name="BtnSave3DInImage">
          <property name="text">
-          <string>保存(3D图片坐标系 物理坐标)</string>
+          <string>保存(3D图像坐标系 物理坐标)</string>
          </property>
         </widget>
        </item>
@@ -154,7 +164,7 @@
      <x>0</x>
      <y>0</y>
      <width>601</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

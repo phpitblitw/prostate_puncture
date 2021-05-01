@@ -113,8 +113,10 @@ int NDIConfig::LoadConfigFile(CString t_strFilePathName)
 	t_ScanConfig.ReadKey(_T("T[3][3]"), m_CalibrationMatrixElem[15]);
 	m_CalibrationMatrix.SetValue(m_CalibrationMatrixElem);
 
-	//矢状面中心点，相对于横断面中心点，在探头朝向moveDir上的偏移量(mm)
+	//矢状面中心点，相对于横断面中心点的偏移量 (mm)
 	t_ScanConfig.Move2Section(_T("Probe Center Offset"));
+	t_ScanConfig.ReadKey(_T("rightDirOffset"), m_dRightDirOffset);
+	t_ScanConfig.ReadKey(_T("upDirOffset"), m_dUpDirOffset);
 	t_ScanConfig.ReadKey(_T("moveDirOffset"), m_dMoveDirOffset);
 
 	return LIST_NO_ERROR;

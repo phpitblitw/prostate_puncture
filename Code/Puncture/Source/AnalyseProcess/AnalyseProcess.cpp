@@ -112,16 +112,16 @@ int AnalyseProcess::InitAnalyseProcess(CString t_strFilePathName)
 		return ER_NoSurgicalPlan;
 	}
 	m_ImageSamplerPtr->SetMRIPixelSize(AnalyseConfig::Instance().m_fVoxelSizeX, AnalyseConfig::Instance().m_fVoxelSizeY, AnalyseConfig::Instance().m_fVoxelSizeZ);
-	m_ImageSamplerPtr->SetProbeOffset(m_NDIOperatorPtr->GetProbeOffset());
+	//m_ImageSamplerPtr->SetProbeOffset(m_NDIOperatorPtr->GetProbeOffset());  //TODO
+	m_ImageSamplerPtr->SetProbeOffset(m_NDIOperatorPtr->GetRightOffset(), m_NDIOperatorPtr->GetUpOffset(), m_NDIOperatorPtr->GetMoveOffset());
 
 	//将MRI模拟采样的base位置传递给PositionManager
 	m_PositionManagerPtr->m_BaseMRIAttitude = AnalyseConfig::Instance().m_Attitude;
 
 	//设置默认的US位置 配准 用于计算默认的mask
-	fsutility::Attitude simulatedAttitude;
-	simulatedAttitude.SetValue(fsutility::Coordinate(0, 0, 0, 1), fsutility::Coordinate(0, 1, 0, 0), fsutility::Coordinate(-1, 0, 0, 0), fsutility::Coordinate(0, 0, 1, 0));
-	m_PositionManagerPtr->m_BaseUSAttitude = simulatedAttitude;
-	m_PositionManagerPtr->m_CurUSAttitude = simulatedAttitude;
+	m_simulatedAttitude.SetValue(fsutility::Coordinate(0, 0, 0, 1), fsutility::Coordinate(1, 0, 0, 0), fsutility::Coordinate(0, 1, 0, 0), fsutility::Coordinate(0, 0, -1, 0));  //任意设置一个 超声探头的位置
+	m_PositionManagerPtr->m_BaseUSAttitude = m_simulatedAttitude;
+	m_PositionManagerPtr->m_CurUSAttitude = m_simulatedAttitude;
 	
 	//使用默认位置 进行初始配准
 	if (m_PositionManagerPtr->CalculateTransformMatrix() != LIST_NO_ERROR)
@@ -408,6 +408,30 @@ int AnalyseProcess::Register()
 }
 
 /*****************************************************************
+Name:			ResetRegister
+Inputs:
+	none
+Return Value:
+	none
+Description:	重置配准操作，由医生手动发起
+*****************************************************************/
+int ANALYSEPROCESS::AnalyseProcess::ResetRegister()
+{
+	CSingleLock singlelock(&m_ProcessDataMutex);
+	singlelock.Lock();
+	//重置超声探头的位置
+	m_PositionManagerPtr->m_BaseUSAttitude = m_simulatedAttitude;
+	m_PositionManagerPtr->m_BaseMRIAttitude = m_simulatedAttitude;
+	//重置MRI模拟采样探头的base位置
+	m_PositionManagerPtr->m_BaseMRIAttitude = AnalyseConfig::Instance().m_Attitude;  //用配置文件 重置MRI模拟采样的base位置
+	//重新计算标定矩阵
+	m_PositionManagerPtr->CalculateTransformMatrix();  //设置默认的US位置 配准 用于计算默认的mask
+	m_nAnalyseState = INIT;  //重置为未配准状态
+	singlelock.Unlock();
+	return 0;
+}
+
+/*****************************************************************
 Name:			UpdateNDIData
 Inputs:
 	none
@@ -420,7 +444,7 @@ void AnalyseProcess::UpdateNDIData(fsutility::Attitude attitude)
 	CSingleLock singlelock(&m_ProcessDataMutex);
 	singlelock.Lock();
 	if (m_nAnalyseState == INIT)
-		;
+		m_PositionManagerPtr->m_CurUSAttitude = m_simulatedAttitude;  //手动配准前，都认为超声探头处于那个模拟的位置。从而使得MRI模拟采样探头 在其base位置
 	else if (m_nAnalyseState == REGISTERING1)
 	{
 		m_PositionManagerPtr->m_CurUSAttitude = attitude;

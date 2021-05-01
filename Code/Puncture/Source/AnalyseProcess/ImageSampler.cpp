@@ -38,6 +38,9 @@ ANALYSEPROCESS::ImageSampler::ImageSampler()
 	m_dMRIPixelSizeX = 0;
 	m_dMRIPixelSizeY = 0;
 	m_dMRIPixelSizeZ = 0;
+	m_fSagittalOffset[0] = 0;
+	m_fSagittalOffset[1] = 0;
+	m_fSagittalOffset[2] = 0;
 }
 
 
@@ -108,6 +111,13 @@ Description:	设置当前切片在三维空间的姿态参数
 //	return;
 //}
 
+
+void ANALYSEPROCESS::ImageSampler::SetProbeOffset(float rightOffset, float upOffset, float moveOffset)
+{
+	m_fSagittalOffset[0] = rightOffset;
+	m_fSagittalOffset[1] = upOffset;
+	m_fSagittalOffset[2] = moveOffset;
+}
 
 /*****************************************************************
 Name:			SetUSPixelSize
@@ -278,7 +288,8 @@ void ANALYSEPROCESS::ImageSampler::CalculateSagittalMaskPlan()
 	//m_LeftTop = m_LeftBottom + m_UpDir * dTrueCy;
 	//m_RightTop = m_RightBottom + m_UpDir * dTrueCy;
 
-	Coordinate sagittalScanCenter = m_ScanCenter + m_MoveDir * m_dMoveDirOffset;  //矢状面在MRI模拟采样坐标系下的中心点
+	Coordinate sagittalScanCenter = m_ScanCenter + m_RightDir * m_fSagittalOffset[0]
+		+ m_UpDir * m_fSagittalOffset[1] + m_MoveDir * m_fSagittalOffset[2];  //矢状面在MRI模拟采样坐标系下的中心点
 
 	double dTrueHalfCx = m_nResolution.cx*m_dUSPixelSize / 2.0;  //超声图像宽度的一半(实际物理尺寸)
 	double dTrueCy = m_nResolution.cy*m_dUSPixelSize;  //超声图像高度(实际物理尺寸)

@@ -33,7 +33,8 @@ AnnotateWindow::AnnotateWindow(QWidget *parent)
 	ui.BtnSave3D->setEnabled(false);
 	ui.RadioBtnTransverse->setChecked(false);
 	ui.RadioBtnSagittal->setChecked(false);
-	ui.PixelSize->setText(u8"0");
+	ui.PixelSizeX->setText(u8"0");
+	ui.PixelSizeY->setText(u8"0");
 	m_nImageWidth = 0;
 	m_nImageHeight = 0;
 
@@ -43,6 +44,7 @@ AnnotateWindow::AnnotateWindow(QWidget *parent)
 	connect(ui.BtnFormerImage, SIGNAL(clicked()), this, SLOT(OnBtnFormerImageClicked()));
 	connect(ui.BtnNextImage, SIGNAL(clicked()), this, SLOT(OnBtnNextImageClicked()));
 	connect(ui.BtnFinish, SIGNAL(clicked()), this, SLOT(OnBtnFinishClicked()));
+	connect(ui.Annotate2D, SIGNAL(markFinishSignal()), this, SLOT(OnBtnFinishClicked()));
 	connect(ui.BtnSave2D, SIGNAL(clicked()), this, SLOT(OnBtnSave2DClicked()));
 	connect(ui.BtnSave3DInImage, SIGNAL(clicked()), this, SLOT(OnBtnSave3DInImageClicked()));
 	connect(ui.BtnSave3D, SIGNAL(clicked()), this, SLOT(OnBtnSave3DInPhantomClicked()));
@@ -102,7 +104,7 @@ void AnnotateWindow::OnBtnBtnSetImageDirClicked()
 	m_nImageHeight = img.rows;
 }
 
-void AnnotateWindow::Cal3DPosInImage(bool bTransverse, float fPixelSize)
+void AnnotateWindow::Cal3DPosInImage(bool bTransverse, float fPixelSizeX, float fPixelSizeY)
 {
 	int i, j;
 	QPointF ptPos2D;
@@ -124,8 +126,8 @@ void AnnotateWindow::Cal3DPosInImage(bool bTransverse, float fPixelSize)
 			ptPos2D.setX(ptPos2D.x() - m_nImageWidth / 2.0);
 			ptPos2D.setY(m_nImageHeight - ptPos2D.y());
 			//对于2D图像坐标系坐标，将单位由像素(pixel)变为毫米(mm)
-			ptPos2D.setX(ptPos2D.x()*fPixelSize);
-			ptPos2D.setY(ptPos2D.y()*fPixelSize);
+			ptPos2D.setX(ptPos2D.x()*fPixelSizeX);
+			ptPos2D.setY(ptPos2D.y()*fPixelSizeY);
 			//将2D图像坐标系坐标，转为3D图像坐标系坐标
 			if (bTransverse)  //横断面，则z为0
 				ptPos3D = QVector3D(ptPos2D.x(), ptPos2D.y(), 0);
@@ -244,7 +246,7 @@ void AnnotateWindow::OnBtnSave3DInImageClicked()
 {
 	//正确性检查
 	bool bTransverse;
-	float fPixelSize;
+	float fPixelSizeX,fPixelSizeY;
 	QString qStr;
 	if ((!ui.RadioBtnTransverse->isChecked()) && !(ui.RadioBtnSagittal->isChecked()))
 	{
@@ -253,9 +255,11 @@ void AnnotateWindow::OnBtnSave3DInImageClicked()
 	}
 	else
 		bTransverse = ui.RadioBtnTransverse->isChecked();
-	qStr = ui.PixelSize->text();
-	fPixelSize = qStr.toFloat();
-	if (fPixelSize <= 0)
+	qStr = ui.PixelSizeX->text();
+	fPixelSizeX = qStr.toFloat();
+	qStr = ui.PixelSizeY->text();
+	fPixelSizeY = qStr.toFloat();
+	if (fPixelSizeX <= 0 || fPixelSizeY<=0)
 	{
 		QMessageBox::information(this, u8"错误", u8"像素物理尺寸应大于0");
 		return;
@@ -266,7 +270,7 @@ void AnnotateWindow::OnBtnSave3DInImageClicked()
 		return;
 	}
 	//计算每张图片每行的中间点，在3D图片坐标系下的坐标
-	this->Cal3DPosInImage(bTransverse, fPixelSize);
+	this->Cal3DPosInImage(bTransverse, fPixelSizeX,fPixelSizeY);
 	//将结果存储至txt文件
 	/********将结果存储至txt文件************/
 	std::string info;  //提示信息
@@ -352,7 +356,7 @@ void AnnotateWindow::OnBtnLoadPhantomTriangles()
 	if (strTxtFileName.empty())
 		return;
 	ifstream infile(strTxtFileName);
-	//读取6个角点
+	//读取若干个个角点
 	while (infile >> x && vertexNum>0)
 	{
 		infile >> y;

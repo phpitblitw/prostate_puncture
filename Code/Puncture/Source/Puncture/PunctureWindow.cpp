@@ -36,6 +36,7 @@ void PunctureWindow::InitWindow()
 	connect(ui.BtnLoadPatientData, SIGNAL(clicked()), this, SLOT(LoadPatientData()));  //载入病人数据
 	connect(ui.BtnInitDevice, SIGNAL(clicked()), this, SLOT(InitDevice()));  //初始化设备
 	connect(ui.BtnRegister, SIGNAL(clicked()), this, SLOT(OnBtnRegisterClicked()));  //医生手动点击按钮 锁定坐标
+	connect(ui.BtnResetRegister, SIGNAL(clicked()), this, SLOT(OnBtnResetRegisterClicked()));  //医生手动点击按钮，取消锁定 并重置示意mask
 	connect(ui.BtnUpdateUS, SIGNAL(clicked()), this, SLOT(OnBtnUpdateUSClicked()));  //在US图像分辨率改变时，医生需要手动点击按钮 更新US参数
 	connect(ui.BtnQuit, SIGNAL(clicked()), this, SLOT(Quit()));  //点击退出程序 释放各个设备
 	connect(ui.view2D1, SIGNAL(KeyLeftPressed()), this, SLOT(MoveMRILeft()));
@@ -217,6 +218,12 @@ void PunctureWindow::OnBtnRegisterClicked()
 {
 	m_AnalyseProcessPtr->Register();
 	m_bRegistered = true;
+}
+
+void PunctureWindow::OnBtnResetRegisterClicked()
+{
+	m_AnalyseProcessPtr->ResetRegister();
+	m_bRegistered = false;
 }
 
 //在B超图像分辨率改变时，医生需要手动点击按钮，更新超声参数

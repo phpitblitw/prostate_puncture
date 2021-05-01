@@ -59,7 +59,10 @@ namespace ANALYSEPROCESS
 	//用于区分当前工作状态，不同工作状态工作内容不相同
 	enum AnalyzeState
 	{
-		INIT,					//初始化 未配准 此时根据默认US探头的位置截取平面
+		INIT,					//初始化 未配准
+								//此时，令将超声探头的当前位置，超声探头的base位置都为一固定值(m_simulatedAttitude)
+								//转换矩阵也由mri模拟采样base位置、m_simulatedAttitude计算得出
+								//从而保证计算出的mri模拟采样探头当前位置 在base位置
 		REGISTERING1,			//配准过程中 尚未获取最新的US探头姿态
 		REGISTERING2,			//配准过程中 已获取最新的US探头姿态
 		PUNCTURE,				//穿刺	(已经配准完成)
@@ -93,8 +96,9 @@ namespace ANALYSEPROCESS
 		void Analyse();				//实际分析函数
 
 		int Register();				//配准操作,由医生手动发起
+		int ResetRegister();		//重置配准操作，由医生手动发起
 	private:
-		void UpdateNDIData(fsutility::Attitude attitude);								//更新NDI数据，回调函数，由NDI模块调用
+		void UpdateNDIData(fsutility::Attitude attitude);  //更新NDI定位数据，回调函数，由NDI模块调用
 		void UpdateUSBData(cv::Mat t_USBImgT, cv::Mat t_USBImgS, double dPixelSizeT, double dPixelSizeS);	//更新B超数据，回调函数，由B超模块调用
 
 		void ProcessSingleFrame(FrameDataPtr t_FrameDataPtr);	//处理单帧数据
@@ -117,7 +121,7 @@ namespace ANALYSEPROCESS
 		NDIOperatorPtr		m_NDIOperatorPtr;			//NDI设备操作指针
 		USBCapturerPtr		m_USBCapturerPtr;			//B超图像采集设备指针
 		SurgicalPlanPtr		m_SurgicalPlanPtr;			//手术计划及数据操作指针
-		PositionManagerPtr	m_PositionManagerPtr;		//位置管理指针
+		PositionManagerPtr	m_PositionManagerPtr;		//位置管理指针 所有的姿态参数，都交由其进行管理和计算
 		ImageSamplerPtr		m_ImageSamplerPtr;			//切割二维平面对象指针
 
 		BYTE			*m_pProstateMask;		//暂存prostate mask
@@ -130,5 +134,6 @@ namespace ANALYSEPROCESS
 		float			m_fMaxY;
 		float			m_fMaxZ;
 		
+		fsutility::Attitude m_simulatedAttitude;  //超声探头的姿态。该值用于在手动配准前，计算轮廓线
 	};
 }

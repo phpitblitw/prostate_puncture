@@ -31,6 +31,9 @@ void GraphicsAnnotator::keyPressEvent(QKeyEvent * event)
 	case Qt::Key_Backspace:
 		this->DeleteLastPoint();
 		break;
+	case Qt::Key_Return:
+		emit markFinishSignal();  //发送信号，当前帧已经标记完毕(该信号由AnnotateWindow处理)
+		break;
 	default:
 		break;
 	}
@@ -46,7 +49,7 @@ void GraphicsAnnotator::LoadImg(cv::Mat img)
 	cv::cvtColor(m_img, m_imgGray, cv::COLOR_BGR2GRAY);
 	cv::threshold(m_imgGray, m_imgGray, 1, 255, cv::THRESH_BINARY_INV);  //筛选出灰度<=1的部分,设置为255
 	m_img.setTo(0, m_imgGray);  //将灰度<=1的部分 置为0
-	this->transformImg(m_img);  //使用查找表变换图片 使图像更加易读
+	//this->transformImg(m_img);  //使用查找表变换图片 使图像更加易读
 }
 
 //将8UC3 BGR的cv::Mat格式的数据m_img,转为QPixmap存储并显示
@@ -159,7 +162,5 @@ void GraphicsAnnotator::mouseReleaseEvent(QMouseEvent *event)
 	m_pScene->addItem(item);
 	item->setPos(scenePos.x()-6,scenePos.y()-6);  //设置椭圆位置（图元坐标系下）
 	m_pointItem.push_back(item);
-	////将图元坐标(图片左上角为原点，向右x正方向,向下y轴正方向,单位为像素)转为图片坐标系坐标(图片最下面一行中心为原点，向右x轴正方向，向上y轴正方向)
-	////TODO
 	QGraphicsView::mouseReleaseEvent(event);
 }

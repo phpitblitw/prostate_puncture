@@ -9,7 +9,8 @@
 
 #define DISPLAY_INTERVAL 20 //图像刷新间隔(ms)
 #define CAPTURE_INTERVAL 333  //采集数据间隔(ms)
-#define CAPTURE_BATCHSIZE 360  //采集一批数据的总数
+//#define CAPTURE_BATCHSIZE 360  //采集一批数据的总数
+#define CAPTURE_BATCHSIZE 36  //采集一批数据的总数
 
 CalibrateWindow::CalibrateWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,6 +33,7 @@ CalibrateWindow::CalibrateWindow(QWidget *parent)
 	connect(ui.BtnStartCapture, SIGNAL(clicked()), this, SLOT(OnBtnStartCaptureClicked()));
 	connect(ui.BtnAnnotate, SIGNAL(clicked()), this, SLOT(OnBtnAnnotateClicked()));
 	connect(ui.BtnLocatePhantom, SIGNAL(clicked()), this, SLOT(OnBtnLocatePhantomClicked()));
+	connect(ui.BtnReleaseDevice, SIGNAL(clicked()), this, SLOT(ReleaseDevice()));
 	connect(&m_timerDisplay, SIGNAL(timeout()), this, SLOT(OnTimerDisplay()));
 	connect(&m_timerCapture, SIGNAL(timeout()), this, SLOT(OnTimerCapture()));
 	m_timerDisplay.setInterval(DISPLAY_INTERVAL);
@@ -191,9 +193,11 @@ void CalibrateWindow::OnBtnLocatePhantomClicked()
 	}
 	m_LocatePhantomDlgPtr = new LocatePhantomDlg();
 	m_LocatePhantomDlgPtr->setWindowModality(Qt::NonModal);  //设置为非模态窗口
+	m_LocatePhantomDlgPtr->setAttribute(Qt::WA_DeleteOnClose);   //在关闭窗口时即销毁(调用析构函数) 参考 https://blog.csdn.net/lovebird_27/article/details/49255715
 	m_LocatePhantomDlgPtr->SetNDIOperator(m_NDIOperatorPtr);  //将NDI设备指针赋给LocatePhantomDlg，只是为了方便修改使用的sensor序号。NDI数据仍然在CalibrateWindow中采集
 	m_LocatePhantomDlgPtr->show();
 }
+
 
 void CalibrateWindow::ReleaseDevice()
 {
@@ -215,10 +219,10 @@ void CalibrateWindow::OnTimerDisplay()
 		ui.view2D->LoadImg(m_imgUS);
 		ui.view2D->ShowImg();
 	}
-	if (m_LocatePhantomDlgPtr!=nullptr)
-	{
-		m_LocatePhantomDlgPtr->UpdateNDIData(m_euler);  //TODO 当LocatePhantomDlg关闭后，这个指针可能非空，且已被delete。因此 此处可能引发问题
-	}
+	//if (m_LocatePhantomDlgPtr!=nullptr)
+	//{
+	//	m_LocatePhantomDlgPtr->UpdateNDIData(m_euler);  //TODO 当LocatePhantomDlg关闭后，这个指针可能非空，且已被delete。因此 此处可能引发问题
+	//}
 	m_showMutex.unlock();
 }
 
@@ -253,11 +257,11 @@ void CalibrateWindow::OnTimerCapture()
 	outfile.close();
 	//更新下标
 	m_nDataIndex++;
-	if (m_nDataIndex > CAPTURE_BATCHSIZE)
+	if (m_nDataIndex >= CAPTURE_BATCHSIZE)
 	{
 		m_timerCapture.stop();
 		ui.BtnStartCapture->setEnabled(true);
-		QMessageBox::information(this, "通知", "采集完成");
+		//QMessageBox::information(this, "通知", "采集完成");
 	}
 	m_showMutex.unlock();
 }
