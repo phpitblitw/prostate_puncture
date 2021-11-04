@@ -6,7 +6,8 @@
 #pragma execution_character_set("utf-8")  //设置默认编码格式 避免中文乱码
 
 #define UPDATE_INTERVAL 20  //图像刷新间隔(ms)
-#define MRI_MOVE_STEP 1  //键盘控制MRI移动  实际步长
+#define MRI_MOVE_STEP 0.5  //键盘控制MRI移动  实际步长
+#define DEBUG_SAVE_RATE 20  //每n帧图片，存储1帧作为debug输出
 
 PunctureWindow::PunctureWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -22,6 +23,7 @@ PunctureWindow::PunctureWindow(QWidget *parent)
 	m_AnalyseProcessPtr = nullptr;
 	m_FrameDataPtr = nullptr;
 	m_strDataDir = "";
+	m_strDebugDir = "";
 	InitWindow();
 }
 
@@ -30,6 +32,7 @@ void PunctureWindow::InitWindow()
 	//按钮状态初始化
 	ui.BtnInitDevice->setEnabled(true);
 	ui.BtnQuit->setEnabled(false);
+	ui.radioBtnSaveDebug->setChecked(false);
 
 	//绑定信号与槽
 	connect(&m_timer, SIGNAL(timeout()), this, SLOT(OnTimerTimeout()));  //定时刷新显示图像
@@ -39,6 +42,7 @@ void PunctureWindow::InitWindow()
 	connect(ui.BtnResetRegister, SIGNAL(clicked()), this, SLOT(OnBtnResetRegisterClicked()));  //医生手动点击按钮，取消锁定 并重置示意mask
 	connect(ui.BtnUpdateUS, SIGNAL(clicked()), this, SLOT(OnBtnUpdateUSClicked()));  //在US图像分辨率改变时，医生需要手动点击按钮 更新US参数
 	connect(ui.BtnQuit, SIGNAL(clicked()), this, SLOT(Quit()));  //点击退出程序 释放各个设备
+	connect(ui.radioBtnSaveDebug, SIGNAL(toggled(bool)), this, SLOT(OnRadioBtnSaveDebugChanged()));
 	connect(ui.view2D1, SIGNAL(KeyLeftPressed()), this, SLOT(MoveMRILeft()));
 	connect(ui.view2D1, SIGNAL(KeyRightPressed()), this, SLOT(MoveMRIRight()));
 	connect(ui.view2D1, SIGNAL(KeyUpPressed()), this, SLOT(MoveMRIUp()));
@@ -211,6 +215,29 @@ void PunctureWindow::OnTimerTimeout()
 			m_FrameDataPtr->m_SagittalLeftBottom, m_FrameDataPtr->m_SagittalRightBottom);  //更新矢状面示意
 		ui.view3D->update();
 	}
+	//存储至本地
+	if (ui.radioBtnSaveDebug->isChecked())
+	{
+		//TODO
+		static int index = 0;
+		if (++index % DEBUG_SAVE_RATE == 0)  //每DEBUG_SAVE_RATE帧存储一帧
+		{
+			if (!m_FrameDataPtr->m_USImgT.empty())  //横断面
+			{
+				cv::imwrite(m_strDebugDir + "/Tra_Original/" + to_string(index/DEBUG_SAVE_RATE) + ".bmp", m_FrameDataPtr->m_USImgT);
+				cv::imwrite(m_strDebugDir + "/Tra_Prostate/" + to_string(index/DEBUG_SAVE_RATE) + ".bmp", m_FrameDataPtr->m_prostateMaskT);
+				cv::imwrite(m_strDebugDir + "/Tra_Lesion/" + to_string(index/DEBUG_SAVE_RATE) + ".bmp", m_FrameDataPtr->m_lesionMaskT);
+				cv::imwrite(m_strDebugDir + "/Tra_Rectum/" + to_string(index/DEBUG_SAVE_RATE) + ".bmp", m_FrameDataPtr->m_rectumMaskT);
+			}
+			if (!m_FrameDataPtr->m_USImgS.empty())  //矢状面
+			{
+				cv::imwrite(m_strDebugDir + "/Sag_Original/" + to_string(index/DEBUG_SAVE_RATE) + ".bmp", m_FrameDataPtr->m_USImgS);
+				cv::imwrite(m_strDebugDir + "/Sag_Prostate/" + to_string(index/DEBUG_SAVE_RATE) + ".bmp", m_FrameDataPtr->m_prostateMaskS);
+				cv::imwrite(m_strDebugDir + "/Sag_Lesion/" + to_string(index/DEBUG_SAVE_RATE) + ".bmp", m_FrameDataPtr->m_lesionMaskS);
+				cv::imwrite(m_strDebugDir + "/Sag_Rectum/" + to_string(index/DEBUG_SAVE_RATE) + ".bmp", m_FrameDataPtr->m_rectumMaskS);
+			}
+		}
+	}
 	m_showMutex.unlock();
 }
 
@@ -273,6 +300,25 @@ void PunctureWindow::MoveMRIForward()
 void PunctureWindow::MoveMRIBackward()
 {
 	m_AnalyseProcessPtr->MoveMRIForward(-MRI_MOVE_STEP);
+}
+
+void PunctureWindow::OnRadioBtnSaveDebugChanged()
+{
+	if (!ui.radioBtnSaveDebug->isChecked())
+		return;
+	QString qstrDebugDir = QFileDialog::getExistingDirectory(this, tr("dubug文件存储路径"), "dirNotAcquired", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+	m_strDebugDir = (const char*)qstrDebugDir.toLocal8Bit();  //转换为std::string 且避免中文字符出现乱码
+
+	//创建用于存储各类数据的子文件夹
+	QDir dir(qstrDebugDir);
+	dir.mkdir(QString::fromLocal8Bit("Tra_Original"));
+	dir.mkdir(QString::fromLocal8Bit("Tra_Prostate"));
+	dir.mkdir(QString::fromLocal8Bit("Tra_Lesion"));
+	dir.mkdir(QString::fromLocal8Bit("Tra_Rectum"));
+	dir.mkdir(QString::fromLocal8Bit("Sag_Original"));
+	dir.mkdir(QString::fromLocal8Bit("Sag_Prostate"));
+	dir.mkdir(QString::fromLocal8Bit("Sag_Lesion"));
+	dir.mkdir(QString::fromLocal8Bit("Sag_Rectum"));
 }
 
 void PunctureWindow::UpdateFrame(FrameDataPtr t_FrameDataPtr)

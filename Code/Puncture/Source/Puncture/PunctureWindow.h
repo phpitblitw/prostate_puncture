@@ -43,6 +43,9 @@ public slots:
 private:
 	void UpdateFrame(FrameDataPtr t_FrameDataPtr);  //作为回调函数传递给AnalyseProcess，更新处理后的单帧数据
 
+private slots:
+	void OnRadioBtnSaveDebugChanged();
+
 
 private:
     Ui::PunctureWindowClass ui;
@@ -52,6 +55,7 @@ private:
 	bool m_bRegistered;  //是否已经配准完成
 	std::mutex m_showMutex;  //显示互斥量
 	std::string m_strDataDir;  //病人数据文件夹
+	std::string m_strDebugDir;  //存储监测数据
 	FrameDataPtr		m_FrameDataPtr;			//单帧数据
 	NDIOperatorPtr		m_NDIOperatorPtr;		//NDI设备操作指针
 	USBCapturerPtr		m_USBCapturerPtr;		//B超图像采集设备指针

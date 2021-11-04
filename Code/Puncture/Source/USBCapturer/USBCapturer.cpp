@@ -322,6 +322,7 @@ void USBCapturer::Grab()
 				CalParameters(iDst);  //如果扫描平面类型改变了，则更新所有b超参数(包括扫描类型和像素物理尺寸)
 			}
 
+			m_scanType = DUAL_PLANE;  //TODO
 			cv::Mat t_imgT;
 			cv::Mat t_imgS;
 			if (m_scanType == DUAL_PLANE)

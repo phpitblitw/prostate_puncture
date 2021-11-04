@@ -9,8 +9,7 @@
 
 #define DISPLAY_INTERVAL 20 //图像刷新间隔(ms)
 #define CAPTURE_INTERVAL 333  //采集数据间隔(ms)
-//#define CAPTURE_BATCHSIZE 360  //采集一批数据的总数
-#define CAPTURE_BATCHSIZE 36  //采集一批数据的总数
+#define CAPTURE_BATCHSIZE 360  //采集一批数据的总数
 
 CalibrateWindow::CalibrateWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -261,7 +260,7 @@ void CalibrateWindow::OnTimerCapture()
 	{
 		m_timerCapture.stop();
 		ui.BtnStartCapture->setEnabled(true);
-		//QMessageBox::information(this, "通知", "采集完成");
+		QMessageBox::information(this, "通知", "采集完成");
 	}
 	m_showMutex.unlock();
 }

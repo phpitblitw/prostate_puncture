@@ -437,41 +437,20 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>190</x>
          <y>210</y>
          <width>195</width>
-         <height>100</height>
+         <height>105</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
-         <widget class="QPushButton" name="BtnLoadPatientData">
-          <property name="text">
-           <string>载入病人数据</string>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1">
          <widget class="QPushButton" name="BtnInitDevice">
           <property name="text">
            <string>初始化设备</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QPushButton" name="BtnRegister">
-          <property name="text">
-           <string>锁定坐标</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="BtnResetRegister">
-          <property name="text">
-           <string>重置配准</string>
           </property>
          </widget>
         </item>
@@ -482,10 +461,38 @@
           </property>
          </widget>
         </item>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="BtnLoadPatientData">
+          <property name="text">
+           <string>载入病人数据</string>
+          </property>
+         </widget>
+        </item>
         <item row="2" column="1">
          <widget class="QPushButton" name="BtnQuit">
           <property name="text">
            <string>退出</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="BtnResetRegister">
+          <property name="text">
+           <string>重置配准</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="BtnRegister">
+          <property name="text">
+           <string>锁定坐标</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QRadioButton" name="radioBtnSaveDebug">
+          <property name="text">
+           <string>存储测试数据</string>
           </property>
          </widget>
         </item>
@@ -501,7 +508,7 @@
      <x>0</x>
      <y>0</y>
      <width>1117</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

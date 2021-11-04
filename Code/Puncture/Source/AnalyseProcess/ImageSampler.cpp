@@ -294,6 +294,7 @@ void ANALYSEPROCESS::ImageSampler::CalculateSagittalMaskPlan()
 	double dTrueHalfCx = m_nResolution.cx*m_dUSPixelSize / 2.0;  //超声图像宽度的一半(实际物理尺寸)
 	double dTrueCy = m_nResolution.cy*m_dUSPixelSize;  //超声图像高度(实际物理尺寸)
 
+
 	m_LeftBottom = sagittalScanCenter + m_MoveDir * dTrueHalfCx;
 	m_RightBottom = sagittalScanCenter - m_MoveDir * dTrueHalfCx;
 	m_LeftTop = m_LeftBottom + m_UpDir * dTrueCy;
