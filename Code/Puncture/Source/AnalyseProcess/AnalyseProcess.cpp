@@ -21,6 +21,9 @@ using namespace ANALYSEPROCESS;
 ///////////////////////////////////////////////////////
 ////////////////////////define/////////////////////////
 ///////////////////////////////////////////////////////
+const int VERTICAL_LINE_NUM = 5;  //取多少条竖直线与前列腺外轮廓相交
+const int HORIZONTAL_LINE_NUM = 4; //取多少条水平线与前列腺外轮廓相交
+const int THRESHOLD = 127;  //对于二值图(0\255) 区分前景\背景的阈值 不妨设置为127
 
 /*****************************************************************
 Global Variables
@@ -61,6 +64,8 @@ AnalyseProcess::AnalyseProcess()
 	//m_SurgicalPlanPtr.reset(new SurgicalPlan());		//手术计划
 	m_PositionManagerPtr.reset(new PositionManager());	//位置管理
 	m_ImageSamplerPtr.reset(new ImageSampler());		//切割截面
+	m_RigidTransformPtr.reset(new RigidTransform());	//刚体变换计算
+	m_ImageProcessorPtr.reset(new ImageProcessor());	//处理2D图像工具类
 	m_nShowImageX = 0;
 	m_nShowImageY = 0;
 	m_fMaxX = 0;
@@ -113,21 +118,22 @@ int AnalyseProcess::InitAnalyseProcess(CString t_strFilePathName)
 	}
 	m_ImageSamplerPtr->SetMRIPixelSize(AnalyseConfig::Instance().m_fVoxelSizeX, AnalyseConfig::Instance().m_fVoxelSizeY, AnalyseConfig::Instance().m_fVoxelSizeZ);
 	//m_ImageSamplerPtr->SetProbeOffset(m_NDIOperatorPtr->GetProbeOffset());  //TODO
-	m_ImageSamplerPtr->SetProbeOffset(m_NDIOperatorPtr->GetRightOffset(), m_NDIOperatorPtr->GetUpOffset(), m_NDIOperatorPtr->GetMoveOffset());
+	m_ImageSamplerPtr->SetProbeOffset(m_NDIOperatorPtr->GetRightOffset(), m_NDIOperatorPtr->GetUpOffset(), m_NDIOperatorPtr->GetMoveOffset());  //矢状面ScanCenter相对于横断面ScanCenter的偏移
 
 	//将MRI模拟采样的base位置传递给PositionManager
 	m_PositionManagerPtr->m_BaseMRIAttitude = AnalyseConfig::Instance().m_Attitude;
 
-	//设置默认的US位置 配准 用于计算默认的mask
-	m_simulatedAttitude.SetValue(fsutility::Coordinate(0, 0, 0, 1), fsutility::Coordinate(1, 0, 0, 0), fsutility::Coordinate(0, 1, 0, 0), fsutility::Coordinate(0, 0, -1, 0));  //任意设置一个 超声探头的位置
-	m_PositionManagerPtr->m_BaseUSAttitude = m_simulatedAttitude;
-	m_PositionManagerPtr->m_CurUSAttitude = m_simulatedAttitude;
+	//设置默认的US位置 该数据并不会被使用
+	//m_simulatedAttitude.SetValue(fsutility::Coordinate(0, 0, 0, 1), fsutility::Coordinate(1, 0, 0, 0), fsutility::Coordinate(0, 1, 0, 0), fsutility::Coordinate(0, 0, -1, 0));  //任意设置一个 超声探头的位置
+	//m_PositionManagerPtr->m_BaseUSAttitude = m_simulatedAttitude;
+	//m_PositionManagerPtr->m_CurUSAttitude = m_simulatedAttitude;
 	
 	//使用默认位置 进行初始配准
-	if (m_PositionManagerPtr->CalculateTransformMatrix() != LIST_NO_ERROR)
-	{
-		return ER_CalculateTransformMatrix;
-	}
+	//if (m_PositionManagerPtr->CalculateTransformMatrix() != LIST_NO_ERROR)
+	//{
+	//	return ER_CalculateTransformMatrix;
+	//}
+	m_nAnalyseState = PENDING;
 	return LIST_NO_ERROR;
 }//InitAnalyseProcess
 
@@ -242,9 +248,9 @@ void AnalyseProcess::MoveMRIRight(float distance)
 	m_PositionManagerPtr->m_BaseMRIAttitude.m_ScanCenter =
 		m_PositionManagerPtr->m_BaseMRIAttitude.m_ScanCenter - m_PositionManagerPtr->m_BaseMRIAttitude.m_RightDir*distance;
 	CSingleLock singlelock(&m_ProcessDataMutex);
-	singlelock.Lock();
-	m_PositionManagerPtr->CalculateTransformMatrix();
-	singlelock.Unlock();
+	//singlelock.Lock();
+	//m_PositionManagerPtr->CalculateTransformMatrix();
+	//singlelock.Unlock();
 }
 
 /*****************************************************************
@@ -260,9 +266,9 @@ void AnalyseProcess::MoveMRIUp(float distance)
 	m_PositionManagerPtr->m_BaseMRIAttitude.m_ScanCenter =
 		m_PositionManagerPtr->m_BaseMRIAttitude.m_ScanCenter - m_PositionManagerPtr->m_BaseMRIAttitude.m_UpDir*distance;
 	CSingleLock singlelock(&m_ProcessDataMutex);
-	singlelock.Lock();
-	m_PositionManagerPtr->CalculateTransformMatrix();
-	singlelock.Unlock();
+	//singlelock.Lock();
+	//m_PositionManagerPtr->CalculateTransformMatrix();
+	//singlelock.Unlock();
 }
 
 /*****************************************************************
@@ -278,9 +284,9 @@ void AnalyseProcess::MoveMRIForward(float distance)
 	m_PositionManagerPtr->m_BaseMRIAttitude.m_ScanCenter =
 		m_PositionManagerPtr->m_BaseMRIAttitude.m_ScanCenter - m_PositionManagerPtr->m_BaseMRIAttitude.m_MoveDir*distance;
 	CSingleLock singlelock(&m_ProcessDataMutex);
-	singlelock.Lock();
-	m_PositionManagerPtr->CalculateTransformMatrix();
-	singlelock.Unlock();
+	//singlelock.Lock();
+	//m_PositionManagerPtr->CalculateTransformMatrix();
+	//singlelock.Unlock();
 }
 
 /*****************************************************************
@@ -395,16 +401,23 @@ int AnalyseProcess::Register()
 	singlelock.Lock();
 	m_PositionManagerPtr->m_BaseUSAttitude = m_PositionManagerPtr->m_CurUSAttitude;
 	singlelock.Unlock();
-	//由 US的base位置、MRI模拟采样的base位置，计算变换矩阵
-	if (m_PositionManagerPtr->CalculateTransformMatrix() != LIST_NO_ERROR)
-	{
-		return ER_CalculateTransformMatrix;
-	}
-	else
-	{
-		m_nAnalyseState = PUNCTURE;
-		return LIST_NO_ERROR;
-	}
+	//由 US的base位置、MRI模拟采样的base位置、点云数据，计算变换矩阵
+	m_RigidTransformPtr->SetSrcAttitude(m_PositionManagerPtr->m_BaseUSAttitude);
+	m_RigidTransformPtr->SetDstAttitude(m_PositionManagerPtr->m_BaseMRIAttitude);
+	m_RigidTransformPtr->SetSrcPts(m_USPts);
+	m_RigidTransformPtr->SetDstPts(m_SurgicalPlanPtr->GetObjDataPtr(1)->GetVertices());
+	m_PositionManagerPtr->m_TransformMatrix = m_RigidTransformPtr->CalTransformMatrix();
+	m_nAnalyseState = PUNCTURE;
+	return LIST_NO_ERROR;
+	//if (m_PositionManagerPtr->CalculateTransformMatrix() != LIST_NO_ERROR)
+	//{
+	//	return ER_CalculateTransformMatrix;
+	//}
+	//else
+	//{
+	//	m_nAnalyseState = PUNCTURE;
+	//	return LIST_NO_ERROR;
+	//}
 }
 
 /*****************************************************************
@@ -420,13 +433,12 @@ int ANALYSEPROCESS::AnalyseProcess::ResetRegister()
 	CSingleLock singlelock(&m_ProcessDataMutex);
 	singlelock.Lock();
 	//重置超声探头的位置
-	m_PositionManagerPtr->m_BaseUSAttitude = m_simulatedAttitude;
-	m_PositionManagerPtr->m_BaseMRIAttitude = m_simulatedAttitude;
+	//m_PositionManagerPtr->m_BaseUSAttitude = m_simulatedAttitude;
 	//重置MRI模拟采样探头的base位置
 	m_PositionManagerPtr->m_BaseMRIAttitude = AnalyseConfig::Instance().m_Attitude;  //用配置文件 重置MRI模拟采样的base位置
 	//重新计算标定矩阵
-	m_PositionManagerPtr->CalculateTransformMatrix();  //设置默认的US位置 配准 用于计算默认的mask
-	m_nAnalyseState = INIT;  //重置为未配准状态
+	m_RigidTransformPtr->Reset();  //重置用于刚体变换的输入参数
+	m_nAnalyseState = PENDING;  //重置为未配准状态
 	singlelock.Unlock();
 	return 0;
 }
@@ -443,15 +455,9 @@ void AnalyseProcess::UpdateNDIData(fsutility::Attitude attitude)
 {
 	CSingleLock singlelock(&m_ProcessDataMutex);
 	singlelock.Lock();
-	if (m_nAnalyseState == INIT)
-		m_PositionManagerPtr->m_CurUSAttitude = m_simulatedAttitude;  //手动配准前，都认为超声探头处于那个模拟的位置。从而使得MRI模拟采样探头 在其base位置
-	else if (m_nAnalyseState == REGISTERING1)
-	{
-		m_PositionManagerPtr->m_CurUSAttitude = attitude;
-		m_nAnalyseState = REGISTERING2;
-	}
-	else
-		m_PositionManagerPtr->m_CurUSAttitude = attitude;
+	m_PositionManagerPtr->m_CurUSAttitude = attitude;
+	if (m_nAnalyseState == REGISTERING1)
+		m_nAnalyseState = REGISTERING2;  //US当前位姿信息准备就绪，可以用于计算配准矩阵
 	singlelock.Unlock();
 	return;
 }//UpdateNDIData
@@ -502,6 +508,71 @@ void AnalyseProcess::UpdateUSBData(cv::Mat t_USBImgT, cv::Mat t_USBImgS, double 
 }//UpdateUSBData
 
 
+vector<Coordinate> ANALYSEPROCESS::AnalyseProcess::GetContourPts(FrameDataPtr t_FrameDataPtr)
+{
+	int width, height,y,x,step,count;
+	double pixelSize;
+	Coordinate pixelPos;  //当前像素 在真实US探头所在的世界坐标系下的坐标
+	vector<pair<int, int>> pixels;  //一组外轮廓像素，其2D图像像素坐标(x,y)
+	vector <Coordinate> result;  //一组外轮廓像素，其NDI磁场规定的3D空间坐标(x,y,z,1)
+	cv::Mat srcImg;
+	cv::Mat binaryImg;
+
+	//判断数据是否存在。方便起见，仅讨论横断面
+	srcImg = t_FrameDataPtr->m_USImgT;
+	if (srcImg.empty())
+		return result;
+	pixelSize = t_FrameDataPtr->m_dPixelSizeS;
+	width = srcImg.cols;
+	height = srcImg.rows;
+	//转灰度便于取阈值
+	binaryImg = m_ImageProcessorPtr->SegmentByThreshold(srcImg);
+	//横向线，与外轮廓相交于若干个点
+	step = height / (HORIZONTAL_LINE_NUM + 1);
+	for (y = step, count = 0; count < HORIZONTAL_LINE_NUM; y += step, count++)
+	{
+		for(x=0;x<width;x++)
+			if (binaryImg.at<uchar>(y, x) > THRESHOLD)
+			{
+				pixels.push_back({ x,y });
+				break;
+			}
+		for(x=width-1;x>=0;x--)
+			if (binaryImg.at<uchar>(y, x) > THRESHOLD)
+			{
+				pixels.push_back({ x,y });
+				break;
+			}
+	}
+	//纵向线，与外轮廓相交于若干个点
+	step = width / (VERTICAL_LINE_NUM+1);
+	for (x = step, count = 0; count < VERTICAL_LINE_NUM; x += step, count++)
+	{
+		for(y=0;y<height;y++)
+			if (binaryImg.at<uchar>(y, x) > THRESHOLD)
+			{
+				pixels.push_back({ x,y });
+				break;
+			}
+		for(y=height-1;y>=0;y--)
+			if (binaryImg.at<uchar>(y, x) > THRESHOLD)
+			{
+				pixels.push_back({ x,y });
+				break;
+			}
+	}
+	//将2D图像像素坐标，转为3D空间坐标
+	for (int i = 0; i < pixels.size(); i++) {
+		x = pixels[i].first;
+		y = pixels[i].second;
+		pixelPos = m_PositionManagerPtr->m_CurUSAttitude.m_ScanCenter
+			+ m_PositionManagerPtr->m_CurUSAttitude.m_UpDir*(height - y) * pixelSize
+			+ m_PositionManagerPtr->m_CurUSAttitude.m_RightDir*(x - width / 2)*pixelSize;
+		result.push_back(pixelPos);
+	}
+	return result;
+}
+
 /*****************************************************************
 Name:			ProcessSingleFrame
 Inputs:
@@ -517,10 +588,14 @@ void AnalyseProcess::ProcessSingleFrame(FrameDataPtr t_FrameDataPtr)
 	{
 		ProcessSingleFrameB(t_FrameDataPtr);	//已配准状态，调用分析函数 计算截面
 	}
-	else
+	else if (m_nAnalyseState == PENDING)
 	{
 		ProcessSingleFrameA(t_FrameDataPtr);	//未配准状态，截面返回默认值
+		vector<Coordinate> pts = GetContourPts(t_FrameDataPtr);  //未配准状态，获取前列腺外轮廓若干点数据
+		m_USPts.insert(m_USPts.end(), pts.begin(), pts.end());
 	}
+	else
+		;
 	//将分析结果发送给dlg
 	if (m_UpdateFrameFun != nullptr)
 	{
@@ -544,8 +619,9 @@ void AnalyseProcess::ProcessSingleFrameA(FrameDataPtr t_FrameDataPtr)
 	singlelock.Lock();
 
 	//计算当前截面位置
-	m_PositionManagerPtr->UpDate();	//根据已经获取的超声探头位置参数，更新MRI模拟采样位置参数
-	m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);	//为ImageSampler设置姿态参数
+	//m_PositionManagerPtr->UpDate();	//根据已经获取的超声探头位置参数，更新MRI模拟采样位置参数
+	//m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);	//为ImageSampler设置姿态参数
+	m_ImageSamplerPtr->SetPosition(m_PositionManagerPtr->m_BaseMRIAttitude);  //为ImageSampler设置姿态参数
 	t_FrameDataPtr->SetPosition(m_PositionManagerPtr->m_CurMRIAttitude);  //将当前mri模拟采样姿态参数交付FrameDataPtr
 
 	int width, height;

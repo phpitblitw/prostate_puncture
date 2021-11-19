@@ -89,6 +89,11 @@ void SURGICALPLAN::ObjData::GetBoundBox(float & x1, float & x2, float & y1, floa
 	z2 = m_BoundBox.z2;
 }
 
+std::vector<Coordinate> SURGICALPLAN::ObjData::GetVertices()
+{
+	return m_vertices;
+}
+
 float* ObjData::GetVboArray()
 {
 	//将顶点位置、顶点法向量数据存储到float数组中

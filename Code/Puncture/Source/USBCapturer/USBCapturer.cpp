@@ -13,11 +13,14 @@
 ////////////////////////include////////////////////////
 ///////////////////////////////////////////////////////
 #include "stdafx.h"
+#include <opencv2/imgproc/types_c.h>
+#include <opencv2/imgproc/imgproc_c.h>
+#include <string>
 #include "USBCapturer.h"
 #include "USBConfig.h"
 #include "ErrorManager//ErrorCodeDefine.h"
 #include "ComUtility/SysPathManager.h"
-#include <string>
+
 //#include "opencv2/highgui.hpp"
 //#include "opencv2/imgproc/imgproc.hpp"
 
@@ -426,7 +429,7 @@ double USBCapturer::CalPixelSize(cv::Mat t_imgAxis)
 	memset(hist, 0, sizeof(int)*t_imgAxis.rows);
 	for (y = 0; y < t_imgAxis.rows; y++)
 	{
-		hist[y] = cv::countNonZero(t_imgAxis(CvRect(0, y, t_imgAxis.cols, 1)));
+		hist[y] = cv::countNonZero(t_imgAxis(cv::Rect(0, y, t_imgAxis.cols, 1)));
 	}
 
 	//找出两个坐标点之间的距离(像素数)

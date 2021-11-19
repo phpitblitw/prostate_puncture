@@ -31,6 +31,7 @@ namespace SURGICALPLAN
 		int GetVertexNum() { return m_nVertexNum; }
 		int GetTriangleNum() { return m_nTriangleNum; }
 		void GetBoundBox(float &x1, float &x2, float &y1, float &y2, float &z1, float &z2);
+		std::vector<Coordinate> GetVertices();
 		float* GetVboArray();  //以float数组的形式，返回vbo数据(每个点包括：3*float 顶点x、y、z坐标;3*float 顶点法向量)
 		unsigned int* GetEboArray(); //以unsigned int数组的形式 返回ebo数据
 

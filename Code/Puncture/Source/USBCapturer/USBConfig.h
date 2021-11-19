@@ -46,13 +46,13 @@ namespace USBCAPTURER
 		int LoadConfigFile(CString t_strFilePathName);
 
 	public:
-		CvRect m_DualLeftBarRect;  //双平面的左侧长条区域
-		CvRect m_CharSensorTypeRect;  //指示横断面(T)/矢状面(S)的区域
-		CvRect m_OnePlaneRightAxisRect; //单平面 右侧坐标轴区域
-		CvRect m_DualPlaneUpRightAxisRect;  //双平面模式 上方(横断面)右侧坐标轴区域
-		CvRect m_DualPlaneDownRightAxisRect;  //双平面模式 下方(矢状面)右侧坐标轴区域
-		CvRect m_OnePlaneROI;  //单平面模式下 图像区域
-		CvRect m_DualUpROI;  //双平面模式下 上方(横断面)图像区域
-		CvRect m_DualDownROI;  //双平面模式下 下方(矢状面)图像区域
+		cv::Rect m_DualLeftBarRect;  //双平面的左侧长条区域
+		cv::Rect m_CharSensorTypeRect;  //指示横断面(T)/矢状面(S)的区域
+		cv::Rect m_OnePlaneRightAxisRect; //单平面 右侧坐标轴区域
+		cv::Rect m_DualPlaneUpRightAxisRect;  //双平面模式 上方(横断面)右侧坐标轴区域
+		cv::Rect m_DualPlaneDownRightAxisRect;  //双平面模式 下方(矢状面)右侧坐标轴区域
+		cv::Rect m_OnePlaneROI;  //单平面模式下 图像区域
+		cv::Rect m_DualUpROI;  //双平面模式下 上方(横断面)图像区域
+		cv::Rect m_DualDownROI;  //双平面模式下 下方(矢状面)图像区域
 	};
 }

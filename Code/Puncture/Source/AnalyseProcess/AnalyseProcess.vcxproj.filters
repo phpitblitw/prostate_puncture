@@ -36,6 +36,12 @@
     <ClCompile Include="ImageSampler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="RigidTransform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageProcessor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="AnalyseProcess.def">
@@ -76,6 +82,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="PositionManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidTransform.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageProcessor.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

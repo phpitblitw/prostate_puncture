@@ -128,9 +128,9 @@
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>.\USBCapturer.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ComUtilityD.lib;ErrorManagerD.lib;frmgrab.lib;opencv_world300d.lib</AdditionalDependencies>
+      <AdditionalDependencies>ComUtilityD.lib;ErrorManagerD.lib;frmgrab.lib;opencv_world410d.lib</AdditionalDependencies>
       <ImportLibrary>$(SolutionDir)\lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
-      <DelayLoadDLLs>opencv_world300d.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <DelayLoadDLLs>opencv_world410d.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -189,8 +189,8 @@
       <ModuleDefinitionFile>.\USBCapturer.def</ModuleDefinitionFile>
       <ImportLibrary>$(SolutionDir)\lib\$(Configuration)\$(TargetName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ComUtility.lib;ErrorManager.lib;frmgrab.lib;opencv_world300.lib</AdditionalDependencies>
-      <DelayLoadDLLs>opencv_world300.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <AdditionalDependencies>ComUtility.lib;ErrorManager.lib;frmgrab.lib;opencv_world410.lib</AdditionalDependencies>
+      <DelayLoadDLLs>opencv_world410.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

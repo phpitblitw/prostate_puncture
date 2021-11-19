@@ -90,6 +90,11 @@ void Matrix::SetValue(Coordinate c0, Coordinate c1, Coordinate c2, Coordinate c3
 	return;
 }
 
+double fsutility::Matrix::GetValue(int y, int x)
+{
+	return m_dItem[y][x];
+}
+
 Coordinate Matrix::GetMultiply(Coordinate c)
 {
 	Coordinate result;

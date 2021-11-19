@@ -57,25 +57,25 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\include;$(SolutionDir)\include\epiphan;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\include;$(SolutionDir)\include\epiphan;$(SolutionDir)\include\vtk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Configuration);$(SolutionDir)lib\Commonlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ErrorManagerD.lib;NDIOperatorD.lib;SurgicalPlanD.lib;SceneGraph.lib;opengl32.lib;ImageRenderD.lib;USBCapturerD.lib;ComUtilityD.lib;opencv_world300d.lib;AnalyseProcessD.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <DelayLoadDLLs>opencv_world300d.dll</DelayLoadDLLs>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Configuration);$(SolutionDir)lib\Commonlib;$(SolutionDir)lib\Commonlib\vtk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ErrorManagerD.lib;NDIOperatorD.lib;SurgicalPlanD.lib;SceneGraph.lib;opengl32.lib;ImageRenderD.lib;USBCapturerD.lib;ComUtilityD.lib;opencv_world410d.lib;AnalyseProcessD.lib;$(SolutionDir)Lib\Commonlib\vtk\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>opencv_world410d.dll</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\include;$(SolutionDir)\include\epiphan;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\include;$(SolutionDir)\include\epiphan;$(SolutionDir)\include\vtk;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Configuration);$(SolutionDir)lib\Commonlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ErrorManager.lib;NDIOperator.lib;SurgicalPlan.lib;SceneGraph.lib;opengl32.lib;ImageRender.lib;USBCapturer.lib;log4cplusU.lib;ComUtility.lib;opencv_world300.lib;AnalyseProcess.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <DelayLoadDLLs>opencv_world300.dll</DelayLoadDLLs>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Configuration);$(SolutionDir)lib\Commonlib;$(SolutionDir)lib\Commonlib\vtk;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ErrorManager.lib;NDIOperator.lib;SurgicalPlan.lib;SceneGraph.lib;opengl32.lib;ImageRender.lib;USBCapturer.lib;log4cplusU.lib;ComUtility.lib;opencv_world410.lib;AnalyseProcess.lib;$(SolutionDir)Lib\Commonlib\vtk\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>opencv_world410.dll</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">

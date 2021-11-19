@@ -26,6 +26,7 @@ namespace fsutility
 		Matrix(Coordinate c0, Coordinate c1, Coordinate c2, Coordinate c3);	//四个列向量构造一个矩阵
 		void SetValue(double m[16]);	//设置矩阵值(先行后列)
 		void SetValue(Coordinate c0, Coordinate c1, Coordinate c2, Coordinate c3);//四个列向量为矩阵赋值
+		double GetValue(int y, int x);
 		~Matrix();
 		Coordinate GetMultiply(Coordinate c);	//this矩阵×齐次坐标
 		Matrix GetMultiply(Matrix m);	//this矩阵×矩阵

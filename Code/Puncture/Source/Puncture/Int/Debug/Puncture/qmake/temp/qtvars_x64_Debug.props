@@ -1,7 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
 <Qt_DEFINES_>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_OPENGL_LIB;QT_WIDGETS_LIB;QT_MULTIMEDIA_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CORE_LIB</Qt_DEFINES_>
-<Qt_INCLUDEPATH_>D:\prostate\prostate_puncture_qt_trying\Code\Puncture\Source\Puncture\Int\Debug\Puncture\qmake\temp;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtOpenGL;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtWidgets;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtMultimedia;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtGui;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtANGLE;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtNetwork;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtCore;C:\VulkanSDK\1.0.51.0\include;D:\application\qt\5.12.3\5.12.3\msvc2017_64\mkspecs\win32-msvc</Qt_INCLUDEPATH_>
+<Qt_INCLUDEPATH_>D:\prostate\prostate_puncture\Code\Puncture\Source\Puncture\Int\Debug\Puncture\qmake\temp;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtOpenGL;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtWidgets;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtMultimedia;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtGui;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtANGLE;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtNetwork;D:\application\qt\5.12.3\5.12.3\msvc2017_64\include\QtCore;C:\VulkanSDK\1.0.51.0\include;D:\application\qt\5.12.3\5.12.3\msvc2017_64\mkspecs\win32-msvc</Qt_INCLUDEPATH_>
 <Qt_LIBS_>D:\application\qt\5.12.3\5.12.3\msvc2017_64\lib\Qt5OpenGLd.lib;D:\application\qt\5.12.3\5.12.3\msvc2017_64\lib\Qt5Widgetsd.lib;D:\application\qt\5.12.3\5.12.3\msvc2017_64\lib\Qt5Multimediad.lib;D:\application\qt\5.12.3\5.12.3\msvc2017_64\lib\Qt5Guid.lib;D:\application\qt\5.12.3\5.12.3\msvc2017_64\lib\Qt5Networkd.lib;D:\application\qt\5.12.3\5.12.3\msvc2017_64\lib\Qt5Cored.lib;D:\application\qt\5.12.3\5.12.3\msvc2017_64\lib\qtmaind.lib;shell32.lib</Qt_LIBS_>
 <Qt_LIBPATH_>D:\application\qt\5.12.3\5.12.3\msvc2017_64\lib;C:\openssl\lib;C:\Utils\my_sql\mysql-5.6.11-winx64\lib;C:\Utils\postgresql\pgsql\lib</Qt_LIBPATH_>
 <QMake_QT_SYSROOT_></QMake_QT_SYSROOT_>
@@ -30,7 +30,7 @@
 <QMake_QMAKE_VERSION_>3.1</QMake_QMAKE_VERSION_>
 <QMake_QT_VERSION_>5.12.3</QMake_QT_VERSION_>
 <Qt_INCLUDEPATH_
-      >$(Qt_INCLUDEPATH_);D:\prostate\prostate_puncture_qt_trying\Code\Puncture\Source\Puncture\Int\Debug\Puncture\moc;D:\prostate\prostate_puncture_qt_trying\Code\Puncture\Source\Puncture\Int\Debug\Puncture\uic</Qt_INCLUDEPATH_>
+      >$(Qt_INCLUDEPATH_);D:\prostate\prostate_puncture\Code\Puncture\Source\Puncture\Int\Debug\Puncture\moc;D:\prostate\prostate_puncture\Code\Puncture\Source\Puncture\Int\Debug\Puncture\uic</Qt_INCLUDEPATH_>
     <QtBkup_QtInstall
       >msvc2017_64</QtBkup_QtInstall>
     <QtBkup_QtModules

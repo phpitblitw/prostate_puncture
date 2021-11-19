@@ -125,7 +125,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>.\ImageRender.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ComUtilityD.lib;opencv_world300d.lib</AdditionalDependencies>
+      <AdditionalDependencies>ComUtilityD.lib;opencv_world410d.lib</AdditionalDependencies>
       <ImportLibrary>$(SolutionDir)\lib\debug\$(TargetName).lib</ImportLibrary>
       <DelayLoadDLLs>opencv_world300d.dll</DelayLoadDLLs>
     </Link>
@@ -189,7 +189,7 @@
       <ImportLibrary>$(SolutionDir)\lib\Release\$(TargetName).lib</ImportLibrary>
       <AdditionalLibraryDirectories>$(SolutionDir)\lib\$(Configuration);$(SolutionDir)\lib\Commonlib</AdditionalLibraryDirectories>
       <DelayLoadDLLs>opencv_world300.dll</DelayLoadDLLs>
-      <AdditionalDependencies>ComUtility.lib;opencv_world300.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ComUtility.lib;opencv_world410.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

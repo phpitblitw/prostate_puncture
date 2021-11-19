@@ -85,22 +85,22 @@ Description:
 	根据base处，US和MRI模拟采样的一组位置参数，即可求得该变换矩阵
 	若变换矩阵不存在，则返回错误信息
 *****************************************************************/
-BOOL PositionManager::CalculateTransformMatrix()
-{
-	//Matrix matrixMRIBasePosition(m_BaseMRIScanCenter, m_BaseMRIRightDir, m_BaseMRIUpDir, m_BaseMRIMoveDir);
-	//Matrix matrixUSBasePosition(m_BaseUSScanCenter, m_BaseUSRightDir, m_BaseUSUpDir, m_BaseUSMoveDir);
-
-	Matrix matrixMRIBasePosition(m_BaseMRIAttitude.m_ScanCenter, m_BaseMRIAttitude.m_RightDir, m_BaseMRIAttitude.m_UpDir, m_BaseMRIAttitude.m_MoveDir);
-	Matrix matrixUSBasePosition(m_BaseUSAttitude.m_ScanCenter, m_BaseUSAttitude.m_RightDir, m_BaseUSAttitude.m_UpDir, m_BaseUSAttitude.m_MoveDir);
-	//首先判断转换矩阵是否可逆
-	if (matrixUSBasePosition.GetDeterminant() == 0)
-	{
-		return ER_CalculateTransformMatrix;
-	}
-
-	m_TransformMatrix = matrixMRIBasePosition.GetMultiply(matrixUSBasePosition.GetInverse());
-	return LIST_NO_ERROR;
-}
+//BOOL PositionManager::CalculateTransformMatrix()
+//{
+//	//Matrix matrixMRIBasePosition(m_BaseMRIScanCenter, m_BaseMRIRightDir, m_BaseMRIUpDir, m_BaseMRIMoveDir);
+//	//Matrix matrixUSBasePosition(m_BaseUSScanCenter, m_BaseUSRightDir, m_BaseUSUpDir, m_BaseUSMoveDir);
+//
+//	Matrix matrixMRIBasePosition(m_BaseMRIAttitude.m_ScanCenter, m_BaseMRIAttitude.m_RightDir, m_BaseMRIAttitude.m_UpDir, m_BaseMRIAttitude.m_MoveDir);
+//	Matrix matrixUSBasePosition(m_BaseUSAttitude.m_ScanCenter, m_BaseUSAttitude.m_RightDir, m_BaseUSAttitude.m_UpDir, m_BaseUSAttitude.m_MoveDir);
+//	//首先判断转换矩阵是否可逆
+//	if (matrixUSBasePosition.GetDeterminant() == 0)
+//	{
+//		return ER_CalculateTransformMatrix;
+//	}
+//
+//	m_TransformMatrix = matrixMRIBasePosition.GetMultiply(matrixUSBasePosition.GetInverse());
+//	return LIST_NO_ERROR;
+//}
 
 /*****************************************************************
 Name:			SetCurUSPosition

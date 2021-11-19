@@ -60,8 +60,8 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Configuration);$(SolutionDir)lib\Commonlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ErrorManagerD.lib;NDIOperatorD.lib;SurgicalPlanD.lib;SceneGraph.lib;opengl32.lib;ImageRenderD.lib;USBCapturerD.lib;ComUtilityD.lib;opencv_world300d.lib;AnalyseProcessD.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <DelayLoadDLLs>opencv_world300d.dll</DelayLoadDLLs>
+      <AdditionalDependencies>ErrorManagerD.lib;NDIOperatorD.lib;SurgicalPlanD.lib;SceneGraph.lib;opengl32.lib;ImageRenderD.lib;USBCapturerD.lib;ComUtilityD.lib;opencv_world410d.lib;AnalyseProcessD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>opencv_world410d.dll</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -71,8 +71,8 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\$(Configuration);$(SolutionDir)lib\Commonlib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ErrorManager.lib;NDIOperator.lib;SurgicalPlan.lib;SceneGraph.lib;opengl32.lib;ImageRender.lib;USBCapturer.lib;log4cplusU.lib;ComUtility.lib;opencv_world300.lib;AnalyseProcess.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <DelayLoadDLLs>opencv_world300.dll</DelayLoadDLLs>
+      <AdditionalDependencies>ErrorManager.lib;NDIOperator.lib;SurgicalPlan.lib;SceneGraph.lib;opengl32.lib;ImageRender.lib;USBCapturer.lib;log4cplusU.lib;ComUtility.lib;opencv_world410.lib;AnalyseProcess.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>opencv_world410.dll</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
