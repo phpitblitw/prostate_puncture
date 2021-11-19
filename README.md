@@ -100,9 +100,10 @@ Calibrate项目的标注模块，新增了功能
 通过在NDIOperator中停止采集的函数加锁，修复了一个错误
 通过在CalibrateWindow::OnTimerCapturer中注释掉QMessageBox一行，修复了一个错误
 
-
-
-
-
-
+# v1.10
+引入vtk全部的头文件，全部的lib，以及部分dll
+更新opencv依赖库至4.1.0(vc15)
+添加了ImageProcessor工具类，提供2D图像阈值分割功能
+采集US下的前列腺点云
+在医生手动配准的基础上，添加了根据US下的前列腺点云 以及 MRI下的前列腺点云，调用vtk的icp算法 优化配准
 
